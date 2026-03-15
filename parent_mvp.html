@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ParentConnect – Attendance Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Fraunces:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════
+   TOKENS
+════════════════════════════════ */
+:root {
+  --navy:       #1E3A5F;
+  --navy-dark:  #142940;
+  --blue:       #2563EB;
+  --blue-lt:    #EFF6FF;
+  --blue-glow:  rgba(37,99,235,0.18);
+  --teal:       #0D9488;
+  --teal-lt:    #F0FDFA;
+  --green:      #16A34A;
+  --green-lt:   #F0FDF4;
+  --orange:     #EA580C;
+  --orange-lt:  #FFF7ED;
+  --red:        #DC2626;
+  --red-lt:     #FEF2F2;
+  --amber:      #D97706;
+  --amber-lt:   #FFFBEB;
+  --ink:        #0F172A;
+  --ink2:       #334155;
+  --muted:      #94A3B8;
+  --border:     #E2E8F0;
+  --surf:       #FFFFFF;
+  --bg:         #F8FAFC;
+  --r:          14px;
+  --r-lg:       20px;
+  --sh:         0 1px 8px rgba(15,23,42,0.07),0 0 0 1px rgba(15,23,42,0.04);
+  --sh-lg:      0 8px 32px rgba(37,99,235,0.13),0 2px 8px rgba(15,23,42,0.07);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:#CBD5E1;
+  color:var(--ink);
+  display:flex;align-items:flex-start;justify-content:center;
+  min-height:100vh;padding:32px 0 80px;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+svg{display:block;flex-shrink:0}
+
+/* ════════════════════════════════
+   APP SHELL
+════════════════════════════════ */
+#app{
+  width:390px;
+  background:var(--bg);
+  border-radius:44px;
+  overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,0.25),0 0 0 9px #1c2130;
+  display:flex;flex-direction:column;
+  min-height:820px;
+  position:relative;
+}
+@media(max-width:430px){
+  body{padding:0;background:var(--bg)}
+  #app{border-radius:0;min-height:100vh;box-shadow:none;width:100%}
+}
+
+/* ════════════════════════════════
+   SCREENS
+════════════════════════════════ */
+.screen{
+  display:none;flex-direction:column;flex:1;
+  min-height:820px;
+  animation:fadeUp .26s cubic-bezier(.4,0,.2,1) both;
+}
+.screen.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.slide-l{animation:slideL .26s cubic-bezier(.4,0,.2,1) both}
+.slide-r{animation:slideR .26s cubic-bezier(.4,0,.2,1) both}
+@keyframes slideL{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideR{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
+
+/* ════════════════════════════════
+   COMMON: STATUS BAR
+════════════════════════════════ */
+.status-bar{
+  height:44px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;flex-shrink:0;
+}
+.sb-time{font-size:15px;font-weight:800;color:var(--ink)}
+.sb-icons{display:flex;gap:7px;align-items:center}
+.status-bar.dark .sb-time{color:white}
+.status-bar.dark .sb-icons svg path,.status-bar.dark .sb-icons svg rect{stroke:white;fill:white}
+
+/* ════════════════════════════════
+   COMMON: BOTTOM NAV
+════════════════════════════════ */
+.bnav{
+  height:70px;background:var(--surf);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  flex-shrink:0;padding-bottom:6px;
+}
+.bnav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 14px;border-radius:14px;cursor:pointer;transition:background .15s;
+}
+.bnav-btn.active{background:var(--blue-lt)}
+.bnav-btn svg{width:22px;height:22px}
+.bnav-btn span{font-size:10px;font-weight:800;letter-spacing:.03em;color:var(--muted)}
+.bnav-btn.active span{color:var(--blue)}
+
+/* ════════════════════════════════
+   COMMON: SCROLL AREA
+════════════════════════════════ */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ════════════════════════════════
+   COMMON: CARDS / CHIPS
+════════════════════════════════ */
+.card{background:var(--surf);border-radius:var(--r);box-shadow:var(--sh)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;
+  padding:4px 10px;border-radius:20px;white-space:nowrap}
+.chip-green {background:var(--green-lt); color:var(--green)}
+.chip-orange{background:var(--orange-lt);color:var(--orange)}
+.chip-red   {background:var(--red-lt);   color:var(--red)}
+.chip-blue  {background:var(--blue-lt);  color:var(--blue)}
+.chip-muted {background:#F1F5F9;         color:var(--muted)}
+.chip-amber {background:var(--amber-lt); color:var(--amber)}
+
+/* ════════════════════════════════
+   SCREEN 1 – SELECT STUDENT
+════════════════════════════════ */
+#s-select .status-bar{background:var(--surf)}
+
+.sel-header{
+  background:var(--surf);
+  padding:4px 22px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sel-back-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.icon-btn{width:34px;height:34px;border-radius:10px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;transition:background .15s}
+.icon-btn:hover{background:var(--border)}
+.sel-title-block{text-align:center;padding:0 22px 20px}
+.sel-title-block h1{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--navy);margin-bottom:6px}
+.sel-title-block p{font-size:13px;color:var(--muted);font-weight:600}
+
+.student-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 22px}
+.stu-card{
+  background:var(--surf);border-radius:var(--r-lg);padding:18px 14px 14px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  box-shadow:var(--sh);cursor:pointer;border:2px solid transparent;
+  transition:all .2s;position:relative;
+}
+.stu-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:var(--blue)}
+.stu-card.selected{border-color:var(--blue);background:var(--blue-lt)}
+.stu-avatar{
+  width:72px;height:72px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+  position:relative;flex-shrink:0;
+}
+.stu-avatar .online-dot{
+  position:absolute;bottom:3px;right:3px;width:14px;height:14px;
+  border-radius:50%;background:var(--green);border:2.5px solid var(--surf);
+}
+.stu-name{font-size:13px;font-weight:800;color:var(--ink);text-align:center;line-height:1.3}
+.stu-grade{font-size:11px;font-weight:600;color:var(--muted);text-align:center}
+
+.add-card{
+  background:var(--bg);border-radius:var(--r-lg);padding:18px 14px 14px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  border:2px dashed var(--border);cursor:pointer;transition:all .2s;
+}
+.add-card:hover{border-color:var(--blue);background:var(--blue-lt)}
+.add-icon{width:72px;height:72px;border-radius:50%;background:var(--border);
+  display:flex;align-items:center;justify-content:center}
+.add-card span{font-size:13px;font-weight:800;color:var(--ink)}
+.add-card small{font-size:11px;color:var(--blue);font-weight:600}
+
+.continue-btn{
+  margin:0 22px 12px;padding:16px;
+  background:var(--navy);color:white;border-radius:var(--r);
+  font-size:15px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 20px rgba(30,58,95,.3);transition:all .2s;width:calc(100% - 44px);
+}
+.continue-btn:hover{background:var(--navy-dark);transform:translateY(-2px)}
+.login-hint{text-align:center;font-size:11px;color:var(--muted);font-weight:600;padding-bottom:8px}
+.login-hint a{color:var(--blue);cursor:pointer;font-weight:700}
+
+/* ════════════════════════════════
+   SCREEN 2 – DASHBOARD
+════════════════════════════════ */
+#s-dash .status-bar{background:var(--navy)}
+#s-dash .sb-time{color:white}
+
+.dash-hero{
+  background:linear-gradient(150deg,var(--navy) 0%,#1a4a7a 60%,#1e5c94 100%);
+  padding:0 22px 22px;flex-shrink:0;
+}
+.dash-toprow{display:flex;align-items:center;justify-content:space-between;padding:8px 0 18px}
+.dash-toprow h2{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:white}
+.notif-btn{
+  width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;
+  background:#F97316;border:2px solid var(--navy)}
+
+.dash-student-card{
+  background:rgba(255,255,255,.12);backdrop-filter:blur(10px);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:13px;
+  border:1px solid rgba(255,255,255,.15);
+}
+.dash-stu-avatar{width:50px;height:50px;border-radius:50%;font-size:24px;
+  display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.dash-stu-avatar .online-dot{position:absolute;bottom:1px;right:1px;width:12px;height:12px;
+  border-radius:50%;background:var(--green);border:2px solid rgba(255,255,255,.2)}
+.dash-stu-info{flex:1}
+.dash-stu-name{font-size:17px;font-weight:800;color:white}
+.dash-stu-sub{font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px}
+.dash-stu-id{display:inline-flex;align-items:center;background:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.8);font-size:11px;font-weight:700;padding:3px 8px;
+  border-radius:6px;margin-top:5px}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 22px 0}
+.stat-card{background:var(--surf);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.stat-card .lbl{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.stat-val{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--ink);line-height:1}
+.stat-sub{font-size:11px;font-weight:700;margin-top:4px}
+.stat-sub.green{color:var(--green)}.stat-sub.orange{color:var(--orange)}.stat-sub.muted{color:var(--muted)}
+.rate-bar{height:5px;background:var(--border);border-radius:99px;margin-top:7px;overflow:hidden}
+.rate-fill{height:100%;border-radius:99px;background:var(--blue);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.view-cal-btn{
+  margin:16px 22px 0;padding:14px;
+  background:var(--blue);color:white;border-radius:var(--r);
+  font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 6px 20px var(--blue-glow);transition:all .2s;width:calc(100%-44px);
+}
+.view-cal-btn:hover{background:#1D4ED8;transform:translateY(-2px)}
+
+.recent-section{padding:16px 22px 24px}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sec-hdr h3{font-size:15px;font-weight:800;color:var(--ink)}
+.sec-hdr button{font-size:12px;font-weight:700;color:var(--blue)}
+
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.act-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.act-icon.green{background:var(--green-lt)}.act-icon.orange{background:var(--orange-lt)}.act-icon.red{background:var(--red-lt)}
+.act-text{flex:1}
+.act-title{font-size:13px;font-weight:800;color:var(--ink)}
+.act-desc{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;line-height:1.4}
+.act-time{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap}
+
+/* ════════════════════════════════
+   SCREEN 3 – CALENDAR
+════════════════════════════════ */
+.cal-header{
+  background:var(--surf);padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.cal-header h2{font-size:17px;font-weight:800;color:var(--ink)}
+.cal-stu-row{
+  background:var(--surf);padding:12px 22px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.cal-stu-info{display:flex;align-items:center;gap:10px}
+.cal-stu-av{width:38px;height:38px;border-radius:50%;font-size:20px;display:flex;align-items:center;justify-content:center}
+.cal-stu-name{font-size:14px;font-weight:800;color:var(--ink)}
+.cal-stu-grade{font-size:11px;color:var(--muted);font-weight:600}
+
+/* Calendar grid */
+.calendar-wrap{background:var(--surf);margin:14px 22px;border-radius:var(--r);box-shadow:var(--sh);padding:16px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-month{font-family:'Fraunces',serif;font-size:17px;font-weight:900;color:var(--ink)}
+.cal-nav-btn{width:30px;height:30px;border-radius:9px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.cal-nav-btn:hover{background:var(--border)}
+.cal-days-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.cal-days-hdr span{text-align:center;font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--muted);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-cell{
+  aspect-ratio:1;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;
+  position:relative;transition:all .15s;
+}
+.cal-cell:hover{background:var(--bg)}
+.cal-cell.empty{pointer-events:none}
+.cal-cell.today{background:var(--navy);color:white;font-weight:900}
+.cal-cell.present{background:var(--green-lt);color:var(--green)}
+.cal-cell.absent{background:var(--red-lt);color:var(--red)}
+.cal-cell.late{background:var(--amber-lt);color:var(--amber)}
+.cal-cell .dot{position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%}
+
+.cal-legend{display:flex;gap:14px;justify-content:center;margin-top:10px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* Day detail */
+.day-detail{margin:0 22px 16px;background:var(--surf);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.day-detail-hdr{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.day-detail-hdr h4{font-size:14px;font-weight:800;color:var(--ink)}
+.period-row{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:12px}
+.period-row:last-child{border-bottom:none}
+.period-time{font-size:11px;font-weight:700;color:var(--muted);width:48px;flex-shrink:0;line-height:1.3}
+.period-icon{width:32px;height:32px;border-radius:9px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.period-name{flex:1}
+.period-name strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}
+.period-name small{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ════════════════════════════════
+   SCREEN 4 – ALERT MODAL
+════════════════════════════════ */
+#s-alert{background:rgba(15,23,42,.5);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;
+  min-height:820px;
+}
+#s-alert.active{display:flex}
+.alert-sheet{
+  background:var(--surf);border-radius:28px 28px 0 0;padding:0 0 32px;
+  width:100%;animation:sheetUp .3s cubic-bezier(.4,0,.2,1) both;
+  max-height:90%;overflow-y:auto;scrollbar-width:none;
+}
+.alert-sheet::-webkit-scrollbar{display:none}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.alert-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:12px auto 0}
+
+.alert-toprow{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0}
+.alert-toprow h3{font-size:17px;font-weight:800;color:var(--ink)}
+.close-btn{width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.alert-icon-wrap{display:flex;justify-content:center;padding:20px 0 10px}
+.alert-icon-circle{width:80px;height:80px;border-radius:50%;background:var(--red-lt);display:flex;align-items:center;justify-content:center}
+.alert-chip{text-align:center;margin-bottom:14px}
+.alert-chip span{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--orange);background:var(--orange-lt);padding:4px 12px;border-radius:20px}
+
+.alert-student{text-align:center;margin-bottom:18px}
+.alert-student h2{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink)}
+.alert-student p{font-size:12px;color:var(--muted);font-weight:600;margin-top:4px}
+
+.alert-details{margin:0 22px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.alert-detail-card{background:var(--bg);border-radius:var(--r);padding:12px}
+.alert-detail-card .al{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.alert-detail-card strong{font-size:14px;font-weight:800;color:var(--ink);display:block}
+.alert-detail-card small{font-size:11px;color:var(--muted);font-weight:600}
+
+.alert-message{margin:0 22px 16px;background:var(--bg);border-radius:var(--r);padding:14px;font-size:13px;color:var(--ink2);font-weight:600;line-height:1.6}
+.alert-location{margin:0 22px 20px;background:linear-gradient(120deg,var(--blue-lt),#E0F2FE);border-radius:var(--r);padding:12px 14px}
+.alert-location small{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--blue);text-transform:uppercase;display:block;margin-bottom:4px}
+.alert-location strong{font-size:14px;font-weight:800;color:var(--navy)}
+
+.alert-actions{padding:0 22px;display:flex;flex-direction:column;gap:10px}
+.ack-btn{padding:15px;background:var(--blue);color:white;border-radius:var(--r);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px var(--blue-glow);transition:all .2s}
+.ack-btn:hover{background:#1D4ED8;transform:translateY(-2px)}
+.alert-row-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.contact-btn{padding:13px;background:var(--bg);color:var(--ink);border-radius:var(--r);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px solid var(--border);transition:all .15s}
+.contact-btn:hover{background:var(--border)}
+.dismiss-btn{padding:13px;background:var(--bg);color:var(--muted);border-radius:var(--r);font-size:13px;font-weight:800;border:1.5px solid var(--border);transition:all .15s}
+.dismiss-btn:hover{background:var(--border)}
+.alert-footer{text-align:center;padding:16px 22px 0;font-size:11px;color:var(--muted);font-weight:500}
+
+/* ════════════════════════════════
+   SCREEN 6 – MESSAGES LIST
+════════════════════════════════ */
+.msg-header{
+  background:var(--surf);padding:14px 22px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.msg-header h2{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--ink)}
+.msg-edit-btn{width:34px;height:34px;border-radius:10px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.msg-edit-btn:hover{background:var(--border)}
+
+.msg-search{
+  padding:10px 22px 14px;background:var(--surf);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.msg-search-inner{
+  background:var(--bg);border-radius:12px;
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+}
+.msg-search-inner input{
+  border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:500;color:var(--ink);flex:1;outline:none;
+}
+.msg-search-inner input::placeholder{color:var(--muted)}
+
+.contact-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 22px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;
+}
+.contact-item:hover{background:var(--bg)}
+.contact-item:active{background:var(--border)}
+.contact-av{
+  width:48px;height:48px;border-radius:50%;
+  object-fit:cover;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  position:relative;
+}
+.contact-av .online-ring{
+  position:absolute;bottom:1px;right:1px;width:13px;height:13px;
+  border-radius:50%;border:2.5px solid var(--surf);background:var(--green);
+}
+.contact-body{flex:1;min-width:0}
+.contact-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:3px}
+.contact-name{font-size:14px;font-weight:800;color:var(--ink)}
+.contact-time{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.contact-subject-chip{
+  display:inline-block;font-size:9px;font-weight:900;letter-spacing:.06em;
+  text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-bottom:4px;
+}
+.contact-preview{font-size:12px;font-weight:500;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px}
+.unread-badge{
+  width:20px;height:20px;border-radius:50%;background:var(--blue);
+  color:white;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ════════════════════════════════
+   SCREEN 7 – CHAT
+════════════════════════════════ */
+.chat-header{
+  background:var(--surf);padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.chat-teacher-av{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  position:relative;flex-shrink:0;
+}
+.chat-teacher-av .online-ring{
+  position:absolute;bottom:0px;right:0px;width:12px;height:12px;
+  border-radius:50%;background:var(--green);border:2px solid var(--surf);
+}
+.chat-teacher-info{flex:1}
+.chat-teacher-name{font-size:15px;font-weight:800;color:var(--ink)}
+.chat-teacher-status{font-size:11px;font-weight:600;color:var(--green)}
+.chat-actions{display:flex;gap:6px}
+.chat-action-btn{width:34px;height:34px;border-radius:10px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.chat-action-btn:hover{background:var(--border)}
+
+.chat-date-sep{
+  text-align:center;font-size:11px;font-weight:700;color:var(--muted);
+  letter-spacing:.05em;padding:12px 0 8px;text-transform:uppercase;
+}
+
+.chat-messages{
+  flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+  padding:0 16px 12px;display:flex;flex-direction:column;gap:10px;
+}
+.chat-messages::-webkit-scrollbar{display:none}
+
+.msg-bubble-wrap{display:flex;align-items:flex-end;gap:8px}
+.msg-bubble-wrap.me{flex-direction:row-reverse}
+
+.msg-av{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;align-self:flex-end;
+}
+.bubble{
+  max-width:75%;border-radius:18px;padding:11px 14px;position:relative;
+  font-size:14px;font-weight:500;line-height:1.5;color:var(--ink);
+}
+.bubble.them{
+  background:var(--surf);border-radius:18px 18px 18px 4px;
+  box-shadow:var(--sh);
+}
+.bubble.me{
+  background:var(--blue);color:white;
+  border-radius:18px 18px 4px 18px;
+}
+.bubble-time{
+  font-size:10px;font-weight:600;color:var(--muted);
+  text-align:right;margin-top:4px;display:flex;align-items:center;justify-content:flex-end;gap:4px;
+}
+.bubble.me .bubble-time{color:rgba(255,255,255,.6)}
+.tick{color:rgba(255,255,255,.8)}
+
+.chat-input-bar{
+  background:var(--surf);border-top:1px solid var(--border);
+  padding:10px 16px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.chat-plus-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-input-wrap{
+  flex:1;background:var(--bg);border-radius:24px;
+  display:flex;align-items:center;padding:9px 14px;gap:8px;
+}
+.chat-input-wrap input{
+  flex:1;border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:500;color:var(--ink);outline:none;
+}
+.chat-input-wrap input::placeholder{color:var(--muted)}
+.emoji-btn{cursor:pointer;font-size:18px;line-height:1}
+.send-btn{
+  width:38px;height:38px;border-radius:50%;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 4px 12px var(--blue-glow);transition:all .2s;flex-shrink:0;
+}
+.send-btn:hover{background:var(--navy);transform:scale(1.05)}
+
+/* ════════════════════════════════
+   SCREEN 5 – NOTIFICATIONS
+════════════════════════════════ */
+.notif-header{
+  background:var(--surf);padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.notif-header h2{font-size:17px;font-weight:800;color:var(--ink)}
+.mark-all{font-size:12px;font-weight:700;color:var(--blue);cursor:pointer}
+
+.notif-tabs{
+  background:var(--surf);display:flex;gap:0;padding:0 22px;
+  border-bottom:1px solid var(--border);
+}
+.ntab{padding:10px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .15s}
+.ntab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+.notif-section-lbl{
+  font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--muted);
+  text-transform:uppercase;padding:14px 22px 6px;
+}
+.notif-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 22px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;
+}
+.notif-item:hover{background:var(--bg)}
+.notif-item.unread{background:#FAFBFF}
+.notif-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-ico.red{background:var(--red-lt)}.notif-ico.orange{background:var(--orange-lt)}
+.notif-ico.green{background:var(--green-lt)}.notif-ico.blue{background:var(--blue-lt)}
+.notif-ico.muted{background:var(--bg)}
+.notif-body{flex:1}
+.notif-title{font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.notif-desc{font-size:12px;color:var(--ink2);font-weight:600;margin-top:3px;line-height:1.5}
+.notif-time{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;flex-shrink:0}
+
+/* ════════════════════════════════
+   SCREEN 9 – STUDENT PROGRESS / GRADES
+════════════════════════════════ */
+.grades-header{
+  background:var(--surf);padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.grades-header h2{font-size:17px;font-weight:800;color:var(--ink)}
+.grades-header .more-btn{width:32px;height:32px;border-radius:50%;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* Student hero card */
+.student-hero{
+  background:linear-gradient(145deg,#1E3A5F 0%,#2563EB 60%,#3B82F6 100%);
+  padding:22px 22px 26px;flex-shrink:0;text-align:center;
+  position:relative;overflow:hidden;
+}
+.student-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.student-hero::after{
+  content:'';position:absolute;bottom:-30px;left:-30px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.stu-hero-av{
+  width:72px;height:72px;border-radius:50%;margin:0 auto 10px;
+  display:flex;align-items:center;justify-content:center;font-size:34px;
+  position:relative;border:3px solid rgba(255,255,255,.3);
+}
+.stu-hero-av .grade-badge{
+  position:absolute;bottom:-2px;right:-2px;
+  width:22px;height:22px;border-radius:50%;
+  background:#22C55E;border:2.5px solid white;
+  display:flex;align-items:center;justify-content:center;
+}
+.stu-hero-av .grade-badge svg{width:11px;height:11px}
+.stu-hero-name{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:white;margin-bottom:4px}
+.stu-hero-sub{font-size:12px;color:rgba(255,255,255,.65);font-weight:600}
+
+/* Overall score ring */
+.overall-ring-wrap{
+  margin:18px 22px 0;background:var(--surf);border-radius:var(--r-lg);
+  padding:20px;box-shadow:var(--sh);display:flex;gap:16px;align-items:center;
+}
+.ring-svg-wrap{flex-shrink:0;position:relative;width:88px;height:88px}
+.ring-svg{width:88px;height:88px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:8}
+.ring-fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+.ring-pct{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:var(--ink);line-height:1;text-align:center;
+}
+.ring-pct small{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;color:var(--muted);margin-top:1px}
+.ring-info{flex:1}
+.ring-info p{font-size:13px;font-weight:600;color:var(--ink2);line-height:1.55;margin-bottom:8px}
+.ring-trend{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;
+  color:var(--green);background:var(--green-lt);padding:4px 10px;border-radius:20px}
+
+/* Subject performance */
+.subj-section{padding:16px 22px 0}
+.subj-section .sec-title{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.subj-section .sec-title a{font-size:12px;font-weight:700;color:var(--blue);cursor:pointer}
+.subj-bar{margin-bottom:14px}
+.subj-bar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.subj-bar-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink)}
+.subj-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.subj-score{font-size:14px;font-weight:900;color:var(--ink)}
+.subj-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.subj-fill{height:100%;border-radius:99px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+
+/* Soft skills chips */
+.skills-section{padding:16px 22px 0}
+.skills-section h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.skill-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  padding:7px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--surf);
+  color:var(--ink2);box-shadow:var(--sh)}
+.skill-chip.high{border-color:var(--green);background:var(--green-lt);color:var(--green)}
+.skill-chip.med {border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
+.skill-chip.ok  {border-color:var(--amber);background:var(--amber-lt);color:var(--amber)}
+.skill-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* Teacher feedback card */
+.teacher-card{
+  margin:16px 22px 0;
+  background:linear-gradient(135deg,#1E3A5F 0%,#2563EB 100%);
+  border-radius:var(--r-lg);padding:16px;
+}
+.tc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tc-av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tc-name{font-size:14px;font-weight:800;color:white}
+.tc-role{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.tc-quote{font-size:13px;font-style:italic;color:rgba(255,255,255,.88);line-height:1.6;
+  border-left:3px solid rgba(255,255,255,.3);padding-left:12px}
+
+/* Milestones */
+.milestone-section{padding:16px 22px 24px}
+.milestone-section h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:12px}
+.milestone-item{
+  display:flex;align-items:flex-start;gap:12px;padding:12px;
+  background:var(--surf);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:8px;
+}
+.ms-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ms-body{flex:1}
+.ms-title{font-size:13px;font-weight:800;color:var(--ink)}
+.ms-desc{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;line-height:1.4}
+.ms-date{font-size:10px;font-weight:700;color:var(--muted);white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══════════════════════════════
+     S1 – SELECT STUDENT
+══════════════════════════════ -->
+<div id="s-select" class="screen active">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x=".5" y="4" width="3" height="8" rx="1" fill="#0F172A"/><rect x="5" y="2.5" width="3" height="9.5" rx="1" fill="#0F172A"/><rect x="9.5" y=".5" width="3" height="11.5" rx="1" fill="#0F172A"/><rect x="14" y="2" width="2.5" height="10" rx="1" fill="#CBD5E1"/></svg>
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div style="background:var(--surf);padding:10px 22px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)">
+    <div class="icon-btn" style="visibility:hidden"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg></div>
+    <span style="font-size:15px;font-weight:800;color:var(--ink);flex:1;text-align:center">Parent Portal</span>
+    <div style="width:34px"></div>
+  </div>
+
+  <div class="scroll">
+    <div class="sel-title-block" style="padding-top:28px">
+      <h1>Select a Student</h1>
+      <p>Choose a profile to view academic progress</p>
+    </div>
+
+    <div class="student-grid">
+      <div class="stu-card selected" onclick="selectStudent('alex',this)" id="card-alex">
+        <div class="stu-avatar" style="background:#FEF3C7">🧒<div class="online-dot"></div></div>
+        <div class="stu-name">Alex Johnson</div>
+        <div class="stu-grade">Grade 5 · Section A</div>
+      </div>
+      <div class="stu-card" onclick="selectStudent('sarah',this)" id="card-sarah">
+        <div class="stu-avatar" style="background:#EDE9FE">👧</div>
+        <div class="stu-name">Sarah Johnson</div>
+        <div class="stu-grade">Grade 3 · Section B</div>
+      </div>
+      <div class="stu-card" onclick="selectStudent('maya',this)" id="card-maya">
+        <div class="stu-avatar" style="background:#ECFDF5">🧒</div>
+        <div class="stu-name">Maya Johnson</div>
+        <div class="stu-grade">Grade 1 · Section C</div>
+      </div>
+      <div class="add-card" onclick="alert('Tính năng đang phát triển!')">
+        <div class="add-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <span>Add Student</span>
+        <small>New registration</small>
+      </div>
+    </div>
+
+    <button class="continue-btn" onclick="goDash()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Continue to Dashboard
+    </button>
+    <div class="login-hint">You are currently logged in as <b>Robert Johnson</b>.<br>Need to switch accounts? <a onclick="alert('Đăng xuất...')">Log out</a></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S2 – DASHBOARD
+══════════════════════════════ -->
+<div id="s-dash" class="screen">
+  <div class="status-bar" style="background:var(--navy)">
+    <span class="sb-time" style="color:white">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="white"/><path d="M24 4v4a2 2 0 000-4z" fill="white"/></svg>
+    </div>
+  </div>
+  <div class="dash-hero">
+    <div class="dash-toprow">
+      <div>
+        <h2>Attendance Dashboard</h2>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div class="notif-btn" onclick="goNotif()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-student-card">
+      <div class="dash-stu-avatar" style="background:#FEF3C7" id="dash-avatar">🧒<div class="online-dot"></div></div>
+      <div class="dash-stu-info">
+        <div class="dash-stu-name" id="dash-name">Alex Johnson</div>
+        <div class="dash-stu-sub" id="dash-grade">Grade 10 · Section B</div>
+        <div class="dash-stu-id" id="dash-id">ID: #88234</div>
+      </div>
+      <button style="background:rgba(255,255,255,.15);border-radius:10px;padding:8px 10px;cursor:pointer" onclick="goSelect()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="lbl">Attendance Rate</div>
+        <div class="stat-val" id="dash-rate">94%</div>
+        <div class="stat-sub green" id="dash-rate-sub">+2% this week</div>
+        <div class="rate-bar"><div class="rate-fill" id="dash-rate-bar" style="width:94%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Total Classes</div>
+        <div class="stat-val">120</div>
+        <div class="stat-sub muted">This Semester</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Absences</div>
+        <div class="stat-val" id="dash-abs">5</div>
+        <div class="stat-sub orange" id="dash-abs-sub">+1 today · Excused: 4</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Lates</div>
+        <div class="stat-val" id="dash-late">2</div>
+        <div class="stat-sub muted">Avg: 5 min</div>
+      </div>
+    </div>
+
+    <button class="view-cal-btn" style="display:flex;margin:14px 22px 0;width:calc(100% - 44px)" onclick="goCal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      View Full Calendar
+    </button>
+
+    <div class="recent-section">
+      <div class="sec-hdr">
+        <h3>Recent Activity</h3>
+        <button onclick="goNotif()">Mark All Read</button>
+      </div>
+
+      <div class="activity-item">
+        <div class="act-icon green">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="act-text">
+          <div class="act-title">Present in Physics</div>
+          <div class="act-desc">Alex checked in for Physics class on time.</div>
+        </div>
+        <div class="act-time">10:30 AM</div>
+      </div>
+
+      <div class="activity-item">
+        <div class="act-icon orange">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="act-text">
+          <div class="act-title">Late for Mathematics</div>
+          <div class="act-desc">Alex arrived 12 minutes late for Mathematics.</div>
+        </div>
+        <div class="act-time">Yesterday</div>
+      </div>
+
+      <div class="activity-item">
+        <div class="act-icon red">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="act-text">
+          <div class="act-title">Absence Logged</div>
+          <div class="act-desc">Alex was marked absent for English Literature.</div>
+        </div>
+        <div class="act-time">Oct 24</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bnav-btn" onclick="goSelect()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn" onclick="goMsgList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>Message</span>
+    </button>
+    <button class="bnav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
+      <span style="color:var(--blue)">Attendance</span>
+    </button>
+    <button class="bnav-btn" onclick="goGrades()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>Grades</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S3 – CALENDAR
+══════════════════════════════ -->
+<div id="s-cal" class="screen">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="cal-header">
+    <button class="icon-btn" onclick="goDash()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+    </button>
+    <h2>Attendance</h2>
+    <button class="icon-btn" onclick="goNotif()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    </button>
+  </div>
+
+  <div class="cal-stu-row">
+    <div class="cal-stu-info">
+      <div class="cal-stu-av" style="background:#FEF3C7" id="cal-avatar">🧒</div>
+      <div>
+        <div class="cal-stu-name" id="cal-name">Alex Johnson</div>
+        <div class="cal-stu-grade" id="cal-grade">Grade 4 · Section B</div>
+      </div>
+    </div>
+    <span class="chip chip-green">94% Rate</span>
+  </div>
+
+  <div class="scroll">
+    <div class="calendar-wrap">
+      <div class="cal-nav">
+        <button class="cal-nav-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="cal-month">October 2023</span>
+        <button class="cal-nav-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="cal-days-hdr">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Present</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Absent</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Late</div>
+      </div>
+    </div>
+
+    <div id="day-detail-wrap" style="display:none" class="day-detail">
+      <div class="day-detail-hdr">
+        <h4 id="day-detail-title">Wednesday, Oct 11</h4>
+        <span class="chip chip-green">Fully Present</span>
+      </div>
+      <div class="period-row">
+        <div class="period-time">08:30<br>AM</div>
+        <div class="period-icon" style="background:var(--blue-lt)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <div class="period-name"><strong>Mathematics</strong><small>Room 402 · Prof. Higgins</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+      </div>
+      <div class="period-row" onclick="goAlert()">
+        <div class="period-time">10:15<br>AM</div>
+        <div class="period-icon" style="background:var(--teal-lt)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <div class="period-name"><strong>English Literature</strong><small>Library · Ms. Thorne</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+      </div>
+      <div class="period-row">
+        <div class="period-time">01:00<br>PM</div>
+        <div class="period-icon" style="background:var(--green-lt)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="period-name"><strong>Physical Education</strong><small>Main Gym · Coach Miller</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+      </div>
+      <div class="period-row">
+        <div class="period-time">02:45<br>PM</div>
+        <div class="period-icon" style="background:#FDF4FF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div class="period-name"><strong>Art & Design</strong><small>Studio B · Mr. Rossi</small></div>
+        <span class="chip chip-muted" style="font-size:10px;padding:3px 8px">Upcoming</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bnav-btn" onclick="goSelect()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>Message</span>
+    </button>
+    <button class="bnav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
+      <span style="color:var(--blue)">Attendance</span>
+    </button>
+    <button class="bnav-btn" onclick="goGrades()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>Grades</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S4 – ALERT BOTTOM SHEET
+══════════════════════════════ -->
+<div id="s-alert" class="screen" style="min-height:820px;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);align-items:flex-end">
+  <div class="alert-sheet">
+    <div class="alert-handle"></div>
+    <div class="alert-toprow">
+      <h3>Parent Attendance Alert</h3>
+      <button class="close-btn" onclick="goCal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="alert-icon-wrap">
+      <div class="alert-icon-circle">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </div>
+    </div>
+    <div class="alert-chip"><span>ABSENT NOTIFICATION</span></div>
+
+    <div class="alert-student">
+      <h2>Alex Johnson</h2>
+      <p>Student ID: #ST-88210</p>
+    </div>
+
+    <div class="alert-details">
+      <div class="alert-detail-card">
+        <div class="al">Subject</div>
+        <strong>Advanced Mathematics</strong>
+      </div>
+      <div class="alert-detail-card">
+        <div class="al">Time</div>
+        <strong>09:00 – 10:00 AM</strong>
+        <small>1st Period</small>
+      </div>
+      <div class="alert-detail-card">
+        <div class="al">Teacher</div>
+        <strong>Mr. Smith</strong>
+        <small>Mathematics Dept.</small>
+      </div>
+      <div class="alert-detail-card">
+        <div class="al">Date</div>
+        <strong>Oct 23, 2023</strong>
+        <small>Today</small>
+      </div>
+    </div>
+
+    <div class="alert-message">
+      Alex was marked absent for their first period class today. Please acknowledge this notification or contact the teacher for more information if this is an error.
+    </div>
+
+    <div class="alert-location">
+      <small>Location Class</small>
+      <strong>Main Hall – Science Block</strong>
+    </div>
+
+    <div class="alert-actions">
+      <button class="ack-btn" onclick="goCal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Acknowledge Attendance
+      </button>
+      <div class="alert-row-btns">
+        <button class="contact-btn" onclick="goChat('sarah')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Contact Teacher
+        </button>
+        <button class="dismiss-btn" onclick="goCal()">Dismiss</button>
+      </div>
+    </div>
+
+    <div class="alert-footer">School Management System · Support: +1 (555) 000-1234</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S5 – NOTIFICATIONS
+══════════════════════════════ -->
+<div id="s-notif" class="screen">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="notif-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="icon-btn" onclick="goDash()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+      </button>
+      <h2>Notifications</h2>
+    </div>
+    <span class="mark-all">Mark all as read</span>
+  </div>
+
+  <div class="notif-tabs">
+    <div class="ntab active">All</div>
+    <div class="ntab">Attendance</div>
+    <div class="ntab">Summaries</div>
+  </div>
+
+  <div class="scroll">
+    <div class="notif-section-lbl">Today</div>
+
+    <div class="notif-item unread" onclick="goAlert()">
+      <div class="notif-ico red">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title"><div class="unread-dot"></div>Unexcused Absence<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">9:15 AM</span></div>
+        <div class="notif-desc">Alex was marked absent for the 1st period (Mathematics).</div>
+      </div>
+    </div>
+
+    <div class="notif-item unread">
+      <div class="notif-ico orange">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title"><div class="unread-dot"></div>Late Arrival<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">8:45 AM</span></div>
+        <div class="notif-desc">Sarah arrived 15 minutes late for Homeroom today.</div>
+      </div>
+    </div>
+
+    <div class="notif-section-lbl">Yesterday</div>
+
+    <div class="notif-item">
+      <div class="notif-ico green">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title">Excuse Approved<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">4:30 PM</span></div>
+        <div class="notif-desc">The doctor's note for Alex's absence on Monday has been processed.</div>
+      </div>
+    </div>
+
+    <div class="notif-item">
+      <div class="notif-ico blue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title">Weekly Attendance Summary<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">9:00 AM</span></div>
+        <div class="notif-desc">Your weekly summary for week 12 is now available for review.</div>
+      </div>
+    </div>
+
+    <div class="notif-section-lbl">Last Week</div>
+
+    <div class="notif-item">
+      <div class="notif-ico muted">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title">Schedule Change<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">Nov 12</span></div>
+        <div class="notif-desc">Friday's assembly has been rescheduled to Thursday morning.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bnav-btn" onclick="goSelect()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn" onclick="goMsgList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>Message</span>
+    </button>
+    <button class="bnav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
+      <span style="color:var(--blue)">Attendance</span>
+    </button>
+    <button class="bnav-btn" onclick="goGrades()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>Grades</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S6 – MESSAGES LIST
+══════════════════════════════ -->
+<div id="s-msglist" class="screen">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="msg-header">
+    <h2>Messages</h2>
+    <div class="msg-edit-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </div>
+  </div>
+
+  <div class="msg-search">
+    <div class="msg-search-inner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search teachers or subjects…" readonly>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <!-- Contact 1 – Ms. Sarah Jenkins (unread) -->
+    <div class="contact-item" onclick="goChat('sarah')">
+      <div class="contact-av" style="background:#FDE8D8">👩‍🏫<div class="online-ring"></div></div>
+      <div class="contact-body">
+        <div class="contact-top">
+          <span class="contact-name">Ms. Sarah Jenkins</span>
+          <span class="contact-time">10:45 AM</span>
+        </div>
+        <div><span class="contact-subject-chip" style="background:#EFF6FF;color:#2563EB">Mathematics</span></div>
+        <div class="contact-preview">Hello! I wanted to update you o…</div>
+      </div>
+      <div class="unread-badge">2</div>
+    </div>
+
+    <!-- Contact 2 – Mr. David Wilson -->
+    <div class="contact-item" onclick="goChat('david')">
+      <div class="contact-av" style="background:#E8F4FD">👨‍🏫</div>
+      <div class="contact-body">
+        <div class="contact-top">
+          <span class="contact-name">Mr. David Wilson</span>
+          <span class="contact-time">2:20 PM</span>
+        </div>
+        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">English</span></div>
+        <div class="contact-preview">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+          The worksheet is attached for tom…
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact 3 – Mrs. Elena Rodriguez -->
+    <div class="contact-item" onclick="goChat('elena')">
+      <div class="contact-av" style="background:#FEF3C7">👩‍🏫</div>
+      <div class="contact-body">
+        <div class="contact-top">
+          <span class="contact-name">Mrs. Elena Rodriguez</span>
+          <span class="contact-time">Yesterday</span>
+        </div>
+        <div><span class="contact-subject-chip" style="background:#FFF7ED;color:#EA580C">History</span></div>
+        <div class="contact-preview">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Great job on the essay about the …
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact 4 – Mr. James Chen -->
+    <div class="contact-item" onclick="goChat('james')">
+      <div class="contact-av" style="background:#EDE9FE">👨‍🔬</div>
+      <div class="contact-body">
+        <div class="contact-top">
+          <span class="contact-name">Mr. James Chen</span>
+          <span class="contact-time">Monday</span>
+        </div>
+        <div><span class="contact-subject-chip" style="background:#F0F9FF;color:#0284C7">Physics</span></div>
+        <div class="contact-preview">Remember the lab safety rules for ou…</div>
+      </div>
+    </div>
+
+    <!-- Contact 5 – Dr. Sophia Williams -->
+    <div class="contact-item" onclick="goChat('sophia')">
+      <div class="contact-av" style="background:#ECFDF5">👩‍🔬</div>
+      <div class="contact-body">
+        <div class="contact-top">
+          <span class="contact-name">Dr. Sophia Williams</span>
+          <span class="contact-time">Mar 12</span>
+        </div>
+        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">Biology</span></div>
+        <div class="contact-preview">The photosynthesis project is due thi…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bnav-btn" onclick="goDash()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#2563EB"/></svg>
+      <span style="color:var(--blue)">Message</span>
+    </button>
+    <button class="bnav-btn" onclick="goCal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Attendance</span>
+    </button>
+    <button class="bnav-btn" onclick="goGrades()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>Grades</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S7 – CHAT
+══════════════════════════════ -->
+<div id="s-chat" class="screen">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="chat-header">
+    <button class="icon-btn" id="chat-back-btn" onclick="goMsgList()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+    </button>
+    <div class="chat-teacher-av" id="chat-av" style="background:#FDE8D8">👩‍🏫<div class="online-ring"></div></div>
+    <div class="chat-teacher-info">
+      <div class="chat-teacher-name" id="chat-teacher-name">Ms. Sarah Jenkins</div>
+      <div class="chat-teacher-status" id="chat-teacher-status">● Online</div>
+    </div>
+    <div class="chat-actions">
+      <div class="chat-action-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </div>
+      <div class="chat-action-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <!-- Injected by JS -->
+  </div>
+
+  <div class="chat-input-bar">
+    <div class="chat-plus-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+    <div class="chat-input-wrap">
+      <input type="text" id="chat-input" placeholder="Type a message…">
+      <span class="emoji-btn" onclick="insertEmoji()">😊</span>
+    </div>
+    <div class="send-btn" onclick="sendMessage()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     S9 – STUDENT PROGRESS / GRADES
+══════════════════════════════ -->
+<div id="s-grades" class="screen">
+  <div class="status-bar" style="background:var(--surf)">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="grades-header">
+    <button class="icon-btn" onclick="goDash()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+    </button>
+    <h2>Student Progress</h2>
+    <div class="grades-header more-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    </div>
+  </div>
+
+  <!-- Student Hero -->
+  <div class="student-hero">
+    <div class="stu-hero-av" id="grades-avatar" style="background:#FEF3C7">
+      🧒
+      <div class="grade-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    </div>
+    <div class="stu-hero-name" id="grades-name">Alex Johnson</div>
+    <div class="stu-hero-sub" id="grades-sub">Grade 5 · Section B · ID: 29402</div>
+  </div>
+
+  <div class="scroll">
+    <!-- Overall ring -->
+    <div class="overall-ring-wrap">
+      <div class="ring-svg-wrap">
+        <svg class="ring-svg" viewBox="0 0 88 88">
+          <circle class="ring-bg" cx="44" cy="44" r="36"/>
+          <circle class="ring-fg" id="ring-fill" cx="44" cy="44" r="36"
+            stroke="#2563EB"
+            stroke-dasharray="226.2"
+            stroke-dashoffset="45"/>
+        </svg>
+        <div class="ring-pct" id="ring-pct-val">88%<small>Overall</small></div>
+      </div>
+      <div class="ring-info">
+        <p id="ring-desc">Your child is performing better than <strong>92%</strong> of the class this term.</p>
+        <div class="ring-trend" id="ring-trend">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+          +2.5% from last month
+        </div>
+      </div>
+    </div>
+
+    <!-- Subject Performance -->
+    <div class="subj-section">
+      <div class="sec-title"><span>Subject Performance</span><a>View All</a></div>
+
+      <div class="subj-bar">
+        <div class="subj-bar-top">
+          <div class="subj-bar-name">
+            <div class="subj-icon" style="background:#EFF6FF">📐</div>
+            Mathematics
+          </div>
+          <div class="subj-score" id="math-score">92/100</div>
+        </div>
+        <div class="subj-track"><div class="subj-fill" id="math-fill" style="width:92%;background:linear-gradient(90deg,#2563EB,#60A5FA)"></div></div>
+      </div>
+
+      <div class="subj-bar">
+        <div class="subj-bar-top">
+          <div class="subj-bar-name">
+            <div class="subj-icon" style="background:#FFF7ED">📚</div>
+            English Language
+          </div>
+          <div class="subj-score" id="eng-score">85/100</div>
+        </div>
+        <div class="subj-track"><div class="subj-fill" id="eng-fill" style="width:85%;background:linear-gradient(90deg,#EA580C,#FB923C)"></div></div>
+      </div>
+
+      <div class="subj-bar">
+        <div class="subj-bar-top">
+          <div class="subj-bar-name">
+            <div class="subj-icon" style="background:#F0FDF4">🔬</div>
+            Science
+          </div>
+          <div class="subj-score" id="sci-score">88/100</div>
+        </div>
+        <div class="subj-track"><div class="subj-fill" id="sci-fill" style="width:88%;background:linear-gradient(90deg,#16A34A,#4ADE80)"></div></div>
+      </div>
+
+      <div class="subj-bar">
+        <div class="subj-bar-top">
+          <div class="subj-bar-name">
+            <div class="subj-icon" style="background:#FDF4FF">🎨</div>
+            Arts &amp; Design
+          </div>
+          <div class="subj-score" id="art-score">95/100</div>
+        </div>
+        <div class="subj-track"><div class="subj-fill" id="art-fill" style="width:95%;background:linear-gradient(90deg,#9333EA,#C084FC)"></div></div>
+      </div>
+
+      <div class="subj-bar">
+        <div class="subj-bar-top">
+          <div class="subj-bar-name">
+            <div class="subj-icon" style="background:#F0F9FF">🏃</div>
+            Physical Ed.
+          </div>
+          <div class="subj-score">78/100</div>
+        </div>
+        <div class="subj-track"><div class="subj-fill" style="width:78%;background:linear-gradient(90deg,#0284C7,#38BDF8)"></div></div>
+      </div>
+    </div>
+
+    <!-- Soft Skills -->
+    <div class="skills-section">
+      <h3>Soft Skills &amp; Habits</h3>
+      <div class="skills-wrap">
+        <span class="skill-chip high"><div class="skill-dot"></div>Participation: High</span>
+        <span class="skill-chip med"><div class="skill-dot"></div>Critical Thinking</span>
+        <span class="skill-chip high"><div class="skill-dot"></div>Homework: 100%</span>
+        <span class="skill-chip ok"><div class="skill-dot"></div>Punctuality</span>
+        <span class="skill-chip med"><div class="skill-dot"></div>Problem Solving</span>
+        <span class="skill-chip high"><div class="skill-dot"></div>Teamwork</span>
+      </div>
+    </div>
+
+    <!-- Teacher Feedback -->
+    <div class="teacher-card">
+      <div class="tc-top">
+        <div class="tc-av" id="tc-avatar">👩‍🏫</div>
+        <div>
+          <div class="tc-name" id="tc-name">Sarah Jenkins</div>
+          <div class="tc-role">Class Teacher</div>
+        </div>
+      </div>
+      <div class="tc-quote" id="tc-quote">
+        "Alex has shown remarkable growth in Mathematical reasoning this term. He consistently helps his peers and maintains a positive attitude. Highly impressed with his recent Science project!"
+      </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="milestone-section">
+      <h3>Milestones &amp; Achievements</h3>
+
+      <div class="milestone-item">
+        <div class="ms-icon" style="background:#FFFBEB">🏆</div>
+        <div class="ms-body">
+          <div class="ms-title">Math Olympiad Winner</div>
+          <div class="ms-desc">Ranked 1st place in Inter-School competition</div>
+        </div>
+        <div class="ms-date">May 13</div>
+      </div>
+
+      <div class="milestone-item">
+        <div class="ms-icon" style="background:#F0FDF4">✅</div>
+        <div class="ms-body">
+          <div class="ms-title">Perfect Attendance</div>
+          <div class="ms-desc">100% attendance for the 3rd Quarter</div>
+        </div>
+        <div class="ms-date">Apr 30</div>
+      </div>
+
+      <div class="milestone-item">
+        <div class="ms-icon" style="background:#EFF6FF">🔬</div>
+        <div class="ms-body">
+          <div class="ms-title">Best Science Project</div>
+          <div class="ms-desc">Top award for the Renewable Energy showcase</div>
+        </div>
+        <div class="ms-date">Mar 22</div>
+      </div>
+
+      <div class="milestone-item">
+        <div class="ms-icon" style="background:#FDF4FF">🎨</div>
+        <div class="ms-body">
+          <div class="ms-title">Art Exhibition Feature</div>
+          <div class="ms-desc">Selected artwork displayed at district gallery</div>
+        </div>
+        <div class="ms-date">Feb 14</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bnav-btn" onclick="goDash()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn" onclick="goMsgList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>Message</span>
+    </button>
+    <button class="bnav-btn" onclick="goCal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Attendance</span>
+    </button>
+    <button class="bnav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" stroke="#2563EB"/><path d="M6 12v5c3 3 9 3 12 0v-5" stroke="#2563EB"/></svg>
+      <span style="color:var(--blue)">Grades</span>
+    </button>
+    <button class="bnav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ── MOCK DATA ─────────────────── */
+const gradesData = {
+  alex:  {
+    pct:88, ring:45, desc:'Your child is performing better than <strong>92%</strong> of the class this term.',
+    trend:'+2.5% from last month', trendGood:true,
+    math:92, eng:85, sci:88, art:95,
+    teacher:'Ms. Sarah Jenkins', teacherAv:'👩‍🏫',
+    quote:'"Alex has shown remarkable growth in Mathematical reasoning this term. He consistently helps his peers and maintains a positive attitude. Highly impressed with his recent Science project!"'
+  },
+  sarah: {
+    pct:76, ring:83, desc:'Sarah is making steady progress and <strong>showing improvement</strong> in all subjects.',
+    trend:'+1.8% from last month', trendGood:true,
+    math:72, eng:80, sci:74, art:82,
+    teacher:'Mr. James Carter', teacherAv:'👨‍🏫',
+    quote:'"Sarah is a creative and curious learner. She excels in English and has shown great improvement in her reading comprehension assignments this quarter."'
+  },
+  maya:  {
+    pct:94, ring:22, desc:'Maya is one of the <strong>top performers</strong> in her class — exceptional work!',
+    trend:'+3.1% from last month', trendGood:true,
+    math:96, eng:92, sci:95, art:98,
+    teacher:'Ms. Emily Ross', teacherAv:'👩‍🏫',
+    quote:'"Maya is an absolutely delightful student. Her enthusiasm and dedication to learning inspire the entire class. She consistently goes above and beyond in all activities!"'
+  }
+};
+const students = {
+  alex:  { name:'Alex Johnson',  grade:'Grade 5 · Section A', emoji:'🧒', bg:'#FEF3C7', id:'#88234', rate:94, abs:5,  late:2, rateSub:'+2% this week' },
+  sarah: { name:'Sarah Johnson', grade:'Grade 3 · Section B', emoji:'👧', bg:'#EDE9FE', id:'#88235', rate:78, abs:10, late:5, rateSub:'-3% this week' },
+  maya:  { name:'Maya Johnson',  grade:'Grade 1 · Section C', emoji:'🧒', bg:'#ECFDF5', id:'#88236', rate:96, abs:2,  late:1, rateSub:'+1% this week' },
+};
+
+/* October 2023: 1=Sun */
+const calData = {
+  2:  'present', 3: 'present', 4: 'present', 5: 'present', 6: 'present',
+  9:  'present', 10:'late',    11:'present', 12:'present', 13:'present',
+  16: 'present', 17:'absent',  18:'present', 19:'present', 20:'present',
+  23: 'absent',  24:'present', 25:'present', 26:'present', 27:'present',
+};
+
+let currentStu = 'alex';
+let prevScreen = null;
+
+/* ── BUILD CALENDAR ─────────────── */
+function buildCalendar() {
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  // Oct 2023 starts Sunday
+  for (let i = 0; i < 1; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty';
+    grid.appendChild(cell);
+  }
+  for (let d = 1; d <= 31; d++) {
+    const cell = document.createElement('div');
+    const status = calData[d];
+    cell.className = 'cal-cell' + (status ? ' ' + status : '') + (d === 11 ? ' today' : '');
+    cell.textContent = d;
+    cell.onclick = () => onDayClick(d);
+    grid.appendChild(cell);
+  }
+}
+
+function onDayClick(d) {
+  const wrap = document.getElementById('day-detail-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('day-detail-title').textContent = `Wednesday, Oct ${d}`;
+}
+
+/* ── SELECT STUDENT ─────────────── */
+function selectStudent(key, el) {
+  document.querySelectorAll('.stu-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentStu = key;
+}
+
+/* ── NAVIGATION ─────────────────── */
+function show(id, anim) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active','slide-l','slide-r');
+  });
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  if (anim) el.classList.add(anim);
+}
+
+function updateDash() {
+  const s = students[currentStu];
+  document.getElementById('dash-avatar').innerHTML = s.emoji + '<div class="online-dot"></div>';
+  document.getElementById('dash-avatar').style.background = s.bg;
+  document.getElementById('dash-name').textContent = s.name;
+  document.getElementById('dash-grade').textContent = s.grade;
+  document.getElementById('dash-id').textContent = 'ID: ' + s.id;
+  document.getElementById('dash-rate').textContent = s.rate + '%';
+  document.getElementById('dash-rate-sub').textContent = s.rateSub;
+  document.getElementById('dash-abs').textContent = s.abs;
+  document.getElementById('dash-late').textContent = s.late;
+  document.getElementById('dash-rate-bar').style.width = s.rate + '%';
+
+  const calAv = document.getElementById('cal-avatar');
+  calAv.textContent = s.emoji;
+  calAv.style.background = s.bg;
+  document.getElementById('cal-name').textContent = s.name;
+  document.getElementById('cal-grade').textContent = s.grade;
+}
+
+function goSelect() { show('s-select','slide-r'); }
+function goDash()   { updateDash(); show('s-dash','slide-l'); }
+function goCal()    { buildCalendar(); show('s-cal','slide-l'); }
+function goAlert()  { prevScreen='cal'; show('s-alert','slide-l'); }
+function goNotif()  { show('s-notif','slide-l'); }
+function goMsgList(){ show('s-msglist','slide-l'); }
+function goGrades() {
+  const s = students[currentStu];
+  const g = gradesData[currentStu];
+
+  // Update hero
+  const av = document.getElementById('grades-avatar');
+  av.style.background = s.bg;
+  av.childNodes[0].textContent = s.emoji;
+  document.getElementById('grades-name').textContent = s.name;
+  document.getElementById('grades-sub').textContent = s.grade + ' · ID: ' + s.id.replace('#','');
+
+  // Ring
+  const circumference = 226.2;
+  const offset = circumference - (g.pct / 100) * circumference;
+  const ring = document.getElementById('ring-fill');
+  ring.style.strokeDashoffset = circumference; // reset
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 80);
+  document.getElementById('ring-pct-val').innerHTML = g.pct + '%<small>Overall</small>';
+  document.getElementById('ring-desc').innerHTML = g.desc;
+  const trendEl = document.getElementById('ring-trend');
+  trendEl.textContent = (g.trendGood ? '↑ ' : '↓ ') + g.trend.replace('+','').replace('-','');
+  trendEl.style.color = g.trendGood ? 'var(--green)' : 'var(--orange)';
+  trendEl.style.background = g.trendGood ? 'var(--green-lt)' : 'var(--orange-lt)';
+
+  // Subject bars
+  const bars = {math:'math', eng:'eng', sci:'sci', art:'art'};
+  [['math',g.math],['eng',g.eng],['sci',g.sci],['art',g.art]].forEach(([k,v]) => {
+    const scoreEl = document.getElementById(k+'-score');
+    const fillEl  = document.getElementById(k+'-fill');
+    if (scoreEl) scoreEl.textContent = v + '/100';
+    if (fillEl)  { fillEl.style.width = '0'; setTimeout(() => { fillEl.style.width = v+'%'; }, 120); }
+  });
+
+  // Teacher card
+  document.getElementById('tc-name').textContent = g.teacher;
+  document.getElementById('tc-avatar').textContent = g.teacherAv;
+  document.getElementById('tc-quote').textContent = g.quote;
+
+  show('s-grades','slide-l');
+}
+function goMsgList(){ show('s-msglist','slide-l'); }
+
+/* ── CHAT DATA ────────────────────── */
+const teachers = {
+  sarah: {
+    name:'Ms. Sarah Jenkins', subject:'Mathematics', emoji:'👩‍🏫', bg:'#FDE8D8', online:true,
+    messages:[
+      {from:'them', text:"Hello! I wanted to update you on Leo's progress in math. He did a great job with fractions today.", time:'02:14 PM'},
+      {from:'me',   text:"That's wonderful to hear! He was a bit nervous about the quiz. Did he manage to finish the homework for tomorrow?", time:'02:18 PM'},
+      {from:'them', text:"He really seems to have grasped the concepts. Thanks for the extra support!", time:'02:22 PM'},
+    ]
+  },
+  david: {
+    name:'Mr. David Wilson', subject:'English', emoji:'👨‍🏫', bg:'#E8F4FD', online:false,
+    messages:[
+      {from:'them', text:"Good afternoon! Just wanted to let you know the worksheet is attached for tomorrow's class.", time:'2:20 PM'},
+      {from:'me',   text:"Thank you Mr. Wilson, I'll make sure Alex reviews it tonight.", time:'2:35 PM'},
+    ]
+  },
+  elena: {
+    name:'Mrs. Elena Rodriguez', subject:'History', emoji:'👩‍🏫', bg:'#FEF3C7', online:true,
+    messages:[
+      {from:'them', text:"Great job on the essay about the Renaissance! Alex showed real understanding of the period.", time:'Yesterday'},
+      {from:'me',   text:"That's so encouraging to hear, thank you!", time:'Yesterday'},
+    ]
+  },
+  james: {
+    name:'Mr. James Chen', subject:'Physics', emoji:'👨‍🔬', bg:'#EDE9FE', online:false,
+    messages:[
+      {from:'them', text:"Remember the lab safety rules for our experiment on Monday. Please ensure Alex brings their goggles.", time:'Monday'},
+    ]
+  },
+  sophia: {
+    name:'Dr. Sophia Williams', subject:'Biology', emoji:'👩‍🔬', bg:'#ECFDF5', online:true,
+    messages:[
+      {from:'them', text:"The photosynthesis project is due this Friday. Alex is doing wonderfully!", time:'Mar 12'},
+    ]
+  },
+};
+
+let chatFromScreen = 'msglist';
+
+function goChat(teacherKey) {
+  const t = teachers[teacherKey];
+  chatFromScreen = document.querySelector('.screen.active')?.id || 'msglist';
+
+  // Update header
+  const av = document.getElementById('chat-av');
+  av.textContent = t.emoji;
+  av.style.background = t.bg;
+  if (t.online) {
+    if (!av.querySelector('.online-ring')) {
+      const dot = document.createElement('div');
+      dot.className = 'online-ring';
+      av.appendChild(dot);
+    }
+  } else {
+    const dot = av.querySelector('.online-ring');
+    if (dot) dot.remove();
+  }
+  document.getElementById('chat-teacher-name').textContent = t.name;
+  document.getElementById('chat-teacher-status').textContent = t.online ? '● Online' : '● Away';
+  document.getElementById('chat-teacher-status').style.color = t.online ? 'var(--green)' : 'var(--muted)';
+
+  // Build messages
+  const box = document.getElementById('chat-messages');
+  box.innerHTML = `<div class="chat-date-sep">Today, October 24</div>`;
+  t.messages.forEach(m => {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-bubble-wrap' + (m.from==='me' ? ' me' : '');
+    if (m.from === 'them') {
+      wrap.innerHTML = `
+        <div class="msg-av" style="background:${t.bg}">${t.emoji}</div>
+        <div>
+          <div class="bubble them">${m.text}</div>
+          <div class="bubble-time">${m.time}</div>
+        </div>`;
+    } else {
+      wrap.innerHTML = `
+        <div>
+          <div class="bubble me">${m.text}</div>
+          <div class="bubble-time">${m.time} <span class="tick">✓✓</span></div>
+        </div>`;
+    }
+    box.appendChild(wrap);
+  });
+  box.scrollTop = box.scrollHeight;
+
+  // Store key for sending
+  box.dataset.teacher = teacherKey;
+  show('s-chat','slide-l');
+}
+
+function goMsgList() {
+  show('s-msglist','slide-l');
+}
+
+document.getElementById('chat-back-btn').onclick = () => {
+  show('s-msglist','slide-r');
+};
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const box = document.getElementById('chat-messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-bubble-wrap me';
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  wrap.innerHTML = `
+    <div>
+      <div class="bubble me">${text}</div>
+      <div class="bubble-time">${time} <span class="tick">✓✓</span></div>
+    </div>`;
+  box.appendChild(wrap);
+  input.value = '';
+  box.scrollTop = box.scrollHeight;
+
+  // Auto-reply after 1.2s
+  const teacherKey = box.dataset.teacher || 'sarah';
+  const t = teachers[teacherKey];
+  const replies = [
+    "Of course! I'll look into that right away.",
+    "Thank you for reaching out. I'll get back to you shortly.",
+    "Understood! We can discuss this further at the next parent meeting.",
+    "That's a great question. Let me check and update you soon.",
+  ];
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'msg-bubble-wrap';
+    reply.innerHTML = `
+      <div class="msg-av" style="background:${t.bg}">${t.emoji}</div>
+      <div>
+        <div class="bubble them">${replies[Math.floor(Math.random()*replies.length)]}</div>
+        <div class="bubble-time">${time}</div>
+      </div>`;
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+  }, 1200);
+}
+
+function insertEmoji() {
+  const input = document.getElementById('chat-input');
+  const emojis = ['😊','👍','🙏','✅','📚','💪'];
+  input.value += emojis[Math.floor(Math.random()*emojis.length)];
+  input.focus();
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+/* Notification tabs */
+document.querySelectorAll('.ntab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+/* Init */
+buildCalendar();
+</script>
+</body>
+</html>

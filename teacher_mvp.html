@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>TeachDesk – Teacher Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══ TOKENS ═══ */
+:root{
+  --b:#2563EB; --bd:#1D4ED8; --bl:#EFF6FF; --bg2:rgba(37,99,235,.13);
+  --g:#16A34A; --gl:#F0FDF4; --r:#DC2626; --rl:#FEF2F2;
+  --o:#EA580C; --ol:#FFF7ED; --a:#D97706; --al:#FFFBEB;
+  --t:#0D9488; --tl:#F0FDFA;
+  --ink:#0F172A; --i2:#334155; --mu:#94A3B8; --br:#E2E8F0;
+  --su:#FFF; --bg:#F8FAFC;
+  --ra:12px; --rb:18px;
+  --sh:0 1px 6px rgba(15,23,42,.07),0 0 0 1px rgba(15,23,42,.04);
+  --shb:0 8px 28px rgba(37,99,235,.16);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Figtree',sans-serif;background:#8898B0;color:var(--ink);
+  display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:24px 0 64px}
+button,input,textarea{font-family:inherit}
+svg{display:block;flex-shrink:0}
+a{cursor:pointer}
+
+/* ═══ SHELL ═══ */
+#app{width:390px;background:var(--bg);border-radius:44px;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.3),0 0 0 9px #171c28;
+  display:flex;flex-direction:column;min-height:820px}
+@media(max-width:430px){
+  body{padding:0;background:var(--bg)}
+  #app{border-radius:0;box-shadow:none;width:100%;min-height:100vh}
+}
+
+/* ═══ SCREENS ═══ */
+.s{display:none;flex-direction:column;flex:1;min-height:820px;
+  animation:fu .24s cubic-bezier(.4,0,.2,1) both}
+.s.on{display:flex}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.sl{animation:sli .24s cubic-bezier(.4,0,.2,1) both}
+.sr{animation:sri .24s cubic-bezier(.4,0,.2,1) both}
+@keyframes sli{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes sri{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══ STATUS BAR ═══ */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;background:var(--su)}
+.sb.dk{background:var(--b)}
+.sb .tm{font-size:15px;font-weight:800;color:var(--ink)}
+.sb.dk .tm{color:#fff}
+.sbi{display:flex;gap:6px;align-items:center}
+
+/* ═══ BOTTOM NAV ═══ */
+.bn{height:68px;background:var(--su);border-top:1px solid var(--br);
+  display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:4px}
+.nv{display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 12px;border-radius:14px;cursor:pointer;transition:background .15s;border:none;background:none}
+.nv.ac{background:var(--bl)}
+.nv svg{width:21px;height:21px}
+.nv span{font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--mu);text-transform:uppercase}
+.nv.ac span{color:var(--b)}
+
+/* ═══ SCROLL ═══ */
+.sc{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.sc::-webkit-scrollbar{display:none}
+
+/* ═══ UTILS ═══ */
+.ic{width:34px;height:34px;border-radius:10px;background:var(--bg);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;border:none;transition:background .15s;flex-shrink:0}
+.ic:hover{background:var(--br)}
+.pl{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;
+  padding:3px 8px;border-radius:20px;white-space:nowrap}
+.pg{background:var(--gl);color:var(--g)} .pr{background:var(--rl);color:var(--r)}
+.po{background:var(--ol);color:var(--o)} .pb{background:var(--bl);color:var(--b)}
+.pm{background:#F1F5F9;color:var(--mu)} .pa{background:var(--al);color:var(--a)}
+.pt{background:var(--tl);color:var(--t)}
+.sh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px}
+.sh h3{font-size:14px;font-weight:800;color:var(--ink)}
+.sh a{font-size:12px;font-weight:700;color:var(--b)}
+.divider{height:1px;background:var(--br);margin:0 18px}
+
+/* ════════════════════════════════════
+   S1 – TODAY'S CLASSES
+════════════════════════════════════ */
+.hero{background:linear-gradient(145deg,#1D4ED8 0%,#2563EB 55%,#3B82F6 100%);
+  padding:14px 18px 20px;flex-shrink:0}
+.hero-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.tav-row{display:flex;align-items:center;gap:10px}
+.tav{width:44px;height:44px;border-radius:50%;background:#BFDBFE;display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex-shrink:0}
+.tname{font-size:16px;font-weight:800;color:#fff}
+.tdate{font-size:12px;color:rgba(255,255,255,.65);font-weight:500;margin-top:1px}
+.nbell{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.nbell .nd{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;
+  background:#F97316;border:2px solid #2563EB}
+
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hsc{background:rgba(255,255,255,.13);border-radius:var(--ra);padding:12px 14px;
+  border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
+.hsc .hl{font-size:10px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.hsc .hv{font-family:'Instrument Serif',serif;font-size:28px;color:#fff;line-height:1}
+.hsc .hs{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+
+/* Schedule list */
+.sch-list{padding:12px 18px 20px;display:flex;flex-direction:column;gap:10px}
+.cc{background:var(--su);border-radius:var(--rb);padding:14px 16px;box-shadow:var(--sh);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;border-left:4px solid var(--br)}
+.cc:hover{transform:translateY(-2px);box-shadow:var(--shb)}
+.cc.ong{border-left-color:var(--b)}
+.cc.upc{border-left-color:var(--mu)}
+.cc.don{border-left-color:var(--g);opacity:.72}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.cc-name{font-size:15px;font-weight:800;color:var(--ink)}
+.cc-time-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cc-time{font-size:11px;font-weight:700;color:var(--mu);background:var(--bg);padding:3px 8px;border-radius:6px}
+.cc-room{font-size:11px;color:var(--mu);font-weight:600;display:flex;align-items:center;gap:3px}
+.cc-meta{display:flex;gap:14px;margin-bottom:10px}
+.cc-meta span{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);font-weight:600}
+.cc-meta svg{width:12px;height:12px}
+.pdot{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;
+  color:var(--b);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.pdot-c{width:7px;height:7px;border-radius:50%;background:var(--b);
+  animation:pdot 1.5s ease-in-out infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.att-btn{width:100%;padding:11px;background:var(--b);color:#fff;border-radius:var(--ra);
+  font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;
+  box-shadow:0 4px 14px var(--bg2);transition:all .18s;border:none}
+.att-btn:hover{background:var(--bd);transform:translateY(-1px)}
+.view-btn{width:100%;padding:10px;background:var(--bg);color:var(--i2);border-radius:var(--ra);
+  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;
+  border:1.5px solid var(--br);transition:background .15s}
+.view-btn:hover{background:var(--br)}
+
+/* ════════════════════════════════════
+   S2 – CLASS DETAIL
+════════════════════════════════════ */
+.det-hero{background:linear-gradient(140deg,#DBEAFE 0%,#EFF6FF 100%);
+  padding:16px 18px;border-bottom:1px solid var(--br);flex-shrink:0}
+.det-sub{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--b);text-transform:uppercase;margin-bottom:3px}
+.det-h1{font-family:'Instrument Serif',serif;font-size:25px;color:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.det-info{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.det-info span{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--i2)}
+.det-info svg{width:13px;height:13px;color:var(--b)}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.trio-c{text-align:center;background:var(--su);border-radius:var(--ra);padding:10px 6px;box-shadow:var(--sh)}
+.trio-c .tv{font-family:'Instrument Serif',serif;font-size:24px;color:var(--ink)}
+.trio-c .tl{font-size:10px;font-weight:800;color:var(--mu);letter-spacing:.04em;text-transform:uppercase}
+.trio-c .td{font-size:10px;font-weight:700;margin-top:2px}
+.qr-btn{width:100%;padding:13px;background:var(--b);color:#fff;border-radius:var(--ra);
+  font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 5px 18px var(--bg2);transition:all .18s;border:none}
+.qr-btn:hover{background:var(--bd);transform:translateY(-1px)}
+.tool-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.tool-btn{padding:11px;background:var(--su);border-radius:var(--ra);border:1.5px solid var(--br);
+  font-size:13px;font-weight:700;color:var(--i2);display:flex;align-items:center;justify-content:center;
+  gap:6px;cursor:pointer;transition:all .15s}
+.tool-btn:hover{background:var(--bl);border-color:var(--b);color:var(--b)}
+
+.slots{padding:0 18px 14px}
+.slot-it{display:flex;align-items:center;gap:12px;padding:11px;background:var(--su);
+  border-radius:var(--ra);box-shadow:var(--sh);margin-bottom:8px;cursor:pointer;transition:background .15s}
+.slot-it:hover{background:var(--bl)}
+.s-date{width:42px;height:42px;border-radius:10px;background:var(--bl);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.s-date .sm{font-size:9px;font-weight:800;color:var(--b);letter-spacing:.04em;text-transform:uppercase}
+.s-date .lg{font-size:18px;font-weight:900;color:var(--b)}
+.s-info{flex:1}
+.s-name{font-size:13px;font-weight:800;color:var(--ink)}
+.s-time{font-size:11px;font-weight:600;color:var(--mu);margin-top:1px}
+
+.enr-list{padding:0 18px 24px;display:flex;flex-direction:column;gap:8px}
+.enr-it{display:flex;align-items:center;gap:12px;padding:10px 13px;background:var(--su);
+  border-radius:var(--ra);box-shadow:var(--sh)}
+.enr-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex-shrink:0}
+.enr-name{font-size:13px;font-weight:800;color:var(--ink)}
+.enr-id{font-size:10px;font-weight:600;color:var(--mu)}
+
+/* ════════════════════════════════════
+   S3 – MARK ATTENDANCE
+════════════════════════════════════ */
+.att-srch{padding:10px 18px;background:var(--su);border-bottom:1px solid var(--br);flex-shrink:0}
+.att-sw{background:var(--bg);border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 12px}
+.att-sw input{border:none;background:none;flex:1;outline:none;font-size:13px;font-weight:500;color:var(--ink)}
+.att-sw input::placeholder{color:var(--mu)}
+.att-tb{background:var(--su);padding:8px 18px;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid var(--br);flex-shrink:0}
+.att-tb-l{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--mu)}
+.att-tb-l strong{color:var(--b)}
+.map-btn{font-size:11px;font-weight:800;color:var(--b);padding:5px 10px;
+  background:var(--bl);border-radius:8px;border:none;cursor:pointer}
+.att-list-wrap{padding:10px 18px;display:flex;flex-direction:column;gap:10px;padding-bottom:90px}
+.sat{background:var(--su);border-radius:var(--rb);box-shadow:var(--sh);overflow:hidden}
+.sat-top{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--br)}
+.sat-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:19px;flex-shrink:0}
+.sat-name{font-size:14px;font-weight:800;color:var(--ink)}
+.sat-id{font-size:10px;font-weight:600;color:var(--mu)}
+.sat-ck{width:22px;height:22px;border-radius:6px;background:var(--b);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.att-row{display:flex;gap:8px;padding:10px 14px}
+.ac-btn{flex:1;padding:9px 6px;border-radius:9px;font-size:12px;font-weight:800;
+  cursor:pointer;border:2px solid var(--br);background:var(--bg);color:var(--mu);
+  text-align:center;transition:all .15s}
+.ac-btn:hover{background:var(--br)}
+.ac-p{background:var(--gl);border-color:var(--g);color:var(--g)}
+.ac-l{background:var(--al);border-color:var(--a);color:var(--a)}
+.ac-a{background:var(--rl);border-color:var(--r);color:var(--r)}
+.sub-bar{position:sticky;bottom:68px;left:0;right:0;padding:10px 18px;
+  background:linear-gradient(to top,var(--bg) 65%,transparent)}
+.sub-btn{width:100%;padding:14px;background:var(--b);color:#fff;border-radius:var(--ra);
+  font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 6px 20px var(--bg2);transition:all .18s;border:none}
+.sub-btn:hover{background:var(--bd);transform:translateY(-1px)}
+
+/* ════════════════════════════════════
+   S4 – QR GENERATOR
+════════════════════════════════════ */
+#s-qr{background:#0A0F1E}
+.qr-wrap{display:flex;flex-direction:column;flex:1}
+.qr-sb{height:44px;background:rgba(10,15,30,.95);display:flex;align-items:center;
+  justify-content:space-between;padding:0 18px;flex-shrink:0}
+.qr-sb .tm{font-size:15px;font-weight:800;color:#fff}
+.qr-top{background:rgba(255,255,255,.04);padding:11px 18px;display:flex;align-items:center;
+  gap:12px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.qr-top h2{font-size:16px;font-weight:800;color:#fff;flex:1}
+.qr-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 18px;
+  display:flex;flex-direction:column;gap:14px}
+.qr-body::-webkit-scrollbar{display:none}
+.live-lbl{text-align:center}
+.live-lbl span{font-size:9px;font-weight:900;letter-spacing:.12em;color:#FB923C;
+  background:rgba(251,146,60,.15);padding:4px 12px;border-radius:20px;text-transform:uppercase}
+.qr-title{font-family:'Instrument Serif',serif;font-size:24px;color:#fff;text-align:center;margin-top:4px}
+.qr-card{background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;
+  align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.qr-hash .hl{font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.qr-hash .hv{font-size:11px;font-weight:800;color:var(--i2);font-family:monospace;text-align:center;margin-top:2px}
+.timer-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tc{background:rgba(255,255,255,.06);border-radius:var(--ra);padding:14px;
+  border:1px solid rgba(255,255,255,.1);text-align:center}
+.tc .tv{font-family:'Instrument Serif',serif;font-size:40px;color:#fff;line-height:1}
+.tc .tl{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase;margin-top:3px}
+.qr-note{font-size:11px;color:rgba(255,255,255,.35);text-align:center;font-weight:500}
+.ck-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ckc{background:rgba(255,255,255,.05);border-radius:var(--ra);padding:12px 14px;
+  border:1px solid rgba(255,255,255,.07)}
+.ckc .cl{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase}
+.ckc .cv{font-family:'Instrument Serif',serif;font-size:24px;color:#fff;margin-top:2px}
+.ckc .cs{font-size:11px;color:rgba(255,255,255,.4);font-weight:600}
+.qr-hint-box{background:rgba(37,99,235,.15);border-radius:var(--ra);padding:12px 14px;
+  border:1px solid rgba(37,99,235,.3);font-size:12px;color:rgba(255,255,255,.55);
+  font-weight:500;line-height:1.55;text-align:center}
+.fin-btn{padding:14px;background:var(--b);color:#fff;border-radius:var(--ra);
+  font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 5px 18px var(--bg2);border:none;cursor:pointer;transition:all .18s}
+.fin-btn:hover{background:var(--bd);transform:translateY(-1px)}
+.can-btn{padding:12px;color:rgba(255,255,255,.35);font-size:13px;font-weight:700;
+  text-align:center;cursor:pointer;border:none;background:none;transition:color .15s;width:100%}
+.can-btn:hover{color:rgba(255,255,255,.65)}
+
+/* ════════════════════════════════════
+   S5 – REPORTS
+════════════════════════════════════ */
+.rep-hero{background:linear-gradient(140deg,#1D4ED8 0%,#2563EB 60%,#3B82F6 100%);
+  padding:14px 18px 18px;flex-shrink:0}
+.rep-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.rep-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);
+  font-size:13px;font-weight:700;cursor:pointer;background:none;border:none}
+.rep-back svg{width:14px;height:14px}
+.rep-trend-btn{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center}
+.rep-avg-lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);margin-bottom:4px}
+.rep-avg{font-family:'Instrument Serif',serif;font-size:42px;color:#fff;line-height:1}
+.rep-sub{font-size:12px;font-weight:700;color:#86EFAC;margin-top:4px}
+.sparkwrap{height:50px;margin:8px 0}
+.spark{width:100%;height:100%}
+.rep-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.rep-c{background:rgba(255,255,255,.12);border-radius:10px;padding:10px 12px}
+.rep-c .cl{font-size:9px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.rep-c .cv{font-size:13px;font-weight:800;color:#fff}
+.rep-c .cs{font-size:11px;color:rgba(255,255,255,.5)}
+.rep-tabs{background:var(--su);display:flex;padding:0 18px;
+  border-bottom:1px solid var(--br);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.rep-tabs::-webkit-scrollbar{display:none}
+.rt{padding:10px 12px;font-size:12px;font-weight:700;color:var(--mu);cursor:pointer;
+  border-bottom:2.5px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.rt.on{color:var(--b);border-bottom-color:var(--b)}
+.abs-box{margin:14px 18px;background:var(--rl);border-radius:var(--ra);padding:12px 14px;
+  display:flex;align-items:center;gap:12px;border:1px solid #FECACA}
+.abs-ic{width:36px;height:36px;border-radius:10px;background:var(--rl);border:1.5px solid #FECACA;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.abs-info strong{font-size:13px;font-weight:800;color:var(--r)}
+.abs-info small{font-size:11px;color:var(--mu);display:block;margin-top:1px}
+.ss-list{padding:0 18px 24px;display:flex;flex-direction:column;gap:8px}
+.ss-row{display:flex;align-items:center;gap:11px;padding:11px;background:var(--su);
+  border-radius:var(--ra);box-shadow:var(--sh);cursor:pointer;transition:background .15s}
+.ss-row:hover{background:var(--bl)}
+.ss-ring{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:900;flex-shrink:0}
+.ss-name{font-size:13px;font-weight:800;color:var(--ink);flex:1}
+.ss-tags{display:flex;gap:3px;flex-wrap:wrap}
+.sst{font-size:9px;font-weight:800;padding:2px 5px;border-radius:20px}
+.sst.p{background:var(--gl);color:var(--g)} .sst.l{background:var(--al);color:var(--a)}
+.sst.a{background:var(--rl);color:var(--r)}
+
+/* ════════════════════════════════════
+   S6 – MESSAGES LIST
+════════════════════════════════════ */
+.mhdr{background:var(--su);padding:12px 18px;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid var(--br);flex-shrink:0}
+.mhdr h2{font-family:'Instrument Serif',serif;font-size:23px;color:var(--ink)}
+.mhdr-acts{display:flex;gap:7px}
+.new-msg-btn{width:34px;height:34px;border-radius:10px;background:var(--bl);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.mfilter{padding:10px 18px;background:var(--su);border-bottom:1px solid var(--br);
+  display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.mfilter::-webkit-scrollbar{display:none}
+.mfc{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--br);color:var(--mu);white-space:nowrap;
+  transition:all .15s;background:none}
+.mfc.on{background:var(--b);border-color:var(--b);color:#fff}
+.msrch{padding:10px 18px;background:var(--su);border-bottom:1px solid var(--br);flex-shrink:0}
+.msw{background:var(--bg);border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 12px}
+.msw input{border:none;background:none;flex:1;outline:none;font-size:13px;color:var(--ink);font-weight:500}
+.msw input::placeholder{color:var(--mu)}
+.mit{display:flex;align-items:flex-start;gap:11px;padding:12px 18px;
+  border-bottom:1px solid var(--br);cursor:pointer;transition:background .15s;position:relative}
+.mit:hover{background:var(--bg)}
+.mit.ur{background:#FAFAFF}
+.mav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.odot{position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;
+  background:var(--g);border:2.5px solid var(--su)}
+.mb{flex:1;min-width:0}
+.mt{display:flex;align-items:flex-start;justify-content:space-between;gap:5px;margin-bottom:3px}
+.msender{font-size:14px;font-weight:800;color:var(--ink)}
+.mtime{font-size:11px;font-weight:600;color:var(--mu);white-space:nowrap;flex-shrink:0}
+.mrole{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-bottom:4px}
+.mprev{font-size:12px;color:var(--mu);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ubadge{position:absolute;top:50%;right:16px;transform:translateY(-50%);
+  width:20px;height:20px;border-radius:50%;background:var(--b);color:#fff;
+  font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.udot{position:absolute;top:50%;right:16px;transform:translateY(-50%);
+  width:9px;height:9px;border-radius:50%;background:var(--b)}
+
+/* ════════════════════════════════════
+   S7 – CHAT
+════════════════════════════════════ */
+.chdr{background:var(--su);padding:10px 16px;border-bottom:1px solid var(--br);
+  display:flex;align-items:center;gap:10px;flex-shrink:0}
+.cav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:20px;position:relative;flex-shrink:0}
+.cav .cdot{position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;
+  background:var(--g);border:2px solid var(--su)}
+.ci{flex:1}
+.cname{font-size:15px;font-weight:800;color:var(--ink)}
+.cstat{font-size:11px;font-weight:600;color:var(--g)}
+.cacts{display:flex;gap:6px}
+.cbox{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;
+  gap:10px;scrollbar-width:none;background:var(--bg)}
+.cbox::-webkit-scrollbar{display:none}
+.dsep{text-align:center;font-size:11px;font-weight:700;color:var(--mu);
+  letter-spacing:.04em;text-transform:uppercase;padding:2px 0 8px}
+.bw{display:flex;align-items:flex-end;gap:8px}
+.bw.me{flex-direction:row-reverse}
+.bav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:15px;flex-shrink:0}
+.bb{max-width:74%;border-radius:16px;padding:10px 13px;font-size:13px;font-weight:500;
+  line-height:1.52;color:var(--ink)}
+.bb.them{background:var(--su);border-radius:16px 16px 16px 4px;box-shadow:var(--sh)}
+.bb.me{background:var(--b);color:#fff;border-radius:16px 16px 4px 16px}
+.bt{font-size:10px;font-weight:600;color:var(--mu);margin-top:3px}
+.bw.me .bt{text-align:right;color:rgba(255,255,255,.55)}
+.cibar{background:var(--su);border-top:1px solid var(--br);padding:8px 14px 12px;
+  display:flex;align-items:center;gap:8px;flex-shrink:0}
+.cp{width:34px;height:34px;border-radius:50%;background:var(--bg);display:flex;
+  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none}
+.ciw{flex:1;background:var(--bg);border-radius:22px;display:flex;align-items:center;padding:8px 12px;gap:7px}
+.ciw input{flex:1;border:none;background:none;outline:none;font-size:13px;font-weight:500;color:var(--ink)}
+.ciw input::placeholder{color:var(--mu)}
+.emb{font-size:18px;cursor:pointer;line-height:1}
+.sndb{width:36px;height:36px;border-radius:50%;background:var(--b);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;box-shadow:0 4px 12px var(--bg2);transition:all .18s;
+  flex-shrink:0;border:none}
+.sndb:hover{background:var(--bd);transform:scale(1.05)}
+
+/* Typing indicator */
+.typing-bw{display:flex;align-items:flex-end;gap:8px}
+.typing-bb{background:var(--su);border-radius:16px 16px 16px 4px;box-shadow:var(--sh);
+  padding:12px 16px;display:flex;gap:5px;align-items:center}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--mu);
+  animation:td 1.2s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:scale(.8);opacity:.5}40%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════════════════════════
+     S1 – TODAY'S CLASSES (HOME)
+═══════════════════════════════════ -->
+<div id="s-home" class="s on">
+  <div class="sb dk">
+    <span class="tm" style="color:#fff">9:41</span>
+    <div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="white"/><path d="M24 4v4a2 2 0 000-4z" fill="white"/></svg></div>
+  </div>
+  <div class="hero">
+    <div class="hero-row">
+      <div class="tav-row">
+        <div class="tav">👨‍🏫</div>
+        <div><div class="tname">Hello, Dr. Smith</div><div class="tdate">Monday, October 23rd</div></div>
+      </div>
+      <div class="nbell" onclick="nav('s-msg')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="nd"></div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hsc"><div class="hl">Total Classes</div><div class="hv">5</div><div class="hs">Today</div></div>
+      <div class="hsc"><div class="hl">Students to Check</div><div class="hv">124</div><div class="hs">Across all classes</div></div>
+    </div>
+  </div>
+
+  <div class="sc">
+    <div class="sh"><h3>Today's Schedule</h3><a onclick="nav('s-detail')">View All</a></div>
+    <div class="sch-list">
+
+      <div class="cc ong" onclick="nav('s-detail')">
+        <div class="pdot"><div class="pdot-c"></div>Ongoing</div>
+        <div class="cc-top"><div class="cc-name">Advanced Physics</div><span class="pl pb">Active</span></div>
+        <div class="cc-time-row"><span class="cc-time">09:00 – 11:00</span><span class="cc-room">📍 Room 302</span></div>
+        <div class="cc-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> 24 Students</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> Science Wing</span>
+        </div>
+        <button class="att-btn" onclick="event.stopPropagation();nav('s-att')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Mark Attendance
+        </button>
+      </div>
+
+      <div class="cc upc" onclick="nav('s-detail')">
+        <div class="cc-top"><div class="cc-name">Calculus II</div><span class="pl pm">Upcoming</span></div>
+        <div class="cc-time-row"><span class="cc-time">11:30 – 13:00</span><span class="cc-room">📍 Lab 10</span></div>
+        <div class="cc-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 32 Students</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> Main Building</span>
+        </div>
+        <button class="view-btn">View Class Details</button>
+      </div>
+
+      <div class="cc don">
+        <div class="cc-top"><div class="cc-name">Intro to Mechanics</div><span class="pl pg">✓ Done</span></div>
+        <div class="cc-time-row"><span class="cc-time">07:30 – 08:45</span><span class="cc-room">📍 Room 201</span></div>
+        <div class="cc-meta"><span>28 Students · Attendance Done</span></div>
+        <button class="view-btn">Review</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bn">
+    <button class="nv ac" onclick="nav('s-home')"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span style="color:var(--b)">Schedule</span></button>
+    <button class="nv" onclick="nav('s-msg')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Message</span></button>
+    <button class="nv" onclick="nav('s-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><span>Classes</span></button>
+    <button class="nv" onclick="nav('s-rep')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>Reports</span></button>
+    <button class="nv"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S2 – CLASS DETAIL
+═══════════════════════════════════ -->
+<div id="s-detail" class="s">
+  <div class="sb"><span class="tm">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg></div></div>
+  <div style="background:var(--su);padding:10px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--br);flex-shrink:0">
+    <button class="ic" onclick="nav('s-home','r')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg></button>
+    <span style="font-size:16px;font-weight:800;color:var(--ink);flex:1">Advanced Physics</span>
+    <button class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></button>
+  </div>
+
+  <div class="sc">
+    <div class="det-hero">
+      <div class="det-sub">Subject: Physics</div>
+      <div class="det-h1">Advanced Physics
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      </div>
+      <div class="det-info">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>Grade 11</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Room 302</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Dr. Smith</span>
+      </div>
+      <div class="trio">
+        <div class="trio-c"><div class="tv">24</div><div class="tl">Students</div><div class="td" style="color:var(--b)">-0%</div></div>
+        <div class="trio-c"><div class="tv">92%</div><div class="tl">Attendance</div><div class="td" style="color:var(--r)">-3%</div></div>
+        <div class="trio-c"><div class="tv">15</div><div class="tl">Classes</div><div class="td" style="color:var(--mu)">Total</div></div>
+      </div>
+      <button class="qr-btn" onclick="nav('s-qr')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+        Generate QR Attendance
+      </button>
+      <div class="tool-row">
+        <button class="tool-btn" onclick="nav('s-att')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Manual Entry</button>
+        <button class="tool-btn" onclick="nav('s-rep')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> View Reports</button>
+      </div>
+    </div>
+
+    <div class="slots">
+      <div class="sh" style="padding:14px 0 10px"><h3>Upcoming Slots</h3><a>Calendar</a></div>
+      <div class="slot-it">
+        <div class="s-date"><div class="sm">Oct</div><div class="lg">24</div></div>
+        <div class="s-info"><div class="s-name">Thursday Session</div><div class="s-time">09:30 AM – 11:00 AM</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="slot-it">
+        <div class="s-date"><div class="sm">Oct</div><div class="lg">26</div></div>
+        <div class="s-info"><div class="s-name">Saturday Workshop</div><div class="s-time">01:00 PM – 02:30 PM</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:0 18px 6px"><div class="sh" style="padding:0 0 10px"><h3>Enrolled Students</h3><a onclick="nav('s-att')">View All</a></div></div>
+    <div class="enr-list">
+      <div class="enr-it"><div class="enr-av" style="background:#FEF3C7">🧑</div><div style="flex:1"><div class="enr-name">Alex Johnson</div><div class="enr-id">STUDENT ID: 202041</div></div><span class="pl pg">● Present</span></div>
+      <div class="enr-it"><div class="enr-av" style="background:#FDE8D8">👩</div><div style="flex:1"><div class="enr-name">Maria Garcia</div><div class="enr-id">STUDENT ID: 302045</div></div><span class="pl pr">● Absent</span></div>
+      <div class="enr-it"><div class="enr-av" style="background:#EDE9FE">🧑</div><div style="flex:1"><div class="enr-name">James Wilson</div><div class="enr-id">STUDENT ID: 302443</div></div><span class="pl pg">● Present</span></div>
+    </div>
+  </div>
+
+  <div class="bn">
+    <button class="nv" onclick="nav('s-home','r')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
+    <button class="nv" onclick="nav('s-msg')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Message</span></button>
+    <button class="nv ac"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><span style="color:var(--b)">Classes</span></button>
+    <button class="nv" onclick="nav('s-rep')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>Reports</span></button>
+    <button class="nv"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S3 – MARK ATTENDANCE
+═══════════════════════════════════ -->
+<div id="s-att" class="s">
+  <div class="sb"><span class="tm">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg></div></div>
+  <div style="background:var(--su);padding:10px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--br);flex-shrink:0">
+    <button class="ic" onclick="nav('s-detail','r')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg></button>
+    <span style="font-size:16px;font-weight:800;color:var(--ink)">Advanced Physics</span>
+  </div>
+  <div class="att-srch">
+    <div class="att-sw">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search students by name or ID" readonly>
+    </div>
+  </div>
+  <div class="att-tb">
+    <div class="att-tb-l">Select All &nbsp;<strong id="mc">22/24 Marked</strong></div>
+    <button class="map-btn" onclick="markAll()">MARK ALL PRESENT</button>
+  </div>
+  <div class="sc" style="position:relative">
+    <div class="att-list-wrap" id="attlist"></div>
+    <div class="sub-bar">
+      <button class="sub-btn" onclick="nav('s-detail','r')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        Submit Attendance
+      </button>
+    </div>
+  </div>
+  <div class="bn">
+    <button class="nv" onclick="nav('s-home','r')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
+    <button class="nv" onclick="nav('s-msg')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Message</span></button>
+    <button class="nv ac"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><span style="color:var(--b)">Classes</span></button>
+    <button class="nv" onclick="nav('s-rep')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>Reports</span></button>
+    <button class="nv"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S4 – QR GENERATOR
+═══════════════════════════════════ -->
+<div id="s-qr" class="s">
+  <div class="qr-wrap">
+    <div class="qr-sb"><span class="tm">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="white"/><path d="M24 4v4a2 2 0 000-4z" fill="white"/></svg></div></div>
+    <div class="qr-top">
+      <button onclick="nav('s-detail','r')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+      </button>
+      <h2>Generate QR Attendance</h2>
+      <div style="width:32px"></div>
+    </div>
+    <div class="qr-body">
+      <div class="live-lbl"><span>Live Session</span></div>
+      <div class="qr-title">Advanced Physics</div>
+      <div class="qr-card">
+        <svg width="150" height="150" viewBox="0 0 140 140">
+          <rect width="140" height="140" fill="white"/>
+          <rect x="10" y="10" width="36" height="36" rx="4" fill="#111"/><rect x="16" y="16" width="24" height="24" rx="2" fill="white"/><rect x="20" y="20" width="16" height="16" rx="1" fill="#111"/>
+          <rect x="94" y="10" width="36" height="36" rx="4" fill="#111"/><rect x="100" y="16" width="24" height="24" rx="2" fill="white"/><rect x="104" y="20" width="16" height="16" rx="1" fill="#111"/>
+          <rect x="10" y="94" width="36" height="36" rx="4" fill="#111"/><rect x="16" y="100" width="24" height="24" rx="2" fill="white"/><rect x="20" y="104" width="16" height="16" rx="1" fill="#111"/>
+          <rect x="52" y="10" width="6" height="6" fill="#111"/><rect x="60" y="10" width="6" height="6" fill="#111"/><rect x="68" y="18" width="6" height="6" fill="#111"/><rect x="76" y="10" width="6" height="6" fill="#111"/>
+          <rect x="52" y="18" width="6" height="6" fill="#111"/><rect x="76" y="18" width="6" height="6" fill="#111"/><rect x="68" y="10" width="6" height="6" fill="#111"/>
+          <rect x="10" y="52" width="6" height="6" fill="#111"/><rect x="18" y="52" width="6" height="6" fill="#111"/><rect x="26" y="60" width="6" height="6" fill="#111"/>
+          <rect x="10" y="60" width="6" height="6" fill="#111"/><rect x="18" y="68" width="6" height="6" fill="#111"/><rect x="10" y="68" width="6" height="6" fill="#111"/>
+          <rect x="52" y="52" width="6" height="6" fill="#111"/><rect x="60" y="52" width="6" height="6" fill="#111"/><rect x="68" y="52" width="6" height="6" fill="#111"/>
+          <rect x="76" y="52" width="6" height="6" fill="#111"/><rect x="84" y="52" width="6" height="6" fill="#111"/><rect x="92" y="52" width="6" height="6" fill="#111"/>
+          <rect x="100" y="52" width="6" height="6" fill="#111"/><rect x="108" y="52" width="6" height="6" fill="#111"/><rect x="116" y="52" width="6" height="6" fill="#111"/>
+          <rect x="52" y="60" width="6" height="6" fill="#111"/><rect x="68" y="60" width="6" height="6" fill="#111"/><rect x="84" y="60" width="6" height="6" fill="#111"/>
+          <rect x="100" y="60" width="6" height="6" fill="#111"/><rect x="116" y="60" width="6" height="6" fill="#111"/>
+          <rect x="52" y="68" width="6" height="6" fill="#111"/><rect x="60" y="68" width="6" height="6" fill="#111"/><rect x="76" y="68" width="6" height="6" fill="#111"/>
+          <rect x="92" y="68" width="6" height="6" fill="#111"/><rect x="108" y="68" width="6" height="6" fill="#111"/>
+          <rect x="52" y="76" width="6" height="6" fill="#111"/><rect x="68" y="76" width="6" height="6" fill="#111"/><rect x="84" y="76" width="6" height="6" fill="#111"/>
+          <rect x="100" y="76" width="6" height="6" fill="#111"/><rect x="116" y="76" width="6" height="6" fill="#111"/>
+          <rect x="52" y="84" width="6" height="6" fill="#111"/><rect x="60" y="84" width="6" height="6" fill="#111"/><rect x="76" y="84" width="6" height="6" fill="#111"/>
+          <rect x="52" y="92" width="6" height="6" fill="#111"/><rect x="68" y="92" width="6" height="6" fill="#111"/><rect x="84" y="92" width="6" height="6" fill="#111"/>
+          <rect x="100" y="92" width="6" height="6" fill="#111"/>
+          <rect x="52" y="100" width="6" height="6" fill="#111"/><rect x="60" y="100" width="6" height="6" fill="#111"/><rect x="76" y="100" width="6" height="6" fill="#111"/>
+          <rect x="108" y="100" width="6" height="6" fill="#111"/>
+          <rect x="52" y="108" width="6" height="6" fill="#111"/><rect x="68" y="108" width="6" height="6" fill="#111"/>
+          <rect x="84" y="108" width="6" height="6" fill="#111"/><rect x="100" y="108" width="6" height="6" fill="#111"/><rect x="116" y="108" width="6" height="6" fill="#111"/>
+          <rect x="52" y="116" width="6" height="6" fill="#111"/><rect x="60" y="116" width="6" height="6" fill="#111"/><rect x="76" y="116" width="6" height="6" fill="#111"/>
+          <rect x="92" y="116" width="6" height="6" fill="#111"/>
+        </svg>
+        <div class="qr-hash"><div class="hl">Security Hash</div><div class="hv">PHY-2824-X982L-ATT</div></div>
+      </div>
+      <div class="timer-row">
+        <div class="tc"><div class="tv" id="qm">00</div><div class="tl">Minutes</div></div>
+        <div class="tc"><div class="tv" id="qs">42</div><div class="tl">Seconds</div></div>
+      </div>
+      <div class="qr-note">QR code auto-refreshes every 90 seconds to prevent unauthorized sharing.</div>
+      <div class="ck-row">
+        <div class="ckc"><div class="cl">Checked In</div><div class="cv" id="ckd">12 / 24</div><div class="cs">Students</div></div>
+        <div class="ckc"><div class="cl">Room</div><div class="cv">302</div><div class="cl" style="margin-top:4px">Time</div><div class="cs">09:00 – 11:00</div></div>
+      </div>
+      <div class="qr-hint-box">Ask students to scan this code using their <strong style="color:#818CF8">mobile app</strong> to automatically check-in for this session.</div>
+      <button class="fin-btn" onclick="nav('s-att')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Finish Session
+      </button>
+      <button class="can-btn" onclick="nav('s-detail','r')">Cancel Tracking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S5 – REPORTS
+═══════════════════════════════════ -->
+<div id="s-rep" class="s">
+  <div class="sb dk"><span class="tm" style="color:#fff">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="white"/><path d="M24 4v4a2 2 0 000-4z" fill="white"/></svg></div></div>
+  <div class="rep-hero">
+    <div class="rep-top">
+      <button class="rep-back" onclick="nav('s-detail','r')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg> Attendance Report</button>
+      <div class="rep-trend-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+    </div>
+    <div class="rep-avg-lbl">Avg Attendance</div>
+    <div class="rep-avg">94.2%</div>
+    <div class="rep-sub">↑ +2.4% from last month</div>
+    <div class="sparkwrap">
+      <svg class="spark" viewBox="0 0 340 50" preserveAspectRatio="none">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="white" stop-opacity=".25"/><stop offset="100%" stop-color="white" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,40 C30,36 50,30 80,28 C110,26 120,33 150,30 C180,27 200,18 230,14 C260,10 290,20 340,13" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M0,40 C30,36 50,30 80,28 C110,26 120,33 150,30 C180,27 200,18 230,14 C260,10 290,20 340,13 L340,50 L0,50Z" fill="url(#sg)"/>
+      </svg>
+    </div>
+    <div class="rep-cards">
+      <div class="rep-c"><div class="cl">Most Absent</div><div class="cv">John Doe</div><div class="cs">5 days missed</div></div>
+      <div class="rep-c"><div class="cl">Trend</div><div class="cv" style="color:#86EFAC">+2% ↑</div><div class="cs">Improving</div></div>
+    </div>
+  </div>
+  <div class="rep-tabs">
+    <div class="rt on">This Month</div><div class="rt">Last Month</div><div class="rt">Mathematics 101</div>
+  </div>
+  <div class="sc">
+    <div class="abs-box">
+      <div class="abs-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="abs-info"><strong>John Doe – 5 days missed</strong><small>Frequent absences detected this month</small></div>
+    </div>
+    <div class="sh"><h3>Student Statistics</h3><a>View All</a></div>
+    <div class="ss-list">
+      <div class="ss-row">
+        <div class="ss-ring" style="background:conic-gradient(#2563EB 96%,#E2E8F0 0);box-shadow:0 0 0 3px #fff,0 0 0 5px #EFF6FF"><span style="color:var(--b)">96%</span></div>
+        <div class="ss-name">Alice Thompson</div>
+        <div class="ss-tags"><span class="sst p">20P</span><span class="sst l">1L</span><span class="sst a">0A</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="ss-row">
+        <div class="ss-ring" style="background:conic-gradient(#D97706 75%,#E2E8F0 0);box-shadow:0 0 0 3px #fff,0 0 0 5px #FFFBEB"><span style="color:var(--a)">75%</span></div>
+        <div class="ss-name">John Doe</div>
+        <div class="ss-tags"><span class="sst p">15P</span><span class="sst l">2L</span><span class="sst a">5A</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="ss-row">
+        <div class="ss-ring" style="background:conic-gradient(#16A34A 96%,#E2E8F0 0);box-shadow:0 0 0 3px #fff,0 0 0 5px #F0FDF4"><span style="color:var(--g)">96%</span></div>
+        <div class="ss-name">Sarah Wilson</div>
+        <div class="ss-tags"><span class="sst p">18P</span><span class="sst l">3L</span><span class="sst a">2A</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="ss-row">
+        <div class="ss-ring" style="background:conic-gradient(#0D9488 88%,#E2E8F0 0);box-shadow:0 0 0 3px #fff,0 0 0 5px #F0FDFA"><span style="color:var(--t)">88%</span></div>
+        <div class="ss-name">Michael Chen</div>
+        <div class="ss-tags"><span class="sst p">17P</span><span class="sst l">2L</span><span class="sst a">3A</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="bn">
+    <button class="nv" onclick="nav('s-home','r')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
+    <button class="nv" onclick="nav('s-msg')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Message</span></button>
+    <button class="nv" onclick="nav('s-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><span>Classes</span></button>
+    <button class="nv ac"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span style="color:var(--b)">Reports</span></button>
+    <button class="nv"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S6 – MESSAGES LIST
+═══════════════════════════════════ -->
+<div id="s-msg" class="s">
+  <div class="sb"><span class="tm">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg></div></div>
+  <div class="mhdr">
+    <h2>Messages</h2>
+    <div class="mhdr-acts">
+      <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+      <button class="new-msg-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+    </div>
+  </div>
+  <div class="mfilter">
+    <button class="mfc on">All</button>
+    <button class="mfc">Parents</button>
+    <button class="mfc">Students</button>
+    <button class="mfc">Staff</button>
+    <button class="mfc">Unread</button>
+  </div>
+  <div class="msrch">
+    <div class="msw">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search people or messages…" readonly>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="mit ur" onclick="goChat('robert')">
+      <div class="mav" style="background:#FEF3C7">👨<div class="odot"></div></div>
+      <div class="mb">
+        <div class="mt"><span class="msender">Robert Johnson</span><span class="mtime">10:45 AM</span></div>
+        <div><span class="mrole" style="background:#EFF6FF;color:#2563EB">Parent</span></div>
+        <div class="mprev">Alex was marked absent — is everything okay?</div>
+      </div>
+      <div class="ubadge">3</div>
+    </div>
+    <div class="mit ur" onclick="goChat('maria_p')">
+      <div class="mav" style="background:#EDE9FE">👩</div>
+      <div class="mb">
+        <div class="mt"><span class="msender">Maria's Parent</span><span class="mtime">9:12 AM</span></div>
+        <div><span class="mrole" style="background:#EFF6FF;color:#2563EB">Parent</span></div>
+        <div class="mprev">Will Maria's absence be excused for the doctor…</div>
+      </div>
+      <div class="udot"></div>
+    </div>
+    <div class="mit" onclick="goChat('james_s')">
+      <div class="mav" style="background:#F0FDF4">🧑<div class="odot"></div></div>
+      <div class="mb">
+        <div class="mt"><span class="msender">James Wilson</span><span class="mtime">Yesterday</span></div>
+        <div><span class="mrole" style="background:#F0FDF4;color:#16A34A">Student</span></div>
+        <div class="mprev">✓ Thank you for the extra notes, Dr. Smith!</div>
+      </div>
+    </div>
+    <div class="mit" onclick="goChat('principal')">
+      <div class="mav" style="background:#F0F9FF">🧑‍💼</div>
+      <div class="mb">
+        <div class="mt"><span class="msender">Principal Hayes</span><span class="mtime">Monday</span></div>
+        <div><span class="mrole" style="background:#F0F9FF;color:#0284C7">Staff</span></div>
+        <div class="mprev">📎 Staff meeting agenda for Friday attached…</div>
+      </div>
+    </div>
+    <div class="mit" onclick="goChat('chen_p')">
+      <div class="mav" style="background:#FFF7ED">👨</div>
+      <div class="mb">
+        <div class="mt"><span class="msender">Michael Chen's Dad</span><span class="mtime">Oct 22</span></div>
+        <div><span class="mrole" style="background:#EFF6FF;color:#2563EB">Parent</span></div>
+        <div class="mprev">Great progress report — we're very proud of him!</div>
+      </div>
+    </div>
+    <div class="mit" onclick="goChat('alice_s')">
+      <div class="mav" style="background:#FEF3C7">👧<div class="odot"></div></div>
+      <div class="mb">
+        <div class="mt"><span class="msender">Alice Thompson</span><span class="mtime">Oct 20</span></div>
+        <div><span class="mrole" style="background:#F0FDF4;color:#16A34A">Student</span></div>
+        <div class="mprev">Is the midterm going to cover chapter 8?</div>
+      </div>
+    </div>
+    <div class="mit" onclick="goChat('david_s')">
+      <div class="mav" style="background:#ECFDF5">🧑</div>
+      <div class="mb">
+        <div class="mt"><span class="msender">David Park</span><span class="mtime">Oct 19</span></div>
+        <div><span class="mrole" style="background:#F0FDF4;color:#16A34A">Student</span></div>
+        <div class="mprev">Dr. Smith, I submitted the lab report early…</div>
+      </div>
+    </div>
+  </div>
+  <div class="bn">
+    <button class="nv" onclick="nav('s-home','r')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
+    <button class="nv ac"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span style="color:var(--b)">Message</span></button>
+    <button class="nv" onclick="nav('s-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><span>Classes</span></button>
+    <button class="nv" onclick="nav('s-rep')"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>Reports</span></button>
+    <button class="nv"><svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S7 – CHAT
+═══════════════════════════════════ -->
+<div id="s-chat" class="s">
+  <div class="sb"><span class="tm">9:41</span><div class="sbi"><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5" fill="none"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg></div></div>
+  <div class="chdr">
+    <button class="ic" onclick="nav('s-msg','r')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg></button>
+    <div class="cav" id="cav" style="background:#FEF3C7">👨<div class="cdot"></div></div>
+    <div class="ci">
+      <div class="cname" id="cname">Robert Johnson</div>
+      <div class="cstat" id="cstat">● Online · Parent of Alex</div>
+    </div>
+    <div class="cacts">
+      <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+      <div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+    </div>
+  </div>
+  <div class="cbox" id="cbox" style="background:var(--bg)"></div>
+  <div class="cibar">
+    <button class="cp">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <div class="ciw">
+      <input type="text" id="cinp" placeholder="Type a message…">
+      <span class="emb" onclick="addEm()">😊</span>
+    </div>
+    <button class="sndb" onclick="sendMsg()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ════ DATA ════ */
+const attData = [
+  {id:'#STU-2024-001',name:'Alexander Wright',em:'🧑',bg:'#FEF3C7',st:'present'},
+  {id:'#STU-2024-042',name:'Chloe Simmons',   em:'👩',bg:'#FDE8D8',st:'late'},
+  {id:'#STU-2024-015',name:'Daniel Martinez', em:'🧑',bg:'#EDE9FE',st:'absent'},
+  {id:'#STU-2024-108',name:'Emily Moore',     em:'👩',bg:'#F0FDF4',st:'present'},
+  {id:'#STU-2024-056',name:'Lucas Park',      em:'🧑',bg:'#FFF7ED',st:'present'},
+  {id:'#STU-2024-077',name:'Ava Chen',        em:'👧',bg:'#F0F9FF',st:'present'},
+];
+
+const contacts = {
+  robert:   {name:'Robert Johnson',     em:'👨',bg:'#FEF3C7',role:'Parent · Alex Johnson',  online:true,
+    msgs:[
+      {f:'them',t:"Hello Dr. Smith, I noticed Alex was marked absent today. Is everything okay with the class?",time:'10:42 AM'},
+      {f:'them',t:"This is the second time this week. Should I be concerned?",time:'10:43 AM'},
+      {f:'me',  t:"Hi Mr. Johnson! Alex was actually present — there may have been a system sync delay. I'll correct the record right away.",time:'10:45 AM'},
+      {f:'them',t:"Oh what a relief! Thank you so much for the quick response, Dr. Smith.",time:'10:46 AM'},
+      {f:'me',  t:"Of course. His attendance record is now updated. He's doing excellent work in class!",time:'10:47 AM'},
+    ]},
+  maria_p:  {name:"Maria's Parent",    em:'👩',bg:'#EDE9FE',role:'Parent · Maria Garcia', online:false,
+    msgs:[
+      {f:'them',t:"Dr. Smith, Maria had a doctor's appointment this morning. Will her absence be excused?",time:'9:10 AM'},
+      {f:'me',  t:"Yes, absolutely. Please send the medical note to the school office and I'll mark it as excused.",time:'9:30 AM'},
+      {f:'them',t:"Thank you so much! I'll drop off the paperwork this afternoon.",time:'9:35 AM'},
+    ]},
+  james_s:  {name:'James Wilson',      em:'🧑',bg:'#F0FDF4',role:'Student · Grade 11',   online:true,
+    msgs:[
+      {f:'me',  t:"James, I've attached the supplementary notes for the Advanced Physics chapter we covered today.",time:'Yesterday 3:00 PM'},
+      {f:'them',t:"Thank you for the extra notes, Dr. Smith! They really helped me understand Newton's Laws better.",time:'Yesterday 5:15 PM'},
+      {f:'me',  t:"Great to hear! Keep up the solid work. Don't forget the quiz on Friday.",time:'Yesterday 5:20 PM'},
+    ]},
+  principal:{name:'Principal Hayes',   em:'🧑‍💼',bg:'#F0F9FF',role:'Administration',    online:true,
+    msgs:[
+      {f:'them',t:"Good morning Dr. Smith. Please find the staff meeting agenda for this Friday attached to this message.",time:'Monday 8:00 AM'},
+      {f:'me',  t:"Good morning! I'll review it. Should I prepare a brief attendance summary to present?",time:'Monday 9:15 AM'},
+      {f:'them',t:"Yes please — keep it under 5 minutes. Also congratulations on your class metrics!",time:'Monday 9:30 AM'},
+    ]},
+  chen_p:   {name:"Michael Chen's Dad",em:'👨',bg:'#FFF7ED',role:'Parent · Michael Chen',online:false,
+    msgs:[
+      {f:'them',t:"Dr. Smith, we just received Michael's progress report and we're incredibly proud of him!",time:'Oct 22'},
+      {f:'me',  t:"He truly deserves it — Michael is one of the most dedicated students in Advanced Physics.",time:'Oct 22'},
+      {f:'them',t:"That means the world to us. Thank you for being such a wonderful teacher!",time:'Oct 22'},
+    ]},
+  alice_s:  {name:'Alice Thompson',   em:'👧',bg:'#FEF3C7',role:'Student · Grade 11',   online:true,
+    msgs:[
+      {f:'them',t:"Dr. Smith, is the midterm going to cover chapter 8 as well or just chapters 6 and 7?",time:'Oct 20'},
+      {f:'me',  t:"The midterm covers chapters 6 through 8. Focus especially on Newton's Laws and thermodynamics.",time:'Oct 20'},
+      {f:'them',t:"Got it, thank you so much! I'll make sure to review all three chapters thoroughly.",time:'Oct 20'},
+    ]},
+  david_s:  {name:'David Park',       em:'🧑',bg:'#ECFDF5',role:'Student · Grade 11',   online:false,
+    msgs:[
+      {f:'them',t:"Dr. Smith, I finished and submitted the lab report two days early! Hope that's okay.",time:'Oct 19'},
+      {f:'me',  t:"That's fantastic, David! I'll review it over the weekend. Extra credit noted!",time:'Oct 19'},
+    ]},
+};
+
+/* ════ NAVIGATION ════ */
+function nav(id, dir) {
+  document.querySelectorAll('.s').forEach(s => s.classList.remove('on','sl','sr'));
+  const el = document.getElementById(id);
+  el.classList.add('on');
+  if (dir==='r') el.classList.add('sr');
+  else el.classList.add('sl');
+}
+
+/* ════ ATTENDANCE ════ */
+function buildAtt() {
+  const list = document.getElementById('attlist');
+  list.innerHTML = '';
+  attData.forEach((d,i) => {
+    const card = document.createElement('div');
+    card.className = 'sat';
+    card.innerHTML = `
+      <div class="sat-top">
+        <div class="sat-av" style="background:${d.bg}">${d.em}</div>
+        <div style="flex:1"><div class="sat-name">${d.name}</div><div class="sat-id">ID: ${d.id}</div></div>
+        <div class="sat-ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="att-row">
+        <div class="ac-btn ${d.st==='present'?'ac-p':''}" onclick="setAtt(${i},'present',this)">Present</div>
+        <div class="ac-btn ${d.st==='late'?'ac-l':''}" onclick="setAtt(${i},'late',this)">Late</div>
+        <div class="ac-btn ${d.st==='absent'?'ac-a':''}" onclick="setAtt(${i},'absent',this)">Absent</div>
+      </div>`;
+    list.appendChild(card);
+  });
+  updateCount();
+}
+
+function setAtt(i, v, el) {
+  attData[i].st = v;
+  const row = el.closest('.att-row');
+  row.querySelectorAll('.ac-btn').forEach(b => b.className='ac-btn');
+  el.classList.add(v==='present'?'ac-p':v==='late'?'ac-l':'ac-a');
+  updateCount();
+}
+
+function markAll() {
+  attData.forEach(d => d.st='present');
+  buildAtt();
+}
+
+function updateCount() {
+  const n = attData.filter(d=>d.st).length;
+  document.getElementById('mc').textContent = `${n}/${attData.length} Marked`;
+}
+
+/* ════ QR TIMER ════ */
+let _qt = null, _ckd = 12;
+function startTimer() {
+  let s=42, m=0;
+  if (_qt) clearInterval(_qt);
+  _ckd = 12;
+  _qt = setInterval(()=>{
+    s--;
+    if (s<0){s=59;m++;}
+    document.getElementById('qs').textContent = String(s).padStart(2,'0');
+    document.getElementById('qm').textContent = String(m).padStart(2,'0');
+    if (Math.random()<.05 && _ckd<24){
+      _ckd++;
+      document.getElementById('ckd').textContent = `${_ckd} / 24`;
+    }
+  }, 1000);
+}
+
+/* ════ CHAT ════ */
+function goChat(key) {
+  const c = contacts[key];
+  const av = document.getElementById('cav');
+  av.textContent = c.em;
+  av.style.background = c.bg;
+  // re-add online dot
+  let dot = av.querySelector('.cdot');
+  if (!dot){dot=document.createElement('div');dot.className='cdot';av.appendChild(dot);}
+  dot.style.background = c.online ? '#16A34A' : '#94A3B8';
+
+  document.getElementById('cname').textContent = c.name;
+  const st = document.getElementById('cstat');
+  st.textContent = (c.online ? '● Online' : '● Away') + ' · ' + c.role;
+  st.style.color = c.online ? '#16A34A' : '#94A3B8';
+
+  const box = document.getElementById('cbox');
+  box.innerHTML = `<div class="dsep">Today, October 24</div>`;
+  c.msgs.forEach(m => {
+    const w = document.createElement('div');
+    w.className = 'bw' + (m.f==='me'?' me':'');
+    if(m.f==='them'){
+      w.innerHTML=`<div class="bav" style="background:${c.bg}">${c.em}</div><div><div class="bb them">${m.t}</div><div class="bt">${m.time}</div></div>`;
+    } else {
+      w.innerHTML=`<div><div class="bb me">${m.t}</div><div class="bt">${m.time} ✓✓</div></div>`;
+    }
+    box.appendChild(w);
+  });
+  box.dataset.k = key;
+  box.scrollTop = box.scrollHeight;
+  nav('s-chat');
+}
+
+function sendMsg() {
+  const inp = document.getElementById('cinp');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const box = document.getElementById('cbox');
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const w = document.createElement('div');
+  w.className = 'bw me';
+  w.innerHTML = `<div><div class="bb me">${txt}</div><div class="bt">${t} ✓✓</div></div>`;
+  box.appendChild(w);
+  inp.value = '';
+  box.scrollTop = box.scrollHeight;
+
+  // Typing indicator
+  const c = contacts[box.dataset.k || 'robert'];
+  setTimeout(()=>{
+    const ty = document.createElement('div');
+    ty.className = 'typing-bw';
+    ty.innerHTML = `<div class="bav" style="background:${c.bg}">${c.em}</div><div class="typing-bb"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+    ty.id = 'tyind';
+    box.appendChild(ty);
+    box.scrollTop = box.scrollHeight;
+    setTimeout(()=>{
+      const ti = document.getElementById('tyind');
+      if(ti) ti.remove();
+      const replies = [
+        "Thank you for the update, Dr. Smith.",
+        "I appreciate your quick response!",
+        "Understood. I'll take care of that right away.",
+        "That makes perfect sense. Thank you for clarifying!",
+        "Perfect, I'll make sure to pass that along promptly.",
+        "Great to hear — we'll follow up on your suggestion.",
+      ];
+      const r = document.createElement('div');
+      r.className = 'bw';
+      r.innerHTML=`<div class="bav" style="background:${c.bg}">${c.em}</div><div><div class="bb them">${replies[Math.floor(Math.random()*replies.length)]}</div><div class="bt">${t}</div></div>`;
+      box.appendChild(r);
+      box.scrollTop = box.scrollHeight;
+    }, 1400);
+  }, 700);
+}
+
+function addEm() {
+  const ems = ['👍','✅','📚','🙏','💪','📝','🎯','⚡'];
+  document.getElementById('cinp').value += ems[Math.floor(Math.random()*ems.length)];
+  document.getElementById('cinp').focus();
+}
+
+document.getElementById('cinp').addEventListener('keydown', e => { if(e.key==='Enter') sendMsg(); });
+
+/* Filter / tab clicks */
+document.querySelectorAll('.mfc').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('.mfc').forEach(x=>x.classList.remove('on'));
+  this.classList.add('on');
+}));
+document.querySelectorAll('.rt').forEach(c => c.addEventListener('click', function(){
+  document.querySelectorAll('.rt').forEach(x=>x.classList.remove('on'));
+  this.classList.add('on');
+}));
+
+/* Override nav for QR to start timer */
+const _origNav = nav;
+window.nav = function(id, dir) {
+  if(id==='s-qr') startTimer();
+  else if(_qt && id!=='s-qr'){ clearInterval(_qt); _qt=null; }
+  _origNav(id, dir);
+};
+
+buildAtt();
+</script>
+</body>
+</html>

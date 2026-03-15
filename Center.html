@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CenterHub – Education Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6fa;
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1e293b;
+  --sidebar-active: #3b82f6;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #06b6d4;
+  --purple: #8b5cf6;
+  --orange: #f97316;
+  --sidebar-width: 220px;
+  --header-h: 60px;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 24px rgba(0,0,0,.1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  transition: transform .3s ease;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #fff; font-size: 14px;
+}
+.logo-text { color: #fff; font-weight: 700; font-size: 15px; }
+.logo-sub { color: #64748b; font-size: 10px; margin-top: 1px; }
+
+.sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+.nav-label {
+  color: #475569; font-size: 10px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 12px 10px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 8px;
+  color: #94a3b8; cursor: pointer;
+  transition: all .2s; font-size: 13px; font-weight: 500;
+  text-decoration: none; margin-bottom: 2px;
+  white-space: nowrap;
+}
+.nav-item:hover { background: var(--sidebar-hover); color: #e2e8f0; }
+.nav-item.active { background: var(--primary); color: #fff; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: #ef4444; color: #fff;
+  font-size: 10px; font-weight: 700; padding: 2px 6px;
+  border-radius: 20px; min-width: 18px; text-align: center;
+}
+
+.sidebar-footer {
+  padding: 12px; border-top: 1px solid rgba(255,255,255,.07);
+}
+.user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px; border-radius: 8px;
+  background: rgba(255,255,255,.05);
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.user-name { color: #e2e8f0; font-size: 12px; font-weight: 600; }
+.user-role { color: #64748b; font-size: 11px; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-width);
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 100vh; min-width: 0;
+}
+.topbar {
+  height: var(--header-h);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 16px;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-weight: 700; font-size: 18px; flex: 1; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 14px;
+  min-width: 220px;
+}
+.search-box input {
+  border: none; background: none; outline: none;
+  font-family: inherit; font-size: 13px; color: var(--text);
+  width: 100%;
+}
+.search-box input::placeholder { color: var(--text-light); }
+.topbar-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+  transition: background .2s;
+}
+.topbar-icon:hover { background: var(--border); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--danger); border: 2px solid var(--card);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-outline {
+  background: #fff; color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { background: var(--bg); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-danger { background: #fef2f2; color: var(--danger); }
+
+/* ── PAGE ── */
+.page { display: none; padding: 24px; animation: fadeIn .3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  padding: 20px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title { font-weight: 700; font-size: 15px; }
+.card-sub { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--card); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  padding: 18px 20px;
+}
+.stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; }
+.stat-value { font-size: 26px; font-weight: 800; line-height: 1; }
+.stat-change {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600; margin-top: 6px;
+  padding: 3px 7px; border-radius: 20px;
+}
+.stat-change.up { background: #dcfce7; color: #15803d; }
+.stat-change.down { background: #fef2f2; color: #dc2626; }
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  text-align: left; font-size: 11px; font-weight: 600;
+  color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: .04em; padding: 10px 16px;
+  background: var(--bg);
+}
+td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafbff; }
+.td-name { font-weight: 600; }
+.td-sub { font-size: 11px; color: var(--text-muted); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block; padding: 3px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-green { background: #dcfce7; color: #15803d; }
+.badge-yellow { background: #fef3c7; color: #92400e; }
+.badge-red { background: #fef2f2; color: #dc2626; }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-purple { background: #ede9fe; color: #6d28d9; }
+.badge-gray { background: #f1f5f9; color: #475569; }
+.badge-cyan { background: #cffafe; color: #0e7490; }
+.badge-orange { background: #ffedd5; color: #c2410c; }
+
+/* ── AVATAR ── */
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.av-blue { background: #dbeafe; color: #1d4ed8; }
+.av-green { background: #dcfce7; color: #15803d; }
+.av-purple { background: #ede9fe; color: #6d28d9; }
+.av-orange { background: #ffedd5; color: #c2410c; }
+.av-cyan { background: #cffafe; color: #0e7490; }
+.av-pink { background: #fce7f3; color: #be185d; }
+.av-photo {
+  width: 34px; height: 34px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+}
+
+/* ── GRID LAYOUTS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+.grid-21 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+/* ── PROGRESS ── */
+.progress-bar {
+  height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.progress-fill { height: 100%; border-radius: 3px; transition: width .5s; }
+
+/* ── CHART MOCK ── */
+.chart-area {
+  height: 160px; display: flex; align-items: flex-end; gap: 6px; padding-top: 10px;
+}
+.bar {
+  flex: 1; border-radius: 4px 4px 0 0;
+  transition: opacity .2s; cursor: pointer;
+}
+.bar:hover { opacity: .75; }
+.chart-labels {
+  display: flex; gap: 6px; margin-top: 8px;
+}
+.chart-label { flex: 1; text-align: center; font-size: 10px; color: var(--text-light); }
+
+.line-chart { height: 100px; position: relative; }
+.line-chart svg { width: 100%; height: 100%; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em;
+}
+.form-input, .form-select {
+  width: 100%; padding: 9px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-family: inherit; font-size: 13px; color: var(--text);
+  background: var(--card); outline: none;
+  transition: border .2s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-section {
+  padding: 16px; border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 16px;
+}
+.form-section-title {
+  font-size: 13px; font-weight: 700; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── RADIO ── */
+.radio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.radio-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; font-size: 13px; transition: border .2s;
+}
+.radio-item:hover { border-color: var(--primary); }
+.radio-item input { accent-color: var(--primary); }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab-item {
+  padding: 10px 16px; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all .2s; white-space: nowrap;
+}
+.tab-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-item:hover { color: var(--text); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── FILTERS ── */
+.filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-select {
+  padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-family: inherit; font-size: 12px; background: var(--card);
+  cursor: pointer; outline: none; color: var(--text);
+}
+
+/* ── ACTIONS ── */
+.action-btn {
+  padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+}
+.action-view { background: #dbeafe; color: #1d4ed8; }
+.action-edit { background: #f1f5f9; color: #475569; }
+.action-del { background: #fef2f2; color: #dc2626; }
+.action-assign { background: #fef3c7; color: #92400e; }
+.actions-td { display: flex; gap: 5px; align-items: center; }
+
+/* ── DETAIL ── */
+.detail-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  border-radius: var(--radius); padding: 28px; color: #fff;
+  display: flex; align-items: center; gap: 20px; margin-bottom: 20px;
+}
+.detail-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 28px; color: #fff; flex-shrink: 0;
+}
+.detail-name { font-size: 24px; font-weight: 800; }
+.detail-meta { opacity: .7; font-size: 13px; margin-top: 4px; }
+.detail-stats {
+  display: flex; gap: 24px; margin-top: 12px;
+}
+.detail-stat-val { font-size: 22px; font-weight: 800; }
+.detail-stat-lbl { font-size: 11px; opacity: .6; margin-top: 2px; }
+
+/* ── RECENT ACTIVITY ── */
+.activity-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary); margin-top: 5px; flex-shrink: 0;
+}
+.activity-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.activity-text strong { color: var(--text); }
+.activity-time { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+/* ── TEACHER FEEDBACK ── */
+.feedback-item {
+  display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9;
+}
+.feedback-item:last-child { border-bottom: none; }
+.feedback-text { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+
+/* ── FINANCE ── */
+.revenue-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
+}
+.rev-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+}
+.rev-amount { font-size: 22px; font-weight: 800; }
+.rev-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+
+/* ── PENDING TASKS ── */
+.task-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;
+}
+.task-item:last-child { border-bottom: none; }
+.task-check {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 2px solid var(--border); cursor: pointer; flex-shrink: 0;
+}
+.task-check.done { background: var(--primary); border-color: var(--primary); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title { font-size: 22px; font-weight: 800; }
+.page-desc { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-21, .grid-12 { grid-template-columns: 1fr; }
+  .revenue-summary { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --sidebar-width: 0px; }
+  .sidebar { transform: translateX(-220px); width: 220px; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3, .form-row { grid-template-columns: 1fr; }
+  .revenue-summary { grid-template-columns: 1fr; }
+  .topbar { padding: 0 16px; }
+  .page { padding: 16px; }
+  .search-box { display: none; }
+  .detail-header { flex-direction: column; text-align: center; }
+  .detail-stats { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .radio-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px; margin-right: 8px;
+}
+.hamburger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
+@media (max-width: 768px) { .hamburger { display: flex; } }
+
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); z-index: 99;
+}
+.overlay.show { display: block; }
+
+/* ── ENROLLMENT CHART ── */
+.enroll-bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+.enroll-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 10px; }
+
+/* ── PAGINATION ── */
+.pagination { display: flex; gap: 4px; align-items: center; margin-top: 14px; }
+.page-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card);
+  transition: all .2s;
+}
+.page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.page-btn:hover:not(.active) { background: var(--bg); }
+.page-info { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+
+/* ── DONUT CHART ── */
+.donut-wrap { display: flex; align-items: center; gap: 20px; }
+.donut-legend { flex: 1; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── TOOLTIP ── */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip {
+  position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+  background: var(--sidebar-bg); color: #fff; font-size: 11px;
+  padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.tooltip-wrap:hover .tooltip { opacity: 1; }
+
+.class-subject { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.subj-math { background: #dbeafe; color: #1d4ed8; }
+.subj-sci { background: #dcfce7; color: #15803d; }
+.subj-design { background: #ede9fe; color: #6d28d9; }
+.subj-biz { background: #fef3c7; color: #92400e; }
+.subj-lang { background: #fce7f3; color: #be185d; }
+.subj-hist { background: #cffafe; color: #0e7490; }
+
+/* stars */
+.stars { color: #f59e0b; font-size: 12px; }
+
+/* enrolled classes mini */
+.class-mini {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px;
+}
+.class-mini-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+.class-mini-name { font-weight: 600; font-size: 13px; }
+.class-mini-time { font-size: 11px; color: var(--text-muted); }
+.class-mini-badge { margin-left: auto; }
+
+/* Summary row */
+.summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+.summary-row:last-child { border-bottom: none; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">CH</div>
+    <div>
+      <div class="logo-text">CenterHub</div>
+      <div class="logo-sub">Education Manager</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" data-page="classes" onclick="navigate('classes', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 012-2h12a2 2 0 012 2v14"/><path d="M9 3v16"/></svg>
+      Classes
+    </a>
+    <a class="nav-item" data-page="teachers" onclick="navigate('teachers', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      Teachers
+    </a>
+    <a class="nav-item" data-page="students" onclick="navigate('students', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Students
+      <span class="nav-badge">24</span>
+    </a>
+    <a class="nav-item" data-page="finance" onclick="navigate('finance', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
+      Finance
+    </a>
+    <a class="nav-item" data-page="reports" onclick="navigate('reports', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Reports
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">AT</div>
+      <div>
+        <div class="user-name">Alex Thompson</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="topbar-title" id="topbar-title">Dashboard Overview</div>
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search classes, teachers, students…" id="globalSearch">
+    </div>
+    <div class="topbar-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <div class="notif-dot"></div>
+    </div>
+    <div class="topbar-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34"/><path d="M4.93 19.07L6.34 17.66"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: DASHBOARD
+  ════════════════════════════════════ -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Welcome back, Alex 👋</div>
+        <div class="page-desc">Here's what's happening today.</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline btn-sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Last Month
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">+ Add New Student</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value">1,250</div>
+        <div class="stat-change up">▲ 12.5% vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Teachers</div>
+        <div class="stat-value">48</div>
+        <div class="stat-change up">▲ 4.0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Classes</div>
+        <div class="stat-value">156</div>
+        <div class="stat-change down">▼ 2%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Monthly Revenue</div>
+        <div class="stat-value" style="font-size:22px;">$45,200</div>
+        <div class="stat-change up">▲ 8.4%</div>
+      </div>
+    </div>
+
+    <div class="grid-21" style="margin-bottom:20px;">
+      <!-- Revenue Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Revenue Growth</div>
+            <div class="card-sub">Last 6 months</div>
+          </div>
+          <span class="badge badge-blue">+Add New Student</span>
+        </div>
+        <div class="chart-area">
+          <div class="bar" style="height:60%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
+          <div class="bar" style="height:45%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
+          <div class="bar" style="height:70%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
+          <div class="bar" style="height:55%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
+          <div class="bar" style="height:80%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
+          <div class="bar" style="height:90%;background:linear-gradient(180deg,#1d4ed8,#3b82f6);"></div>
+        </div>
+        <div class="chart-labels">
+          <div class="chart-label">Jan</div><div class="chart-label">Feb</div>
+          <div class="chart-label">Mar</div><div class="chart-label">Apr</div>
+          <div class="chart-label">May</div><div class="chart-label">Jun</div>
+        </div>
+      </div>
+
+      <!-- Enrollment Trends -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Enrollment Trends</div>
+        </div>
+        <div class="chart-area">
+          <div class="bar" style="height:50%;background:#0f172a;"></div>
+          <div class="bar" style="height:65%;background:#0f172a;"></div>
+          <div class="bar" style="height:55%;background:#0f172a;"></div>
+          <div class="bar" style="height:80%;background:#0f172a;"></div>
+          <div class="bar" style="height:70%;background:#0f172a;"></div>
+          <div class="bar" style="height:90%;background:#0f172a;"></div>
+          <div class="bar" style="height:75%;background:#0f172a;"></div>
+        </div>
+        <div class="chart-labels">
+          <div class="chart-label">Oct</div><div class="chart-label">Nov</div>
+          <div class="chart-label">Dec</div><div class="chart-label">Jan</div>
+          <div class="chart-label">Feb</div><div class="chart-label">Mar</div>
+          <div class="chart-label">Apr</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Pending Tasks -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Pending Tasks</div>
+          <a href="#" style="font-size:12px;color:var(--primary);">View All</a>
+        </div>
+        <div class="task-item"><div class="task-check"></div>Review Q3 Faculty Applications</div>
+        <div class="task-item"><div class="task-check done"></div><s style="color:var(--text-light)">Approve monthly payroll</s></div>
+        <div class="task-item"><div class="task-check"></div>Update safety guidelines</div>
+        <div class="task-item"><div class="task-check"></div>Send enrollment newsletter</div>
+        <div class="task-item"><div class="task-check"></div>Review new class proposals</div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recent Activity</div>
+          <span>···</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot"></div>
+          <div>
+            <div class="activity-text"><strong>New Student Enrollment:</strong> Sarah Jenkins joined "Advanced Mathematics"</div>
+            <div class="activity-time">2 min ago</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--success)"></div>
+          <div>
+            <div class="activity-text"><strong>Payment Received:</strong> Invoice #6482 ($1,299) was paid by Liam O'Connell.</div>
+            <div class="activity-time">18 min ago</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--warning)"></div>
+          <div>
+            <div class="activity-text"><strong>Class Rescheduled:</strong> "Art &amp; Design 101" moved to Room 420.</div>
+            <div class="activity-time">1 hr ago</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--purple)"></div>
+          <div>
+            <div class="activity-text"><strong>New Teacher Joined:</strong> Dr. Michael Chen starts Monday.</div>
+            <div class="activity-time">3 hr ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: CLASSES
+  ════════════════════════════════════ -->
+  <div class="page" id="page-classes">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Class Management</div>
+        <div class="page-desc">Overview class schedules and teacher allocations.</div>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('add-class', document.querySelector('[data-page=classes]'))">+ Create New Class</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card">
+        <div class="stat-label">Total Classes</div>
+        <div class="stat-value">128</div>
+        <div class="stat-change up">▲ 8% this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Classes</div>
+        <div class="stat-value">94</div>
+        <div class="stat-change up">▲ 5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending Assignment</div>
+        <div class="stat-value">12</div>
+        <div class="stat-change down">▼ 2 teachers needed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg. Class Size</div>
+        <div class="stat-value">24</div>
+        <div class="stat-change up">▲ 3%</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Recent Classes</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm">⚙ Filter</button>
+          <button class="btn btn-outline btn-sm">↓ Export</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Class Name</th>
+              <th>Subject</th>
+              <th>Current Teacher</th>
+              <th>Students</th>
+              <th>Schedule</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="classes-table">
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
+        <div class="page-info">Showing 1–6 of 128 results</div>
+        <div class="pagination">
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: TEACHERS
+  ════════════════════════════════════ -->
+  <div class="page" id="page-teachers">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Teachers</div>
+        <div class="page-desc">View and manage faculty profiles, reviews, and schedules.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="badge badge-green" style="font-size:12px;padding:5px 12px;">Active: 124</span>
+        <span class="badge badge-red" style="font-size:12px;padding:5px 12px;">On Leave: 12</span>
+        <button class="btn btn-primary" onclick="navigate('add-teacher', document.querySelector('[data-page=teachers]'))">+ Add New Teacher</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="filters">
+        <div class="search-box" style="min-width:200px;display:flex;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search by name, email or subject…" style="border:none;background:none;outline:none;font-family:inherit;font-size:13px;width:100%;">
+        </div>
+        <select class="filter-select"><option>All Subjects</option><option>Mathematics</option><option>Science</option><option>Design</option><option>Language</option></select>
+        <select class="filter-select"><option>Status: All</option><option>Active</option><option>On Leave</option><option>Upcoming</option></select>
+        <button class="btn btn-outline btn-sm">⚙ Filter</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Teacher</th>
+              <th>Subject</th>
+              <th>Total Classes</th>
+              <th>Avg Rating</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="teachers-table"></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
+        <div class="page-info">Showing 1–5 of 136 teachers</div>
+        <div class="pagination">
+          <div class="page-btn active">1</div><div class="page-btn">2</div>
+          <div class="page-btn">3</div><div class="page-btn">···</div><div class="page-btn">20</div><div class="page-btn">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: ADD TEACHER
+  ════════════════════════════════════ -->
+  <div class="page" id="page-add-teacher">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Add New Teacher</div>
+        <div class="page-desc">Create a new faculty profile and set up their schedule and subject assignments.</div>
+      </div>
+      <button class="btn btn-outline" onclick="navigate('teachers', document.querySelector('[data-page=teachers]'))">← Back to Teachers</button>
+    </div>
+
+    <div class="grid-12">
+      <!-- LEFT: Avatar + Personal -->
+      <div>
+        <!-- Avatar upload -->
+        <div class="form-section" style="text-align:center;padding:28px 20px;">
+          <div id="teacher-avatar-preview" style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;font-weight:800;cursor:pointer;">+</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Upload photo (optional)</div>
+          <input type="file" id="teacher-photo" accept="image/*" style="display:none" onchange="previewTeacherPhoto(event)">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('teacher-photo').click()">Choose Photo</button>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">1</div> Personal Information</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="t-firstname" placeholder="e.g. Sarah"></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="t-lastname" placeholder="e.g. Jenkins"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" id="t-dob"></div>
+            <div class="form-group"><label class="form-label">Gender</label>
+              <select class="form-select" id="t-gender"><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Nationality</label><input class="form-input" id="t-nationality" placeholder="e.g. American"></div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">2</div> Contact Information</div>
+          <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="t-email" type="email" placeholder="teacher@centerhub.edu"></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="t-phone" placeholder="+1 (555)-000-0000"></div>
+          <div class="form-group"><label class="form-label">Residential Address</label><input class="form-input" id="t-address" placeholder="Street address, City, Zip Code"></div>
+          <div class="form-group"><label class="form-label">Emergency Contact</label><input class="form-input" id="t-emergency" placeholder="Name & phone number"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Professional + Schedule + Salary -->
+      <div>
+        <!-- Professional Details -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">3</div> Professional Details</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Employee ID</label><input class="form-input" id="t-empid" placeholder="Auto-generated" readonly style="background:var(--bg);color:var(--text-muted);" value="TCH-2024-06"></div>
+            <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" type="date" id="t-startdate"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Primary Subject</label>
+              <select class="form-select" id="t-subject">
+                <option value="">Select Subject</option>
+                <option>Mathematics</option>
+                <option>Advanced Physics</option>
+                <option>English Literature</option>
+                <option>History</option>
+                <option>Graphic Design</option>
+                <option>Business Strategy</option>
+                <option>French Language</option>
+                <option>Computer Science</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Employment Type</label>
+              <select class="form-select" id="t-emptype">
+                <option>Full-Time</option>
+                <option>Part-Time</option>
+                <option>Contract</option>
+                <option>Visiting Faculty</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Qualifications / Degree</label><input class="form-input" id="t-qual" placeholder="e.g. M.Sc. Mathematics, Harvard University"></div>
+          <div class="form-group"><label class="form-label">Years of Experience</label><input class="form-input" id="t-exp" type="number" placeholder="e.g. 8"></div>
+          <div class="form-group"><label class="form-label">Bio / About</label>
+            <textarea class="form-input" id="t-bio" rows="3" placeholder="Short bio visible to students and parents…" style="resize:vertical;"></textarea>
+          </div>
+        </div>
+
+        <!-- Schedule Assignment -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">4</div> Schedule &amp; Class Assignment</div>
+          <div class="form-group"><label class="form-label">Working Days</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;" id="days-picker">
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Mon"> Mon</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Tue"> Tue</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Wed"> Wed</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Thu"> Thu</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Fri"> Fri</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Sat"> Sat</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Start Time</label><input class="form-input" type="time" id="t-starttime" value="08:00"></div>
+            <div class="form-group"><label class="form-label">End Time</label><input class="form-input" type="time" id="t-endtime" value="16:00"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Assign Initial Classes</label>
+            <div class="radio-grid" style="grid-template-columns:1fr 1fr;">
+              <label class="radio-item"><input type="checkbox"> Advanced Calculus A</label>
+              <label class="radio-item"><input type="checkbox"> Intro to Quantum Physics</label>
+              <label class="radio-item"><input type="checkbox"> Business Strategy X2</label>
+              <label class="radio-item"><input type="checkbox"> UI Design Fundamentals</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">5</div> Salary &amp; Compensation</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Monthly Salary (USD)</label><input class="form-input" id="t-salary" type="number" placeholder="e.g. 4500"></div>
+            <div class="form-group"><label class="form-label">Payment Schedule</label>
+              <select class="form-select"><option>Monthly</option><option>Bi-Weekly</option><option>Weekly</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Bank Name</label><input class="form-input" placeholder="e.g. Chase Bank"></div>
+            <div class="form-group"><label class="form-label">Account Number</label><input class="form-input" placeholder="****  ****  1234" type="password"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+          <button class="btn btn-outline" onclick="navigate('teachers', document.querySelector('[data-page=teachers]'))">Cancel</button>
+          <button class="btn btn-primary" onclick="saveTeacher()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Teacher Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: STUDENTS
+  ════════════════════════════════════ -->
+  <div class="page" id="page-students">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Student Management</div>
+        <div class="page-desc">Manage all enrolled students.</div>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('add-student',document.querySelector('[data-page=students]'))">+ Add New Student</button>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value">1,284</div>
+        <div class="stat-change up">▲ 6%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Enrolments</div>
+        <div class="stat-value">1,150</div>
+        <div class="stat-change up">▲ 4%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Overdue Payments</div>
+        <div class="stat-value">24</div>
+        <div class="stat-change down">▲ 2</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="filters">
+        <div class="search-box" style="min-width:220px;display:flex;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search students by name, ID or email…" style="border:none;background:none;outline:none;font-family:inherit;font-size:13px;width:100%;">
+        </div>
+        <select class="filter-select"><option>All Grades</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select>
+        <select class="filter-select"><option>Status: All</option><option>Active</option><option>Pending</option><option>Overdue</option></select>
+        <button class="btn btn-outline btn-sm">⚙ More Filters</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>Grade</th>
+              <th>Enrolled Classes</th>
+              <th>Attendance</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="students-table"></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
+        <div class="page-info">Showing 1–8 of 1,284 students</div>
+        <div class="pagination">
+          <div class="page-btn">‹</div>
+          <div class="page-btn active">1</div><div class="page-btn">2</div>
+          <div class="page-btn">3</div><div class="page-btn">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: ADD STUDENT
+  ════════════════════════════════════ -->
+  <div class="page" id="page-add-student">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Register New Student</div>
+        <div class="page-desc">Create a new student profile and set up their initial enrollment and billing details.</div>
+      </div>
+      <button class="btn btn-outline" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Back to Students</button>
+    </div>
+
+    <div class="grid-12">
+      <div>
+        <!-- Avatar placeholder -->
+        <div class="form-section" style="text-align:center;padding:24px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px dashed var(--border);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;color:var(--text-light)">+</div>
+          <div style="font-size:12px;color:var(--text-muted)">Upload photo (optional)</div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">1</div> Personal Information</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="First and last name"></div>
+            <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Gender</label>
+              <select class="form-select"><option>Select Gender</option><option>Male</option><option>Female</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Nationality</label><input class="form-input" placeholder="e.g. American"></div>
+          </div>
+        </div>
+
+        <!-- Parent Info -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">2</div> Parent / Guardian Information</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Guardian Name</label><input class="form-input" placeholder="Full name of parent"></div>
+            <div class="form-group"><label class="form-label">Relationship</label>
+              <select class="form-select"><option>e.g. Mother, Father, Legal Guardian</option><option>Mother</option><option>Father</option><option>Guardian</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Contact Email</label><input class="form-input" placeholder="parent@email.com" type="email"></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 (555)-000-0000"></div>
+          <div class="form-group"><label class="form-label">Residential Address</label><input class="form-input" placeholder="Street address, City, Zip Code"></div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Enrollment -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">3</div> Enrollment Details</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Grade Level</label>
+              <select class="form-select"><option>Select Level</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" type="date"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Class Selection</label>
+            <div class="radio-grid">
+              <label class="radio-item"><input type="checkbox" id="c1"> Mathematics (B)</label>
+              <label class="radio-item"><input type="checkbox" id="c2"> English Literature</label>
+              <label class="radio-item"><input type="checkbox" id="c3"> Intro to Physics</label>
+              <label class="radio-item"><input type="checkbox" id="c4"> History (02)</label>
+              <label class="radio-item"><input type="checkbox" id="c5"> Graphic Design</label>
+              <label class="radio-item"><input type="checkbox" id="c6"> French Level 1</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">4</div> Payment Setup</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Enrollment Code</label><input class="form-input" placeholder="Enter code"></div>
+            <div class="form-group"><label class="form-label">Initial Payment Method</label>
+              <select class="form-select"><option>Credit / Debit Card</option><option>Bank Transfer</option><option>Cash</option></select>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;">
+            <div class="summary-row"><span style="color:var(--text-muted)">Registration Fee</span><span>$50.00</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted)">Tuition Fee (Monthly)</span><span>$240.00</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted)">Discount</span><span style="color:var(--success)">-$0.00</span></div>
+            <div class="summary-row"><span>Total First Payment:</span><span style="color:var(--primary);font-size:16px;">$290.00</span></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+          <button class="btn btn-outline" onclick="navigate('students',document.querySelector('[data-page=students]'))">Cancel</button>
+          <button class="btn btn-primary" onclick="saveStudent()">Save Student Profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: STUDENT DETAIL
+  ════════════════════════════════════ -->
+  <div class="page" id="page-student-detail">
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+      <button class="btn btn-outline btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Students</button>
+      <button class="btn btn-primary btn-sm">✎ Edit Profile</button>
+    </div>
+
+    <div class="detail-header">
+      <div class="detail-avatar" id="detail-avatar">AJ</div>
+      <div>
+        <div class="detail-name" id="detail-name">Alex Johnson</div>
+        <div class="detail-meta" id="detail-meta">STU-10001 · Enrolled Sep 12, 2023</div>
+        <div class="detail-meta" id="detail-contact">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="640508011c4a0e0b0c0a170b0a240100114a070b09">[email&#160;protected]</a> · 📞 (555) 123-4567 · 📍 Austin, TX</div>
+        <div class="detail-stats">
+          <div>
+            <div class="detail-stat-val" id="detail-gpa">3.85</div>
+            <div class="detail-stat-lbl">Current GPA</div>
+          </div>
+          <div>
+            <div class="detail-stat-val" id="detail-att">94.2%</div>
+            <div class="detail-stat-lbl">Attendance ↑</div>
+          </div>
+          <div>
+            <div class="detail-stat-val" style="color:#ef4444;" id="detail-balance">$120.00</div>
+            <div class="detail-stat-lbl">Remaining Balance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab-item active" onclick="switchTab('overview')">Overview</div>
+      <div class="tab-item" onclick="switchTab('academic')">Academic Progress</div>
+      <div class="tab-item" onclick="switchTab('attendance')">Attendance History</div>
+      <div class="tab-item" onclick="switchTab('billing')">Billing &amp; Invoices</div>
+    </div>
+
+    <div class="tab-pane active" id="tab-overview">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Enrolled Classes</div><a href="#" style="font-size:12px;color:var(--primary);">View Schedule</a></div>
+          <div class="class-mini">
+            <div class="class-mini-dot"></div>
+            <div><div class="class-mini-name">Advanced Mathematics</div><div class="class-mini-time">Mon, Wed, Fri · 9:00 AM – 10:30 AM</div></div>
+            <span class="class-mini-badge badge badge-green">ACTIVE</span>
+          </div>
+          <div class="class-mini">
+            <div class="class-mini-dot"></div>
+            <div><div class="class-mini-name">Modern Physics</div><div class="class-mini-time">Tue, Thu · 11:00 AM – 12:30 PM</div></div>
+            <span class="class-mini-badge badge badge-green">ACTIVE</span>
+          </div>
+          <div class="class-mini">
+            <div class="class-mini-dot"></div>
+            <div><div class="class-mini-name">Graphic Design 101</div><div class="class-mini-time">Fri · 1:00 PM – 3:00 PM</div></div>
+            <span class="class-mini-badge badge badge-green">ACTIVE</span>
+          </div>
+          <a href="#" style="font-size:12px;color:var(--primary);display:block;text-align:center;margin-top:10px;">View All Feedback →</a>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Teacher Feedback</div></div>
+          <div class="feedback-item">
+            <div class="avatar av-blue">SM</div>
+            <div>
+              <div style="font-weight:600;font-size:13px;">Mr. Sarah Miller</div>
+              <div class="feedback-text">"Alex always participates in class discussions. I'm confident about their potential."</div>
+            </div>
+          </div>
+          <div class="feedback-item">
+            <div class="avatar av-green">DC</div>
+            <div>
+              <div style="font-weight:600;font-size:13px;">Mr. David Chen</div>
+              <div class="feedback-text">"Good participation in all activities. Should focus more on team collaboration skills."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane" id="tab-academic">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Academic Progress</div>
+        <table><thead><tr><th>Subject</th><th>Grade</th><th>Progress</th><th>Trend</th></tr></thead>
+        <tbody>
+          <tr><td>Advanced Mathematics</td><td><strong>A+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--success)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 3%</td></tr>
+          <tr><td>Modern Physics</td><td><strong>B+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--primary)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 1%</td></tr>
+          <tr><td>Graphic Design 101</td><td><strong>A</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--purple)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 5%</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="tab-pane" id="tab-attendance">
+      <div class="card"><p style="color:var(--text-muted);font-size:14px;">Detailed attendance log would be displayed here.</p></div>
+    </div>
+    <div class="tab-pane" id="tab-billing">
+      <div class="card"><p style="color:var(--text-muted);font-size:14px;">Billing history and invoices shown here.</p></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: FINANCE
+  ════════════════════════════════════ -->
+  <div class="page" id="page-finance">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Finance &amp; Revenue Report</div>
+        <div class="page-desc">Real-time overview of the center's financial performance.</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline btn-sm">📅 Last 30 Days</button>
+        <button class="btn btn-primary btn-sm">↓ Export PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('finance', document.querySelector('[data-page=finance]'))">+ Record Payment</button>
+      </div>
+    </div>
+
+    <div class="revenue-summary">
+      <div class="rev-card">
+        <div class="rev-label">Gross Revenue</div>
+        <div class="rev-amount">$128,450.00</div>
+        <div class="stat-change up" style="margin-top:6px;">▲ 12.5%</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-label">Net Profit</div>
+        <div class="rev-amount">$42,300.00</div>
+        <div class="stat-change down" style="margin-top:6px;">▼ 0.4%</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-label">Advertising Items</div>
+        <div class="rev-amount">$8,120.00</div>
+        <div class="stat-change up" style="margin-top:6px;">▲ 9.1%</div>
+      </div>
+    </div>
+
+    <div class="grid-21" style="margin-bottom:20px;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Monthly Revenue Trends</div>
+            <div class="card-sub">Revenue distribution by month for the current fiscal year.</div>
+          </div>
+          <div style="display:flex;gap:10px;font-size:11px;align-items:center;">
+            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#3b82f6;display:inline-block;border-radius:2px;"></span> Tuition</span>
+            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#fca5a5;display:inline-block;border-radius:2px;"></span> Expenses</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:4px;height:140px;">
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:60%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:80%;background:#93c5fd;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:50%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:70%;background:#93c5fd;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:65%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:85%;background:#3b82f6;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:40%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:90%;background:#3b82f6;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:55%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:75%;background:#3b82f6;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <div class="bar" style="width:100%;height:70%;background:#fca5a5;border-radius:4px 4px 0 0;"></div>
+            <div class="bar" style="width:100%;height:95%;background:#3b82f6;border-radius:4px 4px 0 0;margin-top:3px;"></div>
+          </div>
+        </div>
+        <div class="chart-labels">
+          <div class="chart-label">Jul</div><div class="chart-label">Aug</div>
+          <div class="chart-label">Sep</div><div class="chart-label">Oct</div>
+          <div class="chart-label">Nov</div><div class="chart-label">Dec</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Revenue Breakdown</div>
+        <svg viewBox="0 0 120 120" style="width:110px;height:110px;display:block;margin:0 auto;">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#3b82f6" stroke-width="20" stroke-dasharray="188 126" stroke-dashoffset="0"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#22c55e" stroke-width="20" stroke-dasharray="75 239" stroke-dashoffset="-188"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="37 277" stroke-dashoffset="-263"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#8b5cf6" stroke-width="20" stroke-dasharray="14 300" stroke-dashoffset="-300"/>
+        </svg>
+        <div class="donut-legend" style="margin-top:14px;">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Tuition Fees <strong style="margin-left:auto;">60%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Enrollments <strong style="margin-left:auto;">24%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Materials <strong style="margin-left:auto;">12%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Other <strong style="margin-left:auto;">4%</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Recent Transactions</div>
+        <a href="#" style="font-size:12px;color:var(--primary);">View All</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student Name</th><th>Class</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="finance-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: REPORTS
+  ════════════════════════════════════ -->
+  <div class="page" id="page-reports">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Reports &amp; Analytics</div>
+        <div class="page-desc">Comprehensive data insights for decision making.</div>
+      </div>
+      <button class="btn btn-primary">↓ Export All</button>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card" style="cursor:pointer;" onclick="navigate('finance',document.querySelector('[data-page=finance]'))">
+        <div class="card-title" style="margin-bottom:8px;">📊 Financial Report</div>
+        <p style="font-size:13px;color:var(--text-muted);">Revenue, expenses, and profit trends.</p>
+        <div style="margin-top:12px;"><span class="badge badge-green">Updated Today</span></div>
+      </div>
+      <div class="card" style="cursor:pointer;">
+        <div class="card-title" style="margin-bottom:8px;">👨‍🎓 Enrollment Report</div>
+        <p style="font-size:13px;color:var(--text-muted);">New enrollments, drop-offs, retention rates.</p>
+        <div style="margin-top:12px;"><span class="badge badge-blue">Monthly</span></div>
+      </div>
+      <div class="card" style="cursor:pointer;">
+        <div class="card-title" style="margin-bottom:8px;">📅 Attendance Report</div>
+        <p style="font-size:13px;color:var(--text-muted);">Student and teacher attendance analytics.</p>
+        <div style="margin-top:12px;"><span class="badge badge-yellow">Weekly</span></div>
+      </div>
+      <div class="card" style="cursor:pointer;">
+        <div class="card-title" style="margin-bottom:8px;">⭐ Performance Report</div>
+        <p style="font-size:13px;color:var(--text-muted);">Academic grades, GPA, improvement tracking.</p>
+        <div style="margin-top:12px;"><span class="badge badge-purple">Quarterly</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PAGE: CREATE NEW CLASS
+  ════════════════════════════════════ -->
+  <div class="page" id="page-add-class">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Create New Class</div>
+        <div class="page-desc">Set up a new class with schedule, teacher, pricing, and enrollment details.</div>
+      </div>
+      <button class="btn btn-outline" onclick="navigate('classes',document.querySelector('[data-page=classes]'))">← Back to Classes</button>
+    </div>
+
+    <div class="grid-12">
+      <!-- LEFT COLUMN -->
+      <div>
+        <!-- Class Identity -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">1</div> Class Identity</div>
+          <div class="form-group">
+            <label class="form-label">Class Name</label>
+            <input class="form-input" id="cl-name" placeholder="e.g. Advanced Calculus A">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Class Code</label>
+            <input class="form-input" id="cl-code" placeholder="Auto-generated" readonly style="background:var(--bg);color:var(--text-muted);" value="CLS-2024-129">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Subject Category</label>
+              <select class="form-select" id="cl-subject" onchange="updateSubjectColor()">
+                <option value="">Select Subject</option>
+                <option value="math">Mathematics</option>
+                <option value="sci">Science / Physics</option>
+                <option value="design">Design &amp; Art</option>
+                <option value="biz">Business</option>
+                <option value="lang">Language</option>
+                <option value="hist">History</option>
+                <option value="cs">Computer Science</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Level / Grade</label>
+              <select class="form-select" id="cl-level">
+                <option>Select Level</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+                <option>Grade 11</option>
+                <option>Grade 12</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Class Description</label>
+            <textarea class="form-input" id="cl-desc" rows="3" placeholder="Brief overview of what students will learn in this class…" style="resize:vertical;"></textarea>
+          </div>
+          <!-- Subject color preview -->
+          <div id="subject-preview" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-top:4px;"></div>
+        </div>
+
+        <!-- Room & Location -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">2</div> Room &amp; Location</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Room / Location</label>
+              <select class="form-select" id="cl-room">
+                <option>Select Room</option>
+                <option>Room 101 – Main Building</option>
+                <option>Room 204 – Science Lab</option>
+                <option>Room 310 – Design Studio</option>
+                <option>Room 420 – Language Center</option>
+                <option>Auditorium A</option>
+                <option>Online / Remote</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Delivery Mode</label>
+              <select class="form-select" id="cl-mode">
+                <option>In-Person</option>
+                <option>Online</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">3</div> Pricing &amp; Fees</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tuition Fee (Monthly)</label>
+              <div style="position:relative;">
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">$</span>
+                <input class="form-input" id="cl-fee" type="number" placeholder="240" style="padding-left:28px;" oninput="updateFeePreview()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Registration Fee</label>
+              <div style="position:relative;">
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">$</span>
+                <input class="form-input" id="cl-regfee" type="number" placeholder="50" style="padding-left:28px;" oninput="updateFeePreview()">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Discount / Scholarship Code</label>
+            <input class="form-input" id="cl-discount" placeholder="e.g. SCHOLAR10 for 10% off">
+          </div>
+          <!-- Fee summary preview -->
+          <div style="background:var(--bg);border-radius:8px;padding:12px 14px;font-size:13px;">
+            <div class="summary-row"><span style="color:var(--text-muted);">Monthly Tuition</span><span id="fp-tuition">$0.00</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted);">Registration Fee</span><span id="fp-reg">$0.00</span></div>
+            <div class="summary-row"><span style="font-weight:700;">First Payment Total</span><span id="fp-total" style="color:var(--primary);font-weight:800;">$0.00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+        <!-- Teacher & Capacity -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">4</div> Teacher &amp; Capacity</div>
+          <div class="form-group">
+            <label class="form-label">Assign Teacher</label>
+            <select class="form-select" id="cl-teacher" onchange="updateTeacherPreview()">
+              <option value="">Select a Teacher</option>
+              <option value="0">Sarah Jenkins – Mathematics ★4.9</option>
+              <option value="1">Michael Chen – Physics ★4.7</option>
+              <option value="2">David Rodriguez – Mathematics ★4.5</option>
+              <option value="3">Emily Wilson – English ★5.0</option>
+              <option value="4">Robert Taylor – History ★4.2</option>
+            </select>
+          </div>
+          <!-- Teacher card preview -->
+          <div id="teacher-preview-card" style="display:none;background:var(--bg);border-radius:10px;padding:12px;display:none;align-items:center;gap:12px;margin-top:-6px;margin-bottom:14px;">
+            <div class="avatar av-blue" id="tp-av">SJ</div>
+            <div>
+              <div style="font-weight:700;font-size:13px;" id="tp-name">Sarah Jenkins</div>
+              <div style="font-size:11px;color:var(--text-muted);" id="tp-sub">Mathematics · 42 classes · ★ 4.9</div>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto;">Active</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Max Students</label>
+              <input class="form-input" id="cl-maxstu" type="number" placeholder="30" min="1" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Min Students</label>
+              <input class="form-input" id="cl-minstu" type="number" placeholder="5" min="1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enrollment Status</label>
+            <select class="form-select" id="cl-enroll-status">
+              <option>Open Enrollment</option>
+              <option>Invite Only</option>
+              <option>Waitlist</option>
+              <option>Closed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">5</div> Schedule</div>
+          <div class="form-group">
+            <label class="form-label">Class Days</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Mon"> Mon</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Tue"> Tue</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Wed"> Wed</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Thu"> Thu</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Fri"> Fri</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Sat"> Sat</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start Time</label>
+              <input class="form-input" type="time" id="cl-starttime" value="09:00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Time</label>
+              <input class="form-input" type="time" id="cl-endtime" value="10:30">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input class="form-input" type="date" id="cl-startdate">
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input class="form-input" type="date" id="cl-enddate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Session Duration</label>
+            <select class="form-select">
+              <option>1 Semester (6 months)</option>
+              <option>1 Term (3 months)</option>
+              <option>Full Year</option>
+              <option>Custom</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="section-num">6</div> Prerequisites &amp; Materials</div>
+          <div class="form-group">
+            <label class="form-label">Prerequisites</label>
+            <input class="form-input" placeholder="e.g. Calculus I or instructor approval">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Required Materials</label>
+            <textarea class="form-input" rows="2" placeholder="e.g. Textbook: Calculus 10th Ed, Scientific calculator…" style="resize:vertical;"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;">
+            <input type="checkbox" id="cl-cert" style="accent-color:var(--primary);width:16px;height:16px;">
+            <label for="cl-cert">Issue certificate upon completion</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+            <input type="checkbox" id="cl-notify" checked style="accent-color:var(--primary);width:16px;height:16px;">
+            <label for="cl-notify">Notify enrolled students when class starts</label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+          <button class="btn btn-outline" onclick="navigate('classes',document.querySelector('[data-page=classes]'))">Cancel</button>
+          <button class="btn btn-outline" style="color:var(--primary);border-color:var(--primary);">Save as Draft</button>
+          <button class="btn btn-primary" onclick="saveClass()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Create Class
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ── MOCK DATA ── */
+const classes = [
+  { name:'Advanced Calculus A', subject:'Mathematics', subj:'math', teacher:'Robert Chen', students:'24/30', schedule:'Mon, Wed, Fri', status:'Active' },
+  { name:'Intro to Quantum Physics', subject:'Science', subj:'sci', teacher:'James Chen', students:'18/24', schedule:'Tue, Thu', status:'Pending' },
+  { name:'UI Design Fundamentals', subject:'Design', subj:'design', teacher:'Sarah Janero', students:'12/15', schedule:'Friday Only', status:'Active' },
+  { name:'Business Strategy X2', subject:'Business', subj:'biz', teacher:'David Miller', students:'45/50', schedule:'Mon, Thu', status:'Concluded' },
+  { name:'Advanced Spanish Composition', subject:'Language', subj:'lang', teacher:'Elena Gomez', students:'10/12', schedule:'Mon, Wed', status:'Pending' },
+  { name:'Graphic Design 101', subject:'Design', subj:'design', teacher:'Lisa Park', students:'14/20', schedule:'Fri', status:'Active' },
+];
+
+const teachers = [
+  { name:'Sarah Jenkins', email:'sarah.j@edu.com', subject:'Mathematics', subj:'math', classes:42, rating:4.9, status:'Active', av:'SJ', avClass:'av-blue' },
+  { name:'Michael Chen', email:'m.chen@edu.com', subject:'Advanced Physics', subj:'sci', classes:38, rating:4.7, status:'Upcoming', av:'MC', avClass:'av-green' },
+  { name:'David Rodriguez', email:'d.rod@edu.com', subject:'Mathematics', subj:'math', classes:39, rating:4.5, status:'Active', av:'DR', avClass:'av-orange' },
+  { name:'Emily Wilson', email:'e.wilson@edu.com', subject:'English Literature', subj:'lang', classes:81, rating:5.0, status:'Active', av:'EW', avClass:'av-purple' },
+  { name:'Robert Taylor', email:'r.taylor@edu.com', subject:'History', subj:'hist', classes:19, rating:4.2, status:'Upcoming', av:'RT', avClass:'av-cyan' },
+];
+
+const students = [
+  { name:'Emma Thompson', email:'emma.t@edu.com', id:'STU-2024-01', grade:'Grade 11', classes:3, att:98, status:'Active', av:'ET', avClass:'av-blue', balance:0 },
+  { name:'Julian Martinez', email:'j.mart@edu.com', id:'STU-2024-02', grade:'Grade 10', classes:4, att:87, status:'Active', av:'JM', avClass:'av-green', balance:240 },
+  { name:'Sophie Anderson', email:'s.and@edu.com', id:'STU-2024-03', grade:'Grade 9', classes:2, att:92, status:'Pending', av:'SA', avClass:'av-purple', balance:0 },
+  { name:'Liam Carter', email:'l.car@edu.com', id:'STU-2024-04', grade:'Grade 12', classes:5, att:80, status:'Overdue', av:'LC', avClass:'av-orange', balance:480 },
+  { name:'Mia Nguyen', email:'m.ngu@edu.com', id:'STU-2024-05', grade:'Grade 11', classes:3, att:95, status:'Active', av:'MN', avClass:'av-pink', balance:0 },
+  { name:'Noah Park', email:'n.park@edu.com', id:'STU-2024-06', grade:'Grade 10', classes:4, att:88, status:'Active', av:'NP', avClass:'av-cyan', balance:120 },
+  { name:'Olivia Brown', email:'o.bro@edu.com', id:'STU-2024-07', grade:'Grade 9', classes:2, att:91, status:'Active', av:'OB', avClass:'av-blue', balance:0 },
+  { name:'Ethan Davis', email:'e.dav@edu.com', id:'STU-2024-08', grade:'Grade 12', classes:5, att:76, status:'Overdue', av:'ED', avClass:'av-orange', balance:360 },
+];
+
+const transactions = [
+  { student:'Alex Johnson', av:'AJ', avClass:'av-blue', class:'Advanced Mathematics', amount:'$480.00', status:'Paid', date:'Oct 21, 2023' },
+  { student:'Emma Thompson', av:'ET', avClass:'av-green', class:'Physics 101', amount:'$320.00', status:'Paid', date:'Oct 20, 2023' },
+  { student:'Liam Carter', av:'LC', avClass:'av-orange', class:'Design Fundamentals', amount:'$240.00', status:'Overdue', date:'Oct 18, 2023' },
+  { student:'Sophie Anderson', av:'SA', avClass:'av-purple', class:'English Literature', amount:'$180.00', status:'Pending', date:'Oct 15, 2023' },
+];
+
+const subjMap = {math:'subj-math',sci:'subj-sci',design:'subj-design',biz:'subj-biz',lang:'subj-lang',hist:'subj-hist'};
+
+function statusBadge(s) {
+  const m = {Active:'badge-green',Pending:'badge-yellow',Overdue:'badge-red',Concluded:'badge-gray',Upcoming:'badge-blue',Paid:'badge-green'};
+  return `<span class="badge ${m[s]||'badge-gray'}">${s}</span>`;
+}
+
+function renderClasses() {
+  const tb = document.getElementById('classes-table');
+  tb.innerHTML = classes.map(c => `
+    <tr>
+      <td><span class="td-name">${c.name}</span></td>
+      <td><span class="class-subject ${subjMap[c.subj]}">${c.subject}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar av-blue" style="width:28px;height:28px;font-size:11px;">${c.teacher.split(' ').map(n=>n[0]).join('')}</div>
+          <span style="font-size:13px;">${c.teacher}</span>
+        </div>
+      </td>
+      <td>${c.students}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${c.schedule}</td>
+      <td>${statusBadge(c.status)}</td>
+      <td>
+        <div class="actions-td">
+          <button class="action-btn action-view" onclick="navigate('student-detail',null)">View</button>
+          <button class="action-btn action-edit">Edit</button>
+          ${c.status==='Pending'?`<button class="action-btn action-assign">Assign Teacher</button>`:`<button class="action-btn action-del">Archive</button>`}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderTeachers() {
+  const tb = document.getElementById('teachers-table');
+  tb.innerHTML = teachers.map(t => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar ${t.avClass}">${t.av}</div>
+          <div><div class="td-name">${t.name}</div><div class="td-sub">${t.email}</div></div>
+        </div>
+      </td>
+      <td><span class="class-subject ${subjMap[t.subj]}">${t.subject}</span></td>
+      <td>${t.classes}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span class="stars">★</span>
+          <strong>${t.rating}</strong>
+        </div>
+      </td>
+      <td>${statusBadge(t.status)}</td>
+      <td><div class="actions-td">
+        <button class="action-btn action-view">View</button>
+        <button class="action-btn action-edit">Edit</button>
+        <button class="action-btn" style="background:#f8fafc;color:#64748b;font-size:16px;padding:2px 8px;">⋯</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function renderStudents() {
+  const tb = document.getElementById('students-table');
+  tb.innerHTML = students.map(s => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar ${s.avClass}">${s.av}</div>
+          <div><div class="td-name">${s.name}</div><div class="td-sub">${s.email}</div></div>
+        </div>
+      </td>
+      <td style="font-size:12px;font-weight:600;color:var(--text-muted)">${s.id}</td>
+      <td>${s.grade}</td>
+      <td>${s.classes} classes</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-bar" style="width:60px;"><div class="progress-fill" style="width:${s.att}%;background:${s.att>90?'var(--success)':s.att>80?'var(--warning)':'var(--danger)'}"></div></div>
+          <span style="font-size:12px;">${s.att}%</span>
+        </div>
+      </td>
+      <td>${statusBadge(s.status)}</td>
+      <td><div class="actions-td">
+        <button class="action-btn action-view" onclick="openStudentDetail(${students.indexOf(s)})">View</button>
+        <button class="action-btn action-edit">Edit</button>
+        <button class="action-btn" style="background:#f8fafc;color:#64748b;font-size:16px;padding:2px 8px;">⋯</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function renderFinance() {
+  const tb = document.getElementById('finance-table');
+  tb.innerHTML = transactions.map(t => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar ${t.avClass}">${t.av}</div>
+          <span class="td-name">${t.student}</span>
+        </div>
+      </td>
+      <td style="font-size:13px;color:var(--text-muted)">${t.class}</td>
+      <td><strong>${t.amount}</strong></td>
+      <td>${statusBadge(t.status)}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${t.date}</td>
+      <td><button class="action-btn action-view">Receipt</button></td>
+    </tr>`).join('');
+}
+
+/* ── NAVIGATION ── */
+const titles = {
+  dashboard:'Dashboard Overview',
+  classes:'Class Management',
+  teachers:'Teachers',
+  students:'Student Management',
+  finance:'Finance & Revenue',
+  reports:'Reports & Analytics',
+  'add-student':'Register New Student',
+  'student-detail':'Student Profile',
+  'add-class':'Create New Class',
+  'add-teacher':'Add New Teacher',
+};
+
+function navigate(pageId, el) {
+  // deactivate all pages
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // activate target
+  const target = document.getElementById('page-'+pageId);
+  if(target) target.classList.add('active');
+  // update sidebar active
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // update topbar title
+  document.getElementById('topbar-title').textContent = titles[pageId]||pageId;
+  // close mobile sidebar
+  closeSidebar();
+  // scroll to top
+  window.scrollTo(0,0);
+}
+
+function openStudentDetail(idx) {
+  const s = students[idx];
+  document.getElementById('detail-avatar').textContent = s.av;
+  document.getElementById('detail-name').textContent = s.name;
+  document.getElementById('detail-meta').textContent = s.id+' · Enrolled Sep 2023';
+  document.getElementById('detail-contact').textContent = `📧 ${s.email} · 📞 (555) 100-${1000+idx} · 📍 Austin, TX`;
+  document.getElementById('detail-gpa').textContent = (3.5+Math.random()*.5).toFixed(2);
+  document.getElementById('detail-att').textContent = s.att+'%';
+  document.getElementById('detail-balance').textContent = s.balance>0?'$'+s.balance+'.00':'$0.00';
+  navigate('student-detail', document.querySelector('[data-page=students]'));
+}
+
+function saveTeacher() {
+  const first = document.getElementById('t-firstname').value.trim();
+  const last = document.getElementById('t-lastname').value.trim();
+  if (!first || !last) { alert('⚠️ Please enter the teacher\'s full name.'); return; }
+  alert(`✅ Teacher "${first} ${last}" has been added successfully!`);
+  navigate('teachers', document.querySelector('[data-page=teachers]'));
+}
+
+function previewTeacherPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const el = document.getElementById('teacher-avatar-preview');
+    el.style.backgroundImage = `url(${ev.target.result})`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.textContent = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveClass() {
+  const name = document.getElementById('cl-name').value.trim();
+  if (!name) { alert('⚠️ Please enter a class name.'); return; }
+  alert(`✅ Class "${name}" has been created successfully!`);
+  navigate('classes', document.querySelector('[data-page=classes]'));
+}
+
+function updateFeePreview() {
+  const fee = parseFloat(document.getElementById('cl-fee').value) || 0;
+  const reg = parseFloat(document.getElementById('cl-regfee').value) || 0;
+  document.getElementById('fp-tuition').textContent = '$' + fee.toFixed(2);
+  document.getElementById('fp-reg').textContent = '$' + reg.toFixed(2);
+  document.getElementById('fp-total').textContent = '$' + (fee + reg).toFixed(2);
+}
+
+function updateSubjectColor() {
+  const map = {
+    math:  { bg:'#dbeafe', color:'#1d4ed8', label:'📐 Mathematics' },
+    sci:   { bg:'#dcfce7', color:'#15803d', label:'🔬 Science / Physics' },
+    design:{ bg:'#ede9fe', color:'#6d28d9', label:'🎨 Design & Art' },
+    biz:   { bg:'#fef3c7', color:'#92400e', label:'💼 Business' },
+    lang:  { bg:'#fce7f3', color:'#be185d', label:'🗣️ Language' },
+    hist:  { bg:'#cffafe', color:'#0e7490', label:'📜 History' },
+    cs:    { bg:'#f1f5f9', color:'#0f172a', label:'💻 Computer Science' },
+  };
+  const val = document.getElementById('cl-subject').value;
+  const el = document.getElementById('subject-preview');
+  if (val && map[val]) {
+    el.style.display = 'block';
+    el.style.background = map[val].bg;
+    el.style.color = map[val].color;
+    el.textContent = map[val].label;
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function updateTeacherPreview() {
+  const teacherData = [
+    { av:'SJ', avClass:'av-blue',   name:'Sarah Jenkins',   sub:'Mathematics · 42 classes · ★ 4.9' },
+    { av:'MC', avClass:'av-green',  name:'Michael Chen',    sub:'Physics · 38 classes · ★ 4.7' },
+    { av:'DR', avClass:'av-orange', name:'David Rodriguez', sub:'Mathematics · 39 classes · ★ 4.5' },
+    { av:'EW', avClass:'av-purple', name:'Emily Wilson',    sub:'English · 81 classes · ★ 5.0' },
+    { av:'RT', avClass:'av-cyan',   name:'Robert Taylor',   sub:'History · 19 classes · ★ 4.2' },
+  ];
+  const idx = parseInt(document.getElementById('cl-teacher').value);
+  const card = document.getElementById('teacher-preview-card');
+  if (!isNaN(idx) && teacherData[idx]) {
+    const t = teacherData[idx];
+    card.style.display = 'flex';
+    document.getElementById('tp-av').textContent = t.av;
+    document.getElementById('tp-av').className = 'avatar ' + t.avClass;
+    document.getElementById('tp-name').textContent = t.name;
+    document.getElementById('tp-sub').textContent = t.sub;
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+function saveStudent() {
+  alert('✅ Student saved successfully!');
+  navigate('students', document.querySelector('[data-page=students]'));
+}
+
+/* ── TABS ── */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+/* ── MOBILE SIDEBAR ── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+/* ── INIT ── */
+renderClasses();
+renderTeachers();
+renderStudents();
+renderFinance();
+</script>
+</body>
+</html>

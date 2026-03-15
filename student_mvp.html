@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AttendEase – Student Attendance</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  --blue:        #2563EB;
+  --blue-dark:   #1D4ED8;
+  --blue-light:  #EFF6FF;
+  --blue-glow:   rgba(37,99,235,0.18);
+  --green:       #16A34A;
+  --green-light: #F0FDF4;
+  --orange:      #EA580C;
+  --orange-light:#FFF7ED;
+  --red:         #DC2626;
+  --red-light:   #FEF2F2;
+  --amber:       #D97706;
+  --amber-light: #FFFBEB;
+  --ink:         #0F172A;
+  --ink2:        #334155;
+  --muted:       #94A3B8;
+  --border:      #E2E8F0;
+  --surface:     #FFFFFF;
+  --bg:          #F1F5F9;
+  --radius-sm:   10px;
+  --radius:      16px;
+  --radius-lg:   22px;
+  --shadow:      0 1px 8px rgba(15,23,42,0.07), 0 0 0 1px rgba(15,23,42,0.04);
+  --shadow-lg:   0 8px 32px rgba(37,99,235,0.14), 0 2px 8px rgba(15,23,42,0.08);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Mulish', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+svg { display: block; }
+
+/* ═══════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════ */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--bg);
+  position: relative;
+}
+
+/* Desktop centering visual wrapper */
+@media (min-width: 520px) {
+  body { background: #CBD5E1; display: flex; align-items: flex-start; justify-content: center; padding: 32px 0 80px; }
+  #app { border-radius: 36px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 0 0 8px #1e2432; min-height: 780px; }
+}
+
+/* ═══════════════════════════════════════
+   SCREENS
+═══════════════════════════════════════ */
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  animation: fadeSlide 0.28s cubic-bezier(0.4,0,0.2,1) both;
+}
+.screen.active { display: flex; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   STATUS BAR (fake iOS)
+═══════════════════════════════════════ */
+.status-bar {
+  height: 44px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.status-bar .time { font-family:'Sora',sans-serif; font-size:15px; font-weight:700; color:var(--ink); }
+.status-icons { display:flex; gap:7px; align-items:center; }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════ */
+.bottom-nav {
+  height: 68px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+}
+.nav-btn {
+  display: flex; flex-direction:column; align-items:center; gap:3px;
+  padding: 8px 18px; border-radius: 14px;
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.nav-btn.active { background: var(--blue-light); }
+.nav-btn .nav-icon { width:22px; height:22px; }
+.nav-btn .nav-lbl { font-size:10px; font-weight:800; letter-spacing:0.04em; color:var(--muted); }
+.nav-btn.active .nav-lbl { color: var(--blue); }
+
+/* ═══════════════════════════════════════
+   SCROLLABLE AREA
+═══════════════════════════════════════ */
+.scroll-area { flex:1; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
+.scroll-area::-webkit-scrollbar { display:none; }
+
+/* ═══════════════════════════════════════
+   ── SCREEN 1: SCHEDULE ──
+═══════════════════════════════════════ */
+.s1-top {
+  background: var(--surface);
+  padding: 14px 20px 0;
+}
+.s1-toprow {
+  display: flex; justify-content:space-between; align-items:center; margin-bottom: 4px;
+}
+.s1-toprow h1 { font-family:'Sora',sans-serif; font-size:21px; font-weight:800; color:var(--ink); }
+.s1-toprow p  { font-size:12px; color:var(--muted); font-weight:600; margin-top:2px; }
+.top-actions { display:flex; gap:10px; align-items:center; }
+.icon-btn {
+  width:36px; height:36px; border-radius:50%; background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  transition: background 0.15s;
+}
+.icon-btn:hover { background: var(--border); }
+.user-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background: linear-gradient(135deg,#f97316,#ec4899);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Sora',sans-serif; font-size:15px; font-weight:800; color:white;
+}
+
+/* Date strip */
+.date-strip {
+  background: var(--surface);
+  display:flex; gap:6px; padding: 12px 20px 16px;
+  overflow-x: auto; scrollbar-width:none;
+}
+.date-strip::-webkit-scrollbar { display:none; }
+.date-chip {
+  display:flex; flex-direction:column; align-items:center;
+  padding: 9px 13px; border-radius: 14px; cursor:pointer;
+  transition: all 0.18s; flex-shrink:0;
+}
+.date-chip:hover { background: var(--bg); }
+.date-chip.active { background: var(--blue); box-shadow: 0 4px 12px var(--blue-glow); }
+.date-chip .day { font-size:10px; font-weight:800; letter-spacing:0.05em; color:var(--muted); }
+.date-chip .num { font-family:'Sora',sans-serif; font-size:19px; font-weight:800; color:var(--ink); margin-top:2px; }
+.date-chip.active .day, .date-chip.active .num { color:white; }
+
+/* Stats bar */
+.stats-bar {
+  display:flex; gap:10px; padding: 0 16px 14px;
+  background: var(--surface);
+}
+.stat-pill {
+  flex:1; border-radius:10px; padding:8px 10px; text-align:center;
+  background: var(--bg);
+}
+.stat-pill .sv { font-family:'Sora',sans-serif; font-size:17px; font-weight:800; }
+.stat-pill .sl { font-size:10px; font-weight:700; color:var(--muted); letter-spacing:0.04em; }
+.stat-pill.s-green .sv { color:var(--green); }
+.stat-pill.s-orange .sv { color:var(--orange); }
+.stat-pill.s-red .sv { color:var(--red); }
+.stat-pill.s-blue .sv { color:var(--blue); }
+
+/* Section header */
+.section-hdr {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 16px 20px 8px;
+}
+.section-hdr h2 { font-family:'Sora',sans-serif; font-size:14px; font-weight:800; color:var(--ink); }
+.section-hdr span { font-size:12px; font-weight:700; color:var(--blue); cursor:pointer; }
+
+/* Class card */
+.class-list { padding: 0 16px 20px; display:flex; flex-direction:column; gap:10px; }
+.class-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border-left: 4px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.class-card:hover { transform:translateY(-2px); box-shadow: var(--shadow-lg); }
+.class-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  opacity:0; transition: opacity 0.2s;
+}
+.class-card:hover::before { opacity:1; }
+.class-card.ongoing   { border-left-color:var(--green); }
+.class-card.late      { border-left-color:var(--orange); }
+.class-card.absent    { border-left-color:var(--red); }
+.class-card.upcoming  { border-left-color:var(--muted); }
+.class-card.present   { border-left-color:var(--blue); }
+
+.cc-row1 { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+.cc-name { font-family:'Sora',sans-serif; font-size:15px; font-weight:800; color:var(--ink); }
+.cc-tag {
+  font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px;
+  display:flex; align-items:center; gap:4px; white-space:nowrap; flex-shrink:0;
+}
+.tag-green   { background:var(--green-light);  color:var(--green); }
+.tag-orange  { background:var(--orange-light); color:var(--orange); }
+.tag-red     { background:var(--red-light);    color:var(--red); }
+.tag-muted   { background:var(--bg);           color:var(--muted); }
+.tag-blue    { background:var(--blue-light);   color:var(--blue); }
+
+.cc-row2 { display:flex; align-items:center; gap:12px; }
+.cc-meta { display:flex; align-items:center; gap:5px; }
+.cc-meta svg { width:12px; height:12px; color:var(--muted); }
+.cc-meta span { font-size:11px; color:var(--muted); font-weight:600; }
+
+.ongoing-dot {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:9px; font-weight:800; color:var(--green);
+  letter-spacing:0.06em; margin-bottom:4px;
+}
+.pulse-dot {
+  width:6px; height:6px; border-radius:50%; background:var(--green);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.4); }
+}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 2: ATTENDANCE DETAIL ──
+═══════════════════════════════════════ */
+.s2-header {
+  background: var(--surface);
+  padding: 14px 20px;
+  display:flex; align-items:center; gap:12px;
+  border-bottom: 1px solid var(--border);
+}
+.back-btn {
+  width:34px; height:34px; border-radius:10px; background:var(--bg);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.back-btn:hover { background:var(--border); }
+.s2-header h2 { font-family:'Sora',sans-serif; font-size:17px; font-weight:800; color:var(--ink); }
+
+/* Hero */
+.detail-hero {
+  background: var(--surface);
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+.hero-top h1 { font-family:'Sora',sans-serif; font-size:26px; font-weight:800; color:var(--ink); line-height:1.15; }
+.status-chip {
+  font-size:11px; font-weight:800; padding:5px 11px; border-radius:20px; flex-shrink:0;
+}
+.chip-orange { background:var(--orange-light); color:var(--orange); }
+.chip-green  { background:var(--green-light);  color:var(--green); }
+
+.info-list { display:flex; flex-direction:column; }
+.info-item {
+  display:flex; align-items:center; gap:12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.info-item:last-child { border-bottom:none; }
+.info-ico {
+  width:38px; height:38px; border-radius:11px; background:var(--blue-light);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.info-ico svg { width:18px; height:18px; color:var(--blue); }
+.info-text strong { display:block; font-size:14px; font-weight:800; color:var(--ink); }
+.info-text small  { font-size:11px; color:var(--muted); font-weight:600; }
+
+/* Attendance rate bar */
+.rate-card {
+  margin: 16px 20px 0;
+  background: var(--blue-light);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.rate-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.rate-top span { font-size:13px; font-weight:700; color:var(--blue-dark); }
+.rate-pct { font-family:'Sora',sans-serif; font-size:22px; font-weight:800; color:var(--blue); }
+.rate-track {
+  height:8px; background:rgba(37,99,235,0.15); border-radius:99px; overflow:hidden;
+}
+.rate-fill {
+  height:100%; background:var(--blue); border-radius:99px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* QR button */
+.qr-btn {
+  margin: 16px 20px 8px;
+  background: var(--blue);
+  color:white;
+  border-radius: var(--radius);
+  padding: 16px;
+  width: calc(100% - 40px);
+  font-family:'Sora',sans-serif; font-size:15px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  box-shadow: 0 6px 20px var(--blue-glow);
+  transition: all 0.18s;
+}
+.qr-btn:hover { background:var(--blue-dark); transform:translateY(-2px); box-shadow:0 10px 28px var(--blue-glow); }
+.qr-btn:active { transform:translateY(0); }
+.qr-hint { text-align:center; font-size:11px; color:var(--muted); font-weight:600; padding: 0 20px 4px; }
+
+/* History */
+.hist-section { padding: 4px 20px 24px; }
+.hist-hdr { display:flex; justify-content:space-between; align-items:center; padding:16px 0 10px; }
+.hist-hdr h3 { font-family:'Sora',sans-serif; font-size:15px; font-weight:800; color:var(--ink); }
+
+.hist-item {
+  background:var(--surface); border-radius: var(--radius-sm);
+  padding:12px 14px; margin-bottom:8px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow: var(--shadow);
+}
+.hist-left { display:flex; align-items:center; gap:10px; }
+.hist-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.hist-date { font-size:13px; font-weight:800; color:var(--ink); }
+.hist-time { font-size:11px; color:var(--muted); font-weight:600; }
+.hist-badge {
+  font-size:11px; font-weight:800; padding:4px 12px;
+  border-radius:20px; letter-spacing:0.03em;
+}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 3: QR SCAN ──
+═══════════════════════════════════════ */
+#screen-qr {
+  background:#0d0f1a;
+  position: relative;
+}
+.qr-status-bar {
+  background:rgba(13,15,26,0.85);
+  padding:0 20px;
+  height:44px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:relative; z-index:10;
+}
+.qr-status-bar .time { font-family:'Sora',sans-serif; font-size:15px; font-weight:700; color:white; }
+
+.qr-topbar {
+  background:rgba(13,15,26,0.7);
+  backdrop-filter:blur(12px);
+  padding:12px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  z-index:10; position:relative;
+}
+.qr-close-btn {
+  width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.12);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition: background 0.15s;
+}
+.qr-close-btn:hover { background:rgba(255,255,255,0.22); }
+.qr-label { text-align:center; }
+.qr-label p { font-size:11px; font-weight:800; color:rgba(255,255,255,0.6); letter-spacing:0.1em; text-transform:uppercase; }
+.qr-label span { font-size:12px; color:rgba(255,255,255,0.4); font-weight:500; }
+.qr-mode-badge {
+  background:var(--blue); color:white;
+  font-size:11px; font-weight:800; padding:5px 11px; border-radius:8px; letter-spacing:0.05em;
+}
+
+/* Camera */
+.camera-area {
+  flex:1; position:relative; overflow:hidden;
+  background: linear-gradient(170deg, #0d1b2a 0%, #0a1628 30%, #091a2f 55%, #0a1f14 100%);
+  min-height:320px;
+}
+/* Stars / bokeh */
+.camera-area::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(16,96,47,0.5) 0%, transparent 70%);
+}
+
+/* Fake landscape horizon */
+.horizon {
+  position:absolute; bottom:0; left:0; right:0; height:40%;
+  background: linear-gradient(to top, #0a2010 0%, #0d2b15 40%, transparent 100%);
+}
+.horizon::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:60%;
+  background:
+    radial-gradient(ellipse 120px 30px at 25% 80%, #0a3018 0%, transparent 80%),
+    radial-gradient(ellipse 200px 40px at 75% 70%, #0c3a1a 0%, transparent 80%);
+}
+
+/* Camera lens */
+.cam-lens {
+  position:absolute; top:16px; right:16px; z-index:2;
+  width:52px; height:36px; border-radius:10px;
+  background:radial-gradient(circle, #1a1a28, #0a0a14);
+  border:2px solid #252535;
+  display:flex; align-items:center; justify-content:center;
+}
+.cam-lens::after {
+  content:''; width:24px; height:24px; border-radius:50%;
+  background:radial-gradient(circle, #06060e, #12122a);
+  border:2.5px solid #35354a; box-shadow:0 0 8px rgba(37,99,235,0.3);
+}
+
+/* Viewfinder frame */
+.vf-frame {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:200px; height:200px;
+  z-index:3;
+}
+.vf-corner {
+  position:absolute; width:28px; height:28px;
+  border-color:var(--blue); border-style:solid;
+  animation: cornerPulse 2.5s ease-in-out infinite;
+}
+@keyframes cornerPulse {
+  0%,100% { border-color: var(--blue); opacity:1; }
+  50%      { border-color: #60a5fa; opacity:0.8; }
+}
+.vf-corner.tl { top:0; left:0; border-width:3px 0 0 3px; border-radius:8px 0 0 0; }
+.vf-corner.tr { top:0; right:0; border-width:3px 3px 0 0; border-radius:0 8px 0 0; }
+.vf-corner.bl { bottom:0; left:0; border-width:0 0 3px 3px; border-radius:0 0 0 8px; }
+.vf-corner.br { bottom:0; right:0; border-width:0 3px 3px 0; border-radius:0 0 8px 0; }
+
+.scan-beam {
+  position:absolute; left:8px; right:8px; height:2px;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 40%,#93c5fd 50%,var(--blue) 60%,transparent 100%);
+  box-shadow:0 0 8px var(--blue);
+  animation:beamMove 2.2s cubic-bezier(0.4,0,0.6,1) infinite;
+  top:10px;
+}
+@keyframes beamMove {
+  0%   { top:10px; opacity:1; }
+  48%  { opacity:1; }
+  50%  { top:calc(100% - 10px); opacity:0.5; }
+  52%  { opacity:0; }
+  54%  { top:10px; opacity:0; }
+  56%  { opacity:1; }
+  100% { top:10px; opacity:1; }
+}
+
+/* Mini QR in frame */
+.mini-qr {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  opacity:0.45; z-index:2;
+}
+
+/* Bottom overlay */
+.cam-caption {
+  position:absolute; bottom:0; left:0; right:0; z-index:4;
+  background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 100%);
+  padding:20px 24px 16px; text-align:center;
+}
+.cam-caption p { font-family:'Sora',sans-serif; font-size:16px; font-weight:800; color:white; margin-bottom:5px; }
+.cam-caption small { font-size:12px; color:rgba(255,255,255,0.55); font-weight:500; }
+
+/* Scan bottom panel */
+.scan-panel {
+  background:#13151f;
+  padding: 16px 20px 20px;
+  flex-shrink:0;
+}
+.student-row {
+  background:#1e2130; border-radius:var(--radius-sm);
+  padding:13px 14px; display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px;
+}
+.stu-info { display:flex; align-items:center; gap:11px; }
+.stu-avatar {
+  width:42px; height:42px; border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),#7c3aed);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Sora',sans-serif; font-size:18px; font-weight:800; color:white;
+}
+.stu-name  { font-size:14px; font-weight:800; color:white; }
+.stu-id    { font-size:11px; color:rgba(255,255,255,0.35); font-weight:600; }
+.ready-badge {
+  background:var(--green); color:white;
+  font-size:10px; font-weight:800; padding:5px 10px; border-radius:8px; letter-spacing:0.06em;
+}
+.manual-link {
+  text-align:center; font-size:11px; font-weight:800;
+  color:rgba(255,255,255,0.25); letter-spacing:0.08em; text-transform:uppercase;
+  cursor:pointer; transition:color 0.15s;
+}
+.manual-link:hover { color:rgba(255,255,255,0.5); }
+
+/* ═══════════════════════════════════════
+   TRANSITION HELPER
+═══════════════════════════════════════ */
+.slide-right { animation: slideRight 0.28s cubic-bezier(0.4,0,0.2,1) both; }
+.slide-left  { animation: slideLeft  0.28s cubic-bezier(0.4,0,0.2,1) both; }
+@keyframes slideRight { from { opacity:0; transform:translateX(-28px); } to { opacity:1; transform:translateX(0); } }
+@keyframes slideLeft  { from { opacity:0; transform:translateX(28px);  } to { opacity:1; transform:translateX(0); } }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE TWEAKS
+═══════════════════════════════════════ */
+@media (max-width:480px) {
+  body { padding:0; }
+  #app { border-radius:0; min-height:100vh; }
+  .screen { min-height:100vh; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════════════════════
+     SCREEN 1 – SCHEDULE
+════════════════════════════════ -->
+<div id="screen-schedule" class="screen active">
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0.5" y="4" width="3" height="8" rx="1" fill="#0F172A"/><rect x="5" y="2.5" width="3" height="9.5" rx="1" fill="#0F172A"/><rect x="9.5" y="0.5" width="3" height="11.5" rx="1" fill="#0F172A"/><rect x="14" y="2" width="2.5" height="10" rx="1" fill="#CBD5E1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C10.5 2 12.7 3.1 14.2 4.8L15.5 3.5C13.6 1.4 10.9 0 8 0C5.1 0 2.4 1.4 0.5 3.5L1.8 4.8C3.3 3.1 5.5 2 8 2Z" fill="#0F172A"/><path d="M8 5C9.7 5 11.2 5.7 12.3 6.8L13.6 5.5C12.1 4.1 10.1 3.2 8 3.2C5.9 3.2 3.9 4.1 2.4 5.5L3.7 6.8C4.8 5.7 6.3 5 8 5Z" fill="#0F172A"/><circle cx="8" cy="10" r="2" fill="#0F172A"/></svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="s1-top">
+    <div class="s1-toprow">
+      <div>
+        <h1>Today's Schedule</h1>
+        <p>Monday, Oct 23, 2023</p>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <div class="user-avatar">A</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="date-strip">
+    <div class="date-chip active"><span class="day">MON</span><span class="num">23</span></div>
+    <div class="date-chip"><span class="day">TUE</span><span class="num">24</span></div>
+    <div class="date-chip"><span class="day">WED</span><span class="num">25</span></div>
+    <div class="date-chip"><span class="day">THU</span><span class="num">26</span></div>
+    <div class="date-chip"><span class="day">FRI</span><span class="num">27</span></div>
+    <div class="date-chip"><span class="day">SAT</span><span class="num">28</span></div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill s-green"><div class="sv">3</div><div class="sl">PRESENT</div></div>
+    <div class="stat-pill s-orange"><div class="sv">1</div><div class="sl">LATE</div></div>
+    <div class="stat-pill s-red"><div class="sv">1</div><div class="sl">ABSENT</div></div>
+    <div class="stat-pill s-blue"><div class="sv">85%</div><div class="sl">RATE</div></div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="section-hdr">
+      <h2>4 Classes Today</h2>
+      <span>View All</span>
+    </div>
+    <div class="class-list">
+
+      <div class="class-card ongoing" onclick="goToDetail('physics')">
+        <div class="ongoing-dot"><div class="pulse-dot"></div> ONGOING</div>
+        <div class="cc-row1">
+          <div class="cc-name">Advanced Mathematics</div>
+          <div class="cc-tag tag-green">✓ Present</div>
+        </div>
+        <div class="cc-row2">
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Dr. Sarah Jenkins</span>
+          </div>
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>08:00 – 10:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="class-card late" onclick="goToDetail('history')">
+        <div class="cc-row1">
+          <div class="cc-name">World History</div>
+          <div class="cc-tag tag-orange">⚠ Late</div>
+        </div>
+        <div class="cc-row2">
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Prof. Albert Smith</span>
+          </div>
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>10:30 – 12:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="class-card upcoming" onclick="goToDetail('physics')">
+        <div class="cc-row1">
+          <div class="cc-name">Physics 101</div>
+          <div class="cc-tag tag-muted">⏰ Upcoming</div>
+        </div>
+        <div class="cc-row2">
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Dr. Smith</span>
+          </div>
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>14:00 – 16:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="class-card absent" onclick="goToDetail('writing')">
+        <div class="cc-row1">
+          <div class="cc-name">Creative Writing</div>
+          <div class="cc-tag tag-red">✕ Absent</div>
+        </div>
+        <div class="cc-row2">
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Ms. Emily Bronte</span>
+          </div>
+          <div class="cc-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>15:30 – 17:00</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goToHome()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span class="nav-lbl">HOME</span>
+    </button>
+    <button class="nav-btn active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
+      <span class="nav-lbl" style="color:var(--blue)">SCHEDULE</span>
+    </button>
+    <button class="nav-btn" onclick="goToHome()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="nav-lbl">ALERTS</span>
+    </button>
+    <button class="nav-btn" onclick="goToHome()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-lbl">PROFILE</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 2 – ATTENDANCE DETAIL
+════════════════════════════════ -->
+<div id="screen-detail" class="screen">
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="s2-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
+      </button>
+      <h2>Attendance Detail</h2>
+    </div>
+
+    <div class="detail-hero">
+      <div class="hero-top">
+        <h1 id="detail-title">Physics 101</h1>
+        <span class="status-chip chip-orange" id="detail-status">Not yet checked</span>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <div class="info-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--blue)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="info-text">
+            <strong id="detail-prof">Dr. Smith</strong>
+            <small>Course Professor</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--blue)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="info-text">
+            <strong id="detail-time">14:00 – 16:00</strong>
+            <small>Class Duration</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--blue)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="info-text">
+            <strong id="detail-room">Science Lab B-12</strong>
+            <small>Campus Hall</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-card">
+      <div class="rate-top">
+        <span>Attendance Rate</span>
+        <span class="rate-pct" id="detail-rate">85%</span>
+      </div>
+      <div class="rate-track"><div class="rate-fill" id="rate-bar" style="width:85%"></div></div>
+    </div>
+
+    <button class="qr-btn" onclick="goToQR()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+      Scan QR to Check-in
+    </button>
+    <p class="qr-hint">Check-in available 15 min before &amp; after class start</p>
+
+    <div class="hist-section">
+      <div class="hist-hdr">
+        <h3>Attendance History</h3>
+      </div>
+
+      <div id="detail-history">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goBack()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span class="nav-lbl">HOME</span>
+    </button>
+    <button class="nav-btn active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
+      <span class="nav-lbl" style="color:var(--blue)">SCHEDULE</span>
+    </button>
+    <button class="nav-btn">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="nav-lbl">ALERTS</span>
+    </button>
+    <button class="nav-btn">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-lbl">PROFILE</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 3 – QR SCAN
+════════════════════════════════ -->
+<div id="screen-qr" class="screen">
+  <div class="qr-status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="white"/><path d="M24 4v4a2 2 0 000-4z" fill="white"/></svg>
+    </div>
+  </div>
+
+  <div class="qr-topbar">
+    <button class="qr-close-btn" onclick="goBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="qr-label">
+      <p>CHECK-IN MODE</p>
+      <span id="qr-subject">Physics 101</span>
+    </div>
+    <span class="qr-mode-badge">student</span>
+  </div>
+
+  <div class="camera-area">
+    <div class="horizon"></div>
+    <div class="cam-lens"></div>
+
+    <div class="vf-frame">
+      <div class="vf-corner tl"></div>
+      <div class="vf-corner tr"></div>
+      <div class="vf-corner bl"></div>
+      <div class="vf-corner br"></div>
+      <div class="scan-beam"></div>
+      <div class="mini-qr">
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <rect x="6" y="6" width="28" height="28" rx="4" fill="none" stroke="white" stroke-width="3"/>
+          <rect x="13" y="13" width="14" height="14" rx="1" fill="white"/>
+          <rect x="54" y="6" width="28" height="28" rx="4" fill="none" stroke="white" stroke-width="3"/>
+          <rect x="61" y="13" width="14" height="14" rx="1" fill="white"/>
+          <rect x="6" y="54" width="28" height="28" rx="4" fill="none" stroke="white" stroke-width="3"/>
+          <rect x="13" y="61" width="14" height="14" rx="1" fill="white"/>
+          <rect x="42" y="42" width="6" height="6" fill="white"/><rect x="50" y="42" width="6" height="6" fill="white"/>
+          <rect x="58" y="42" width="6" height="6" fill="white"/><rect x="66" y="42" width="6" height="6" fill="white"/>
+          <rect x="42" y="50" width="6" height="6" fill="white"/><rect x="58" y="50" width="6" height="6" fill="white"/>
+          <rect x="66" y="50" width="6" height="6" fill="white"/>
+          <rect x="42" y="58" width="6" height="6" fill="white"/><rect x="50" y="58" width="6" height="6" fill="white"/>
+          <rect x="66" y="58" width="6" height="6" fill="white"/>
+          <rect x="42" y="66" width="6" height="6" fill="white"/><rect x="58" y="66" width="6" height="6" fill="white"/>
+          <rect x="66" y="66" width="6" height="6" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cam-caption">
+      <p>Align the QR code within the frame</p>
+      <small>Hold steady for a few seconds</small>
+    </div>
+  </div>
+
+  <div class="scan-panel">
+    <div class="student-row">
+      <div class="stu-info">
+        <div class="stu-avatar">A</div>
+        <div>
+          <div class="stu-name">Alex Johnson</div>
+          <div class="stu-id">Student ID: 2024-0082</div>
+        </div>
+      </div>
+      <span class="ready-badge">✓ READY</span>
+    </div>
+    <div class="manual-link" onclick="goBack()">Trouble scanning? Enter code manually</div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ─── Mock Data ───────────────────────────────────────
+const courses = {
+  physics: {
+    title: 'Physics 101',
+    prof: 'Dr. Smith',
+    time: '14:00 – 16:00',
+    room: 'Science Lab B-12',
+    rate: 85,
+    status: 'Not yet checked',
+    statusClass: 'chip-orange',
+    history: [
+      { date:'October 24, 2023', time:'Check-in at 13:58', status:'PRESENT', color:'var(--green)' },
+      { date:'October 22, 2023', time:'Check-in at 14:05', status:'PRESENT', color:'var(--green)' },
+      { date:'October 17, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
+      { date:'October 15, 2023', time:'Check-in at 14:25', status:'LATE',    color:'var(--amber)' },
+      { date:'October 10, 2023', time:'Check-in at 14:02', status:'PRESENT', color:'var(--green)' },
+    ]
+  },
+  history: {
+    title: 'World History',
+    prof: 'Prof. Albert Smith',
+    time: '10:30 – 12:00',
+    room: 'Humanities Hall C-4',
+    rate: 72,
+    status: 'Late',
+    statusClass: 'chip-orange',
+    history: [
+      { date:'October 23, 2023', time:'Check-in at 10:48', status:'LATE',    color:'var(--amber)' },
+      { date:'October 20, 2023', time:'Check-in at 10:32', status:'PRESENT', color:'var(--green)' },
+      { date:'October 16, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
+      { date:'October 13, 2023', time:'Check-in at 10:31', status:'PRESENT', color:'var(--green)' },
+    ]
+  },
+  writing: {
+    title: 'Creative Writing',
+    prof: 'Ms. Emily Bronte',
+    time: '15:30 – 17:00',
+    room: 'Arts Building Room 7',
+    rate: 60,
+    status: 'Absent',
+    statusClass: 'chip-orange',
+    history: [
+      { date:'October 23, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
+      { date:'October 19, 2023', time:'Check-in at 15:31', status:'PRESENT', color:'var(--green)' },
+      { date:'October 12, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
+    ]
+  }
+};
+
+let currentCourse = 'physics';
+let prevScreen = 'schedule';
+
+// ─── Navigation ──────────────────────────────────────
+function showScreen(id, animClass) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'slide-left', 'slide-right');
+  });
+  const el = document.getElementById('screen-' + id);
+  el.classList.add('active');
+  if (animClass) el.classList.add(animClass);
+}
+
+function goToDetail(courseKey) {
+  currentCourse = courseKey;
+  prevScreen = 'schedule';
+  const c = courses[courseKey];
+
+  document.getElementById('detail-title').textContent = c.title;
+  document.getElementById('detail-status').textContent = c.status;
+  document.getElementById('detail-status').className = 'status-chip ' + c.statusClass;
+  document.getElementById('detail-prof').textContent = c.prof;
+  document.getElementById('detail-time').textContent = c.time;
+  document.getElementById('detail-room').textContent = c.room;
+  document.getElementById('detail-rate').textContent = c.rate + '%';
+  document.getElementById('rate-bar').style.width = c.rate + '%';
+
+  const statusColors = { PRESENT:'tag-green', LATE:'tag-orange', ABSENT:'tag-red' };
+  const dotColors    = { PRESENT:'var(--green)', LATE:'var(--amber)', ABSENT:'var(--red)' };
+
+  document.getElementById('detail-history').innerHTML = c.history.map(h => `
+    <div class="hist-item">
+      <div class="hist-left">
+        <div class="hist-dot" style="background:${dotColors[h.status] || h.color}"></div>
+        <div>
+          <div class="hist-date">${h.date}</div>
+          <div class="hist-time">${h.time}</div>
+        </div>
+      </div>
+      <span class="hist-badge ${statusColors[h.status] || 'tag-muted'}"
+        style="${h.status==='PRESENT'?'background:var(--green-light);color:var(--green)':h.status==='ABSENT'?'background:var(--red-light);color:var(--red)':'background:var(--amber-light);color:var(--amber)'}"
+      >${h.status}</span>
+    </div>
+  `).join('');
+
+  showScreen('detail', 'slide-left');
+}
+
+function goToQR() {
+  prevScreen = 'detail';
+  const c = courses[currentCourse];
+  document.getElementById('qr-subject').textContent = c.title;
+  showScreen('qr', 'slide-left');
+}
+
+function goBack() {
+  showScreen(prevScreen === 'detail' ? 'detail' : 'schedule', 'slide-right');
+  prevScreen = prevScreen === 'detail' ? 'schedule' : 'schedule';
+}
+
+function goToHome() {
+  showScreen('schedule', 'slide-right');
+}
+
+// Date chip interaction
+document.querySelectorAll('.date-chip').forEach(chip => {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
