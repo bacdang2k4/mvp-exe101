@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>AttendEase – Student Attendance</title>
+<title>AttendEase – Điểm danh Sinh viên</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════
@@ -560,8 +560,8 @@ svg { display: block; }
   <div class="s1-top">
     <div class="s1-toprow">
       <div>
-        <h1>Today's Schedule</h1>
-        <p>Monday, Oct 23, 2023</p>
+        <h1>Lịch học hôm nay</h1>
+        <p>Thứ Hai, 23 tháng 10, 2023</p>
       </div>
       <div class="top-actions">
         <button class="icon-btn">
@@ -573,38 +573,38 @@ svg { display: block; }
   </div>
 
   <div class="date-strip">
-    <div class="date-chip active"><span class="day">MON</span><span class="num">23</span></div>
-    <div class="date-chip"><span class="day">TUE</span><span class="num">24</span></div>
-    <div class="date-chip"><span class="day">WED</span><span class="num">25</span></div>
-    <div class="date-chip"><span class="day">THU</span><span class="num">26</span></div>
-    <div class="date-chip"><span class="day">FRI</span><span class="num">27</span></div>
-    <div class="date-chip"><span class="day">SAT</span><span class="num">28</span></div>
+    <div class="date-chip active"><span class="day">THỨ 2</span><span class="num">23</span></div>
+    <div class="date-chip"><span class="day">THỨ 3</span><span class="num">24</span></div>
+    <div class="date-chip"><span class="day">THỨ 4</span><span class="num">25</span></div>
+    <div class="date-chip"><span class="day">THỨ 5</span><span class="num">26</span></div>
+    <div class="date-chip"><span class="day">THỨ 6</span><span class="num">27</span></div>
+    <div class="date-chip"><span class="day">THỨ 7</span><span class="num">28</span></div>
   </div>
 
   <div class="stats-bar">
-    <div class="stat-pill s-green"><div class="sv">3</div><div class="sl">PRESENT</div></div>
-    <div class="stat-pill s-orange"><div class="sv">1</div><div class="sl">LATE</div></div>
-    <div class="stat-pill s-red"><div class="sv">1</div><div class="sl">ABSENT</div></div>
-    <div class="stat-pill s-blue"><div class="sv">85%</div><div class="sl">RATE</div></div>
+    <div class="stat-pill s-green"><div class="sv">3</div><div class="sl">CÓ MẶT</div></div>
+    <div class="stat-pill s-orange"><div class="sv">1</div><div class="sl">MUỘN</div></div>
+    <div class="stat-pill s-red"><div class="sv">1</div><div class="sl">VẮNG</div></div>
+    <div class="stat-pill s-blue"><div class="sv">85%</div><div class="sl">TỈ LỆ</div></div>
   </div>
 
   <div class="scroll-area">
     <div class="section-hdr">
-      <h2>4 Classes Today</h2>
-      <span>View All</span>
+      <h2>4 Lớp học hôm nay</h2>
+      <span>Xem tất cả</span>
     </div>
     <div class="class-list">
 
       <div class="class-card ongoing" onclick="goToDetail('physics')">
-        <div class="ongoing-dot"><div class="pulse-dot"></div> ONGOING</div>
+        <div class="ongoing-dot"><div class="pulse-dot"></div> ĐANG DIỄN RA</div>
         <div class="cc-row1">
-          <div class="cc-name">Advanced Mathematics</div>
-          <div class="cc-tag tag-green">✓ Present</div>
+          <div class="cc-name">Toán học nâng cao</div>
+          <div class="cc-tag tag-green">✓ Có mặt</div>
         </div>
         <div class="cc-row2">
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Dr. Sarah Jenkins</span>
+            <span>TS. Sarah Jenkins</span>
           </div>
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -615,13 +615,13 @@ svg { display: block; }
 
       <div class="class-card late" onclick="goToDetail('history')">
         <div class="cc-row1">
-          <div class="cc-name">World History</div>
-          <div class="cc-tag tag-orange">⚠ Late</div>
+          <div class="cc-name">Lịch sử Thế giới</div>
+          <div class="cc-tag tag-orange">⚠ Muộn</div>
         </div>
         <div class="cc-row2">
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Prof. Albert Smith</span>
+            <span>GS. Albert Smith</span>
           </div>
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -632,13 +632,13 @@ svg { display: block; }
 
       <div class="class-card upcoming" onclick="goToDetail('physics')">
         <div class="cc-row1">
-          <div class="cc-name">Physics 101</div>
-          <div class="cc-tag tag-muted">⏰ Upcoming</div>
+          <div class="cc-name">Vật lý 101</div>
+          <div class="cc-tag tag-muted">⏰ Sắp tới</div>
         </div>
         <div class="cc-row2">
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Dr. Smith</span>
+            <span>TS. Smith</span>
           </div>
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -649,13 +649,13 @@ svg { display: block; }
 
       <div class="class-card absent" onclick="goToDetail('writing')">
         <div class="cc-row1">
-          <div class="cc-name">Creative Writing</div>
-          <div class="cc-tag tag-red">✕ Absent</div>
+          <div class="cc-name">Viết sáng tạo</div>
+          <div class="cc-tag tag-red">✕ Vắng mặt</div>
         </div>
         <div class="cc-row2">
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Ms. Emily Bronte</span>
+            <span>Bà Emily Bronte</span>
           </div>
           <div class="cc-meta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -670,19 +670,19 @@ svg { display: block; }
   <div class="bottom-nav">
     <button class="nav-btn" onclick="goToHome()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span class="nav-lbl">HOME</span>
+      <span class="nav-lbl">TRANG CHỦ</span>
     </button>
     <button class="nav-btn active">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
-      <span class="nav-lbl" style="color:var(--blue)">SCHEDULE</span>
+      <span class="nav-lbl" style="color:var(--blue)">LỊCH HỌC</span>
     </button>
     <button class="nav-btn" onclick="goToHome()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <span class="nav-lbl">ALERTS</span>
+      <span class="nav-lbl">THÔNG BÁO</span>
     </button>
     <button class="nav-btn" onclick="goToHome()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="nav-lbl">PROFILE</span>
+      <span class="nav-lbl">CÁ NHÂN</span>
     </button>
   </div>
 </div>
@@ -703,13 +703,13 @@ svg { display: block; }
       <button class="back-btn" onclick="goBack()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
       </button>
-      <h2>Attendance Detail</h2>
+      <h2>Chi tiết điểm danh</h2>
     </div>
 
     <div class="detail-hero">
       <div class="hero-top">
-        <h1 id="detail-title">Physics 101</h1>
-        <span class="status-chip chip-orange" id="detail-status">Not yet checked</span>
+        <h1 id="detail-title">Vật lý 101</h1>
+        <span class="status-chip chip-orange" id="detail-status">Chưa điểm danh</span>
       </div>
       <div class="info-list">
         <div class="info-item">
@@ -717,8 +717,8 @@ svg { display: block; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--blue)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div class="info-text">
-            <strong id="detail-prof">Dr. Smith</strong>
-            <small>Course Professor</small>
+            <strong id="detail-prof">TS. Smith</strong>
+            <small>Giảng viên phụ trách</small>
           </div>
         </div>
         <div class="info-item">
@@ -727,7 +727,7 @@ svg { display: block; }
           </div>
           <div class="info-text">
             <strong id="detail-time">14:00 – 16:00</strong>
-            <small>Class Duration</small>
+            <small>Thời gian học</small>
           </div>
         </div>
         <div class="info-item">
@@ -735,8 +735,8 @@ svg { display: block; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--blue)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
           <div class="info-text">
-            <strong id="detail-room">Science Lab B-12</strong>
-            <small>Campus Hall</small>
+            <strong id="detail-room">Phòng thí nghiệm B-12</strong>
+            <small>Khu vực học tập</small>
           </div>
         </div>
       </div>
@@ -744,7 +744,7 @@ svg { display: block; }
 
     <div class="rate-card">
       <div class="rate-top">
-        <span>Attendance Rate</span>
+        <span>Tỉ lệ điểm danh</span>
         <span class="rate-pct" id="detail-rate">85%</span>
       </div>
       <div class="rate-track"><div class="rate-fill" id="rate-bar" style="width:85%"></div></div>
@@ -752,13 +752,13 @@ svg { display: block; }
 
     <button class="qr-btn" onclick="goToQR()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
-      Scan QR to Check-in
+      Quét QR để điểm danh
     </button>
-    <p class="qr-hint">Check-in available 15 min before &amp; after class start</p>
+    <p class="qr-hint">Điểm danh khả dụng trước & sau giờ học 15 phút</p>
 
     <div class="hist-section">
       <div class="hist-hdr">
-        <h3>Attendance History</h3>
+        <h3>Lịch sử điểm danh</h3>
       </div>
 
       <div id="detail-history">
@@ -770,19 +770,19 @@ svg { display: block; }
   <div class="bottom-nav">
     <button class="nav-btn" onclick="goBack()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span class="nav-lbl">HOME</span>
+      <span class="nav-lbl">TRANG CHỦ</span>
     </button>
     <button class="nav-btn active">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
-      <span class="nav-lbl" style="color:var(--blue)">SCHEDULE</span>
+      <span class="nav-lbl" style="color:var(--blue)">LỊCH HỌC</span>
     </button>
     <button class="nav-btn">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <span class="nav-lbl">ALERTS</span>
+      <span class="nav-lbl">THÔNG BÁO</span>
     </button>
     <button class="nav-btn">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="nav-lbl">PROFILE</span>
+      <span class="nav-lbl">CÁ NHÂN</span>
     </button>
   </div>
 </div>
@@ -803,10 +803,10 @@ svg { display: block; }
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="qr-label">
-      <p>CHECK-IN MODE</p>
-      <span id="qr-subject">Physics 101</span>
+      <p>CHẾ ĐỘ ĐIỂM DANH</p>
+      <span id="qr-subject">Vật lý 101</span>
     </div>
-    <span class="qr-mode-badge">student</span>
+    <span class="qr-mode-badge">sinh viên</span>
   </div>
 
   <div class="camera-area">
@@ -840,8 +840,8 @@ svg { display: block; }
     </div>
 
     <div class="cam-caption">
-      <p>Align the QR code within the frame</p>
-      <small>Hold steady for a few seconds</small>
+      <p>Căn chỉnh mã QR vào trong khung</p>
+      <small>Giữ yên trong vài giây</small>
     </div>
   </div>
 
@@ -851,12 +851,12 @@ svg { display: block; }
         <div class="stu-avatar">A</div>
         <div>
           <div class="stu-name">Alex Johnson</div>
-          <div class="stu-id">Student ID: 2024-0082</div>
+          <div class="stu-id">Mã SV: 2024-0082</div>
         </div>
       </div>
-      <span class="ready-badge">✓ READY</span>
+      <span class="ready-badge">✓ SẴN SÀNG</span>
     </div>
-    <div class="manual-link" onclick="goBack()">Trouble scanning? Enter code manually</div>
+    <div class="manual-link" onclick="goBack()">Gặp sự cố khi quét? Nhập mã thủ công</div>
   </div>
 </div>
 
@@ -866,48 +866,48 @@ svg { display: block; }
 // ─── Mock Data ───────────────────────────────────────
 const courses = {
   physics: {
-    title: 'Physics 101',
-    prof: 'Dr. Smith',
+    title: 'Vật lý 101',
+    prof: 'TS. Smith',
     time: '14:00 – 16:00',
-    room: 'Science Lab B-12',
+    room: 'Phòng thí nghiệm B-12',
     rate: 85,
-    status: 'Not yet checked',
+    status: 'Chưa điểm danh',
     statusClass: 'chip-orange',
     history: [
-      { date:'October 24, 2023', time:'Check-in at 13:58', status:'PRESENT', color:'var(--green)' },
-      { date:'October 22, 2023', time:'Check-in at 14:05', status:'PRESENT', color:'var(--green)' },
-      { date:'October 17, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
-      { date:'October 15, 2023', time:'Check-in at 14:25', status:'LATE',    color:'var(--amber)' },
-      { date:'October 10, 2023', time:'Check-in at 14:02', status:'PRESENT', color:'var(--green)' },
+      { date:'24 tháng 10, 2023', time:'Điểm danh lúc 13:58', status:'CÓ MẶT', color:'var(--green)' },
+      { date:'22 tháng 10, 2023', time:'Điểm danh lúc 14:05', status:'CÓ MẶT', color:'var(--green)' },
+      { date:'17 tháng 10, 2023', time:'Không có dữ liệu',  status:'VẮNG',  color:'var(--red)' },
+      { date:'15 tháng 10, 2023', time:'Điểm danh lúc 14:25', status:'MUỘN',    color:'var(--amber)' },
+      { date:'10 tháng 10, 2023', time:'Điểm danh lúc 14:02', status:'CÓ MẶT', color:'var(--green)' },
     ]
   },
   history: {
-    title: 'World History',
-    prof: 'Prof. Albert Smith',
+    title: 'Lịch sử Thế giới',
+    prof: 'GS. Albert Smith',
     time: '10:30 – 12:00',
-    room: 'Humanities Hall C-4',
+    room: 'Tòa nhà Nhân văn C-4',
     rate: 72,
-    status: 'Late',
+    status: 'Muộn',
     statusClass: 'chip-orange',
     history: [
-      { date:'October 23, 2023', time:'Check-in at 10:48', status:'LATE',    color:'var(--amber)' },
-      { date:'October 20, 2023', time:'Check-in at 10:32', status:'PRESENT', color:'var(--green)' },
-      { date:'October 16, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
-      { date:'October 13, 2023', time:'Check-in at 10:31', status:'PRESENT', color:'var(--green)' },
+      { date:'23 tháng 10, 2023', time:'Điểm danh lúc 10:48', status:'MUỘN',    color:'var(--amber)' },
+      { date:'20 tháng 10, 2023', time:'Điểm danh lúc 10:32', status:'CÓ MẶT', color:'var(--green)' },
+      { date:'16 tháng 10, 2023', time:'Không có dữ liệu',  status:'VẮNG',  color:'var(--red)' },
+      { date:'13 tháng 10, 2023', time:'Điểm danh lúc 10:31', status:'CÓ MẶT', color:'var(--green)' },
     ]
   },
   writing: {
-    title: 'Creative Writing',
-    prof: 'Ms. Emily Bronte',
+    title: 'Viết sáng tạo',
+    prof: 'Bà Emily Bronte',
     time: '15:30 – 17:00',
-    room: 'Arts Building Room 7',
+    room: 'Tòa nhà Nghệ thuật Phòng 7',
     rate: 60,
-    status: 'Absent',
+    status: 'Vắng mặt',
     statusClass: 'chip-orange',
     history: [
-      { date:'October 23, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
-      { date:'October 19, 2023', time:'Check-in at 15:31', status:'PRESENT', color:'var(--green)' },
-      { date:'October 12, 2023', time:'No data recorded',  status:'ABSENT',  color:'var(--red)' },
+      { date:'23 tháng 10, 2023', time:'Không có dữ liệu',  status:'VẮNG',  color:'var(--red)' },
+      { date:'19 tháng 10, 2023', time:'Điểm danh lúc 15:31', status:'CÓ MẶT', color:'var(--green)' },
+      { date:'12 tháng 10, 2023', time:'Không có dữ liệu',  status:'VẮNG',  color:'var(--red)' },
     ]
   }
 };
@@ -939,8 +939,8 @@ function goToDetail(courseKey) {
   document.getElementById('detail-rate').textContent = c.rate + '%';
   document.getElementById('rate-bar').style.width = c.rate + '%';
 
-  const statusColors = { PRESENT:'tag-green', LATE:'tag-orange', ABSENT:'tag-red' };
-  const dotColors    = { PRESENT:'var(--green)', LATE:'var(--amber)', ABSENT:'var(--red)' };
+  const statusColors = { 'CÓ MẶT':'tag-green', 'MUỘN':'tag-orange', 'VẮNG':'tag-red' };
+  const dotColors    = { 'CÓ MẶT':'var(--green)', 'MUỘN':'var(--amber)', 'VẮNG':'var(--red)' };
 
   document.getElementById('detail-history').innerHTML = c.history.map(h => `
     <div class="hist-item">
@@ -952,7 +952,7 @@ function goToDetail(courseKey) {
         </div>
       </div>
       <span class="hist-badge ${statusColors[h.status] || 'tag-muted'}"
-        style="${h.status==='PRESENT'?'background:var(--green-light);color:var(--green)':h.status==='ABSENT'?'background:var(--red-light);color:var(--red)':'background:var(--amber-light);color:var(--amber)'}"
+        style="${h.status==='CÓ MẶT'?'background:var(--green-light);color:var(--green)':h.status==='VẮNG'?'background:var(--red-light);color:var(--red)':'background:var(--amber-light);color:var(--amber)'}"
       >${h.status}</span>
     </div>
   `).join('');

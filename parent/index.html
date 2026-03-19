@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>ParentConnect – Attendance Portal</title>
+<title>ParentConnect – Cổng điểm danh</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Fraunces:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ════════════════════════════════
@@ -686,46 +686,46 @@ svg{display:block;flex-shrink:0}
 
   <div style="background:var(--surf);padding:10px 22px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)">
     <div class="icon-btn" style="visibility:hidden"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg></div>
-    <span style="font-size:15px;font-weight:800;color:var(--ink);flex:1;text-align:center">Parent Portal</span>
+    <span style="font-size:15px;font-weight:800;color:var(--ink);flex:1;text-align:center">Cổng thông tin Phụ huynh</span>
     <div style="width:34px"></div>
   </div>
 
   <div class="scroll">
     <div class="sel-title-block" style="padding-top:28px">
-      <h1>Select a Student</h1>
-      <p>Choose a profile to view academic progress</p>
+      <h1>Chọn học sinh</h1>
+      <p>Chọn hồ sơ để xem tiến độ học tập</p>
     </div>
 
     <div class="student-grid">
       <div class="stu-card selected" onclick="selectStudent('alex',this)" id="card-alex">
         <div class="stu-avatar" style="background:#FEF3C7">🧒<div class="online-dot"></div></div>
         <div class="stu-name">Alex Johnson</div>
-        <div class="stu-grade">Grade 5 · Section A</div>
+        <div class="stu-grade">Lớp 5 · Nhóm A</div>
       </div>
       <div class="stu-card" onclick="selectStudent('sarah',this)" id="card-sarah">
         <div class="stu-avatar" style="background:#EDE9FE">👧</div>
         <div class="stu-name">Sarah Johnson</div>
-        <div class="stu-grade">Grade 3 · Section B</div>
+        <div class="stu-grade">Lớp 3 · Nhóm B</div>
       </div>
       <div class="stu-card" onclick="selectStudent('maya',this)" id="card-maya">
         <div class="stu-avatar" style="background:#ECFDF5">🧒</div>
         <div class="stu-name">Maya Johnson</div>
-        <div class="stu-grade">Grade 1 · Section C</div>
+        <div class="stu-grade">Lớp 1 · Nhóm C</div>
       </div>
       <div class="add-card" onclick="alert('Tính năng đang phát triển!')">
         <div class="add-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         </div>
-        <span>Add Student</span>
-        <small>New registration</small>
+        <span>Thêm học sinh</span>
+        <small>Đăng ký mới</small>
       </div>
     </div>
 
     <button class="continue-btn" onclick="goDash()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-      Continue to Dashboard
+      Tiếp tục đến Bảng điều khiển
     </button>
-    <div class="login-hint">You are currently logged in as <b>Robert Johnson</b>.<br>Need to switch accounts? <a onclick="alert('Đăng xuất...')">Log out</a></div>
+    <div class="login-hint">Bạn đang đăng nhập với tư cách là <b>Robert Johnson</b>.<br>Cần chuyển tài khoản? <a onclick="alert('Đăng xuất...')">Đăng xuất</a></div>
   </div>
 </div>
 
@@ -742,7 +742,7 @@ svg{display:block;flex-shrink:0}
   <div class="dash-hero">
     <div class="dash-toprow">
       <div>
-        <h2>Attendance Dashboard</h2>
+        <h2>Bảng điều khiển Điểm danh</h2>
       </div>
       <div style="display:flex;gap:10px">
         <div class="notif-btn" onclick="goNotif()">
@@ -756,7 +756,7 @@ svg{display:block;flex-shrink:0}
       <div class="dash-stu-avatar" style="background:#FEF3C7" id="dash-avatar">🧒<div class="online-dot"></div></div>
       <div class="dash-stu-info">
         <div class="dash-stu-name" id="dash-name">Alex Johnson</div>
-        <div class="dash-stu-sub" id="dash-grade">Grade 10 · Section B</div>
+        <div class="dash-stu-sub" id="dash-grade">Lớp 10 · Nhóm B</div>
         <div class="dash-stu-id" id="dash-id">ID: #88234</div>
       </div>
       <button style="background:rgba(255,255,255,.15);border-radius:10px;padding:8px 10px;cursor:pointer" onclick="goSelect()">
@@ -768,37 +768,37 @@ svg{display:block;flex-shrink:0}
   <div class="scroll">
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="lbl">Attendance Rate</div>
+        <div class="lbl">Tỉ lệ chuyên cần</div>
         <div class="stat-val" id="dash-rate">94%</div>
-        <div class="stat-sub green" id="dash-rate-sub">+2% this week</div>
+        <div class="stat-sub green" id="dash-rate-sub">+2% tuần này</div>
         <div class="rate-bar"><div class="rate-fill" id="dash-rate-bar" style="width:94%"></div></div>
       </div>
       <div class="stat-card">
-        <div class="lbl">Total Classes</div>
+        <div class="lbl">Tổng số tiết học</div>
         <div class="stat-val">120</div>
-        <div class="stat-sub muted">This Semester</div>
+        <div class="stat-sub muted">Học kỳ này</div>
       </div>
       <div class="stat-card">
-        <div class="lbl">Absences</div>
+        <div class="lbl">Vắng mặt</div>
         <div class="stat-val" id="dash-abs">5</div>
-        <div class="stat-sub orange" id="dash-abs-sub">+1 today · Excused: 4</div>
+        <div class="stat-sub orange" id="dash-abs-sub">+1 hôm nay · Có phép: 4</div>
       </div>
       <div class="stat-card">
-        <div class="lbl">Lates</div>
+        <div class="lbl">Đi muộn</div>
         <div class="stat-val" id="dash-late">2</div>
-        <div class="stat-sub muted">Avg: 5 min</div>
+        <div class="stat-sub muted">TB: 5 phút</div>
       </div>
     </div>
 
     <button class="view-cal-btn" style="display:flex;margin:14px 22px 0;width:calc(100% - 44px)" onclick="goCal()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      View Full Calendar
+      Xem toàn bộ lịch học
     </button>
 
     <div class="recent-section">
       <div class="sec-hdr">
-        <h3>Recent Activity</h3>
-        <button onclick="goNotif()">Mark All Read</button>
+        <h3>Hoạt động gần đây</h3>
+        <button onclick="goNotif()">Đánh dấu tất cả đã đọc</button>
       </div>
 
       <div class="activity-item">
@@ -806,10 +806,10 @@ svg{display:block;flex-shrink:0}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div class="act-text">
-          <div class="act-title">Present in Physics</div>
-          <div class="act-desc">Alex checked in for Physics class on time.</div>
+          <div class="act-title">Có mặt môn Vật lý</div>
+          <div class="act-desc">Alex đã điểm danh môn Vật lý đúng giờ.</div>
         </div>
-        <div class="act-time">10:30 AM</div>
+        <div class="act-time">10:30 SA</div>
       </div>
 
       <div class="activity-item">
@@ -817,10 +817,10 @@ svg{display:block;flex-shrink:0}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
         <div class="act-text">
-          <div class="act-title">Late for Mathematics</div>
-          <div class="act-desc">Alex arrived 12 minutes late for Mathematics.</div>
+          <div class="act-title">Đi muộn môn Giải tích</div>
+          <div class="act-desc">Alex đã đến muộn 12 phút môn Giải tích.</div>
         </div>
-        <div class="act-time">Yesterday</div>
+        <div class="act-time">Hôm qua</div>
       </div>
 
       <div class="activity-item">
@@ -828,10 +828,10 @@ svg{display:block;flex-shrink:0}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
         </div>
         <div class="act-text">
-          <div class="act-title">Absence Logged</div>
-          <div class="act-desc">Alex was marked absent for English Literature.</div>
+          <div class="act-title">Ghi nhận vắng mặt</div>
+          <div class="act-desc">Alex bị đánh dấu vắng mặt môn Văn học Anh.</div>
         </div>
-        <div class="act-time">Oct 24</div>
+        <div class="act-time">24 thg 10</div>
       </div>
     </div>
   </div>
@@ -839,23 +839,23 @@ svg{display:block;flex-shrink:0}
   <div class="bnav">
     <button class="bnav-btn" onclick="goSelect()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span>Home</span>
+      <span>Trang chủ</span>
     </button>
     <button class="bnav-btn" onclick="goMsgList()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Message</span>
+      <span>Tin nhắn</span>
     </button>
     <button class="bnav-btn active">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
-      <span style="color:var(--blue)">Attendance</span>
+      <span style="color:var(--blue)">Điểm danh</span>
     </button>
     <button class="bnav-btn" onclick="goGrades()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      <span>Grades</span>
+      <span>Điểm số</span>
     </button>
     <button class="bnav-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+      <span>Cá nhân</span>
     </button>
   </div>
 </div>
@@ -875,7 +875,7 @@ svg{display:block;flex-shrink:0}
     <button class="icon-btn" onclick="goDash()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
     </button>
-    <h2>Attendance</h2>
+    <h2>Điểm danh</h2>
     <button class="icon-btn" onclick="goNotif()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
     </button>
@@ -886,10 +886,10 @@ svg{display:block;flex-shrink:0}
       <div class="cal-stu-av" style="background:#FEF3C7" id="cal-avatar">🧒</div>
       <div>
         <div class="cal-stu-name" id="cal-name">Alex Johnson</div>
-        <div class="cal-stu-grade" id="cal-grade">Grade 4 · Section B</div>
+        <div class="cal-stu-grade" id="cal-grade">Khối 4 · Lớp B</div>
       </div>
     </div>
-    <span class="chip chip-green">94% Rate</span>
+    <span class="chip chip-green">Tỉ lệ 94%</span>
   </div>
 
   <div class="scroll">
@@ -898,58 +898,58 @@ svg{display:block;flex-shrink:0}
         <button class="cal-nav-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <span class="cal-month">October 2023</span>
+        <span class="cal-month">Tháng 10 2023</span>
         <button class="cal-nav-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
       <div class="cal-days-hdr">
-        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        <span>CN</span><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
       <div class="cal-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Present</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Absent</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Late</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Có mặt</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Vắng mặt</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Đi muộn</div>
       </div>
     </div>
 
     <div id="day-detail-wrap" style="display:none" class="day-detail">
       <div class="day-detail-hdr">
-        <h4 id="day-detail-title">Wednesday, Oct 11</h4>
-        <span class="chip chip-green">Fully Present</span>
+        <h4 id="day-detail-title">Thứ Tư, 11 thg 10</h4>
+        <span class="chip chip-green">Có mặt đầy đủ</span>
       </div>
       <div class="period-row">
-        <div class="period-time">08:30<br>AM</div>
+        <div class="period-time">08:30<br>SA</div>
         <div class="period-icon" style="background:var(--blue-lt)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
         </div>
-        <div class="period-name"><strong>Mathematics</strong><small>Room 402 · Prof. Higgins</small></div>
-        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+        <div class="period-name"><strong>Toán học</strong><small>Phòng 402 · GS. Higgins</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Có mặt</span>
       </div>
       <div class="period-row" onclick="goAlert()">
-        <div class="period-time">10:15<br>AM</div>
+        <div class="period-time">10:15<br>SA</div>
         <div class="period-icon" style="background:var(--teal-lt)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         </div>
-        <div class="period-name"><strong>English Literature</strong><small>Library · Ms. Thorne</small></div>
-        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+        <div class="period-name"><strong>Văn học Anh</strong><small>Thư viện · Cô Thorne</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Có mặt</span>
       </div>
       <div class="period-row">
-        <div class="period-time">01:00<br>PM</div>
+        <div class="period-time">01:00<br>CH</div>
         <div class="period-icon" style="background:var(--green-lt)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         </div>
-        <div class="period-name"><strong>Physical Education</strong><small>Main Gym · Coach Miller</small></div>
-        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Present</span>
+        <div class="period-name"><strong>Giáo dục Thể chất</strong><small>Nhà thi đấu · Thầy Miller</small></div>
+        <span class="chip chip-green" style="font-size:10px;padding:3px 8px">Có mặt</span>
       </div>
       <div class="period-row">
-        <div class="period-time">02:45<br>PM</div>
+        <div class="period-time">02:45<br>CH</div>
         <div class="period-icon" style="background:#FDF4FF">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <div class="period-name"><strong>Art & Design</strong><small>Studio B · Mr. Rossi</small></div>
-        <span class="chip chip-muted" style="font-size:10px;padding:3px 8px">Upcoming</span>
+        <div class="period-name"><strong>Nghệ thuật & Thiết kế</strong><small>Phòng Studio B · Thầy Rossi</small></div>
+        <span class="chip chip-muted" style="font-size:10px;padding:3px 8px">Sắp tới</span>
       </div>
     </div>
   </div>
@@ -957,23 +957,23 @@ svg{display:block;flex-shrink:0}
   <div class="bnav">
     <button class="bnav-btn" onclick="goSelect()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span>Home</span>
+      <span>Trang chủ</span>
     </button>
-    <button class="bnav-btn">
+    <button class="bnav-btn" onclick="goMsgList()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Message</span>
+      <span>Tin nhắn</span>
     </button>
     <button class="bnav-btn active">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
-      <span style="color:var(--blue)">Attendance</span>
+      <span style="color:var(--blue)">Điểm danh</span>
     </button>
     <button class="bnav-btn" onclick="goGrades()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      <span>Grades</span>
+      <span>Điểm số</span>
     </button>
     <button class="bnav-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+      <span>Cá nhân</span>
     </button>
   </div>
 </div>
@@ -985,7 +985,7 @@ svg{display:block;flex-shrink:0}
   <div class="alert-sheet">
     <div class="alert-handle"></div>
     <div class="alert-toprow">
-      <h3>Parent Attendance Alert</h3>
+      <h3>Cảnh báo Điểm danh</h3>
       <button class="close-btn" onclick="goCal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -996,59 +996,59 @@ svg{display:block;flex-shrink:0}
         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       </div>
     </div>
-    <div class="alert-chip"><span>ABSENT NOTIFICATION</span></div>
+    <div class="alert-chip"><span>THÔNG BÁO VẮNG MẶT</span></div>
 
     <div class="alert-student">
       <h2>Alex Johnson</h2>
-      <p>Student ID: #ST-88210</p>
+      <p>Mã sinh viên: #ST-88210</p>
     </div>
 
     <div class="alert-details">
       <div class="alert-detail-card">
-        <div class="al">Subject</div>
-        <strong>Advanced Mathematics</strong>
+        <div class="al">Môn học</div>
+        <strong>Toán học nâng cao</strong>
       </div>
       <div class="alert-detail-card">
-        <div class="al">Time</div>
-        <strong>09:00 – 10:00 AM</strong>
-        <small>1st Period</small>
+        <div class="al">Thời gian</div>
+        <strong>09:00 – 10:00 SA</strong>
+        <small>Tiết 1</small>
       </div>
       <div class="alert-detail-card">
-        <div class="al">Teacher</div>
-        <strong>Mr. Smith</strong>
-        <small>Mathematics Dept.</small>
+        <div class="al">Giáo viên</div>
+        <strong>Thầy Smith</strong>
+        <small>Khoa Toán học</small>
       </div>
       <div class="alert-detail-card">
-        <div class="al">Date</div>
-        <strong>Oct 23, 2023</strong>
-        <small>Today</small>
+        <div class="al">Ngày</div>
+        <strong>23 thg 10, 2023</strong>
+        <small>Hôm nay</small>
       </div>
     </div>
 
     <div class="alert-message">
-      Alex was marked absent for their first period class today. Please acknowledge this notification or contact the teacher for more information if this is an error.
+      Alex đã bị đánh dấu vắng mặt trong tiết học đầu tiên hôm nay. Vui lòng xác nhận thông báo này hoặc liên hệ với giáo viên nếu có sai sót.
     </div>
 
     <div class="alert-location">
-      <small>Location Class</small>
-      <strong>Main Hall – Science Block</strong>
+      <small>Phòng học</small>
+      <strong>Sảnh chính – Khu Khoa học</strong>
     </div>
 
     <div class="alert-actions">
       <button class="ack-btn" onclick="goCal()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Acknowledge Attendance
+        Xác nhận điểm danh
       </button>
       <div class="alert-row-btns">
         <button class="contact-btn" onclick="goChat('sarah')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          Contact Teacher
+          Liên hệ giáo viên
         </button>
-        <button class="dismiss-btn" onclick="goCal()">Dismiss</button>
+        <button class="dismiss-btn" onclick="goCal()">Bỏ qua</button>
       </div>
     </div>
 
-    <div class="alert-footer">School Management System · Support: +1 (555) 000-1234</div>
+    <div class="alert-footer">Hệ thống Quản lý Trường học · Hỗ trợ: +1 (555) 000-1234</div>
   </div>
 </div>
 
@@ -1068,27 +1068,27 @@ svg{display:block;flex-shrink:0}
       <button class="icon-btn" onclick="goDash()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
       </button>
-      <h2>Notifications</h2>
+      <h2>Thông báo</h2>
     </div>
-    <span class="mark-all">Mark all as read</span>
+    <span class="mark-all">Đánh dấu tất cả đã đọc</span>
   </div>
 
   <div class="notif-tabs">
-    <div class="ntab active">All</div>
-    <div class="ntab">Attendance</div>
-    <div class="ntab">Summaries</div>
+    <div class="ntab active">Tất cả</div>
+    <div class="ntab">Điểm danh</div>
+    <div class="ntab">Tổng hợp</div>
   </div>
 
   <div class="scroll">
-    <div class="notif-section-lbl">Today</div>
+    <div class="notif-section-lbl">Hôm nay</div>
 
     <div class="notif-item unread" onclick="goAlert()">
       <div class="notif-ico red">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="notif-body">
-        <div class="notif-title"><div class="unread-dot"></div>Unexcused Absence<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">9:15 AM</span></div>
-        <div class="notif-desc">Alex was marked absent for the 1st period (Mathematics).</div>
+        <div class="notif-title"><div class="unread-dot"></div>Vắng mặt không phép<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">09:15 SA</span></div>
+        <div class="notif-desc">Alex bị đánh dấu vắng mặt tiết 1 (Toán học).</div>
       </div>
     </div>
 
@@ -1097,20 +1097,20 @@ svg{display:block;flex-shrink:0}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <div class="notif-body">
-        <div class="notif-title"><div class="unread-dot"></div>Late Arrival<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">8:45 AM</span></div>
-        <div class="notif-desc">Sarah arrived 15 minutes late for Homeroom today.</div>
+        <div class="notif-title"><div class="unread-dot"></div>Đi muộn<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">08:45 SA</span></div>
+        <div class="notif-desc">Sarah đã đến muộn 15 phút tiết Sinh hoạt lớp hôm nay.</div>
       </div>
     </div>
 
-    <div class="notif-section-lbl">Yesterday</div>
+    <div class="notif-section-lbl">Hôm qua</div>
 
     <div class="notif-item">
       <div class="notif-ico green">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <div class="notif-body">
-        <div class="notif-title">Excuse Approved<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">4:30 PM</span></div>
-        <div class="notif-desc">The doctor's note for Alex's absence on Monday has been processed.</div>
+        <div class="notif-title">Đã duyệt đơn xin phép<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">04:30 CH</span></div>
+        <div class="notif-desc">Giấy xác nhận của bác sĩ cho việc vắng mặt của Alex vào Thứ Hai đã được xử lý.</div>
       </div>
     </div>
 
@@ -1119,20 +1119,20 @@ svg{display:block;flex-shrink:0}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       </div>
       <div class="notif-body">
-        <div class="notif-title">Weekly Attendance Summary<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">9:00 AM</span></div>
-        <div class="notif-desc">Your weekly summary for week 12 is now available for review.</div>
+        <div class="notif-title">Tổng hợp điểm danh tuần<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">09:00 SA</span></div>
+        <div class="notif-desc">Bản tổng hợp điểm danh tuần 12 của bạn đã sẵn sàng để xem xét.</div>
       </div>
     </div>
 
-    <div class="notif-section-lbl">Last Week</div>
+    <div class="notif-section-lbl">Tuần trước</div>
 
     <div class="notif-item">
       <div class="notif-ico muted">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       </div>
       <div class="notif-body">
-        <div class="notif-title">Schedule Change<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">Nov 12</span></div>
-        <div class="notif-desc">Friday's assembly has been rescheduled to Thursday morning.</div>
+        <div class="notif-title">Thay đổi lịch học<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:auto">12 thg 11</span></div>
+        <div class="notif-desc">Buổi tập trung Thứ Sáu đã được đổi sang sáng Thứ Năm.</div>
       </div>
     </div>
   </div>
@@ -1140,23 +1140,23 @@ svg{display:block;flex-shrink:0}
   <div class="bnav">
     <button class="bnav-btn" onclick="goSelect()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span>Home</span>
+      <span>Trang chủ</span>
     </button>
     <button class="bnav-btn" onclick="goMsgList()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Message</span>
+      <span>Tin nhắn</span>
     </button>
     <button class="bnav-btn active">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
-      <span style="color:var(--blue)">Attendance</span>
+      <span style="color:var(--blue)">Điểm danh</span>
     </button>
     <button class="bnav-btn" onclick="goGrades()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      <span>Grades</span>
+      <span>Điểm số</span>
     </button>
     <button class="bnav-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+      <span>Cá nhân</span>
     </button>
   </div>
 </div>
@@ -1173,7 +1173,7 @@ svg{display:block;flex-shrink:0}
   </div>
 
   <div class="msg-header">
-    <h2>Messages</h2>
+    <h2>Tin nhắn</h2>
     <div class="msg-edit-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     </div>
@@ -1182,7 +1182,7 @@ svg{display:block;flex-shrink:0}
   <div class="msg-search">
     <div class="msg-search-inner">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search teachers or subjects…" readonly>
+      <input type="text" placeholder="Tìm kiếm giáo viên hoặc môn học…" readonly>
     </div>
   </div>
 
@@ -1192,11 +1192,11 @@ svg{display:block;flex-shrink:0}
       <div class="contact-av" style="background:#FDE8D8">👩‍🏫<div class="online-ring"></div></div>
       <div class="contact-body">
         <div class="contact-top">
-          <span class="contact-name">Ms. Sarah Jenkins</span>
-          <span class="contact-time">10:45 AM</span>
+          <span class="contact-name">Cô Sarah Jenkins</span>
+          <span class="contact-time">10:45 SA</span>
         </div>
-        <div><span class="contact-subject-chip" style="background:#EFF6FF;color:#2563EB">Mathematics</span></div>
-        <div class="contact-preview">Hello! I wanted to update you o…</div>
+        <div><span class="contact-subject-chip" style="background:#EFF6FF;color:#2563EB">Toán học</span></div>
+        <div class="contact-preview">Chào bạn! Tôi muốn cập nhật cho bạn về…</div>
       </div>
       <div class="unread-badge">2</div>
     </div>
@@ -1206,13 +1206,13 @@ svg{display:block;flex-shrink:0}
       <div class="contact-av" style="background:#E8F4FD">👨‍🏫</div>
       <div class="contact-body">
         <div class="contact-top">
-          <span class="contact-name">Mr. David Wilson</span>
-          <span class="contact-time">2:20 PM</span>
+          <span class="contact-name">Thầy David Wilson</span>
+          <span class="contact-time">2:20 CH</span>
         </div>
-        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">English</span></div>
+        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">Tiếng Anh</span></div>
         <div class="contact-preview">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-          The worksheet is attached for tom…
+          Phiếu bài tập đã được đính kèm cho ng…
         </div>
       </div>
     </div>
@@ -1222,13 +1222,13 @@ svg{display:block;flex-shrink:0}
       <div class="contact-av" style="background:#FEF3C7">👩‍🏫</div>
       <div class="contact-body">
         <div class="contact-top">
-          <span class="contact-name">Mrs. Elena Rodriguez</span>
-          <span class="contact-time">Yesterday</span>
+          <span class="contact-name">Cô Elena Rodriguez</span>
+          <span class="contact-time">Hôm qua</span>
         </div>
-        <div><span class="contact-subject-chip" style="background:#FFF7ED;color:#EA580C">History</span></div>
+        <div><span class="contact-subject-chip" style="background:#FFF7ED;color:#EA580C">Lịch sử</span></div>
         <div class="contact-preview">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Great job on the essay about the …
+          Bài luận về… rất tốt…
         </div>
       </div>
     </div>
@@ -1238,11 +1238,11 @@ svg{display:block;flex-shrink:0}
       <div class="contact-av" style="background:#EDE9FE">👨‍🔬</div>
       <div class="contact-body">
         <div class="contact-top">
-          <span class="contact-name">Mr. James Chen</span>
-          <span class="contact-time">Monday</span>
+          <span class="contact-name">Thầy James Chen</span>
+          <span class="contact-time">Thứ Hai</span>
         </div>
-        <div><span class="contact-subject-chip" style="background:#F0F9FF;color:#0284C7">Physics</span></div>
-        <div class="contact-preview">Remember the lab safety rules for ou…</div>
+        <div><span class="contact-subject-chip" style="background:#F0F9FF;color:#0284C7">Vật lý</span></div>
+        <div class="contact-preview">Hãy nhớ các quy tắc an toàn phòng thí nghiệm cho…</div>
       </div>
     </div>
 
@@ -1251,11 +1251,11 @@ svg{display:block;flex-shrink:0}
       <div class="contact-av" style="background:#ECFDF5">👩‍🔬</div>
       <div class="contact-body">
         <div class="contact-top">
-          <span class="contact-name">Dr. Sophia Williams</span>
-          <span class="contact-time">Mar 12</span>
+          <span class="contact-name">TS. Sophia Williams</span>
+          <span class="contact-time">12 thg 3</span>
         </div>
-        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">Biology</span></div>
-        <div class="contact-preview">The photosynthesis project is due thi…</div>
+        <div><span class="contact-subject-chip" style="background:#F0FDF4;color:#16A34A">Sinh học</span></div>
+        <div class="contact-preview">Dự án quang hợp sẽ đến hạn vào…</div>
       </div>
     </div>
   </div>
@@ -1263,23 +1263,23 @@ svg{display:block;flex-shrink:0}
   <div class="bnav">
     <button class="bnav-btn" onclick="goDash()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span>Home</span>
+      <span>Trang chủ</span>
     </button>
     <button class="bnav-btn active">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#2563EB"/></svg>
-      <span style="color:var(--blue)">Message</span>
+      <span style="color:var(--blue)">Tin nhắn</span>
     </button>
     <button class="bnav-btn" onclick="goCal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span>Attendance</span>
+      <span>Điểm danh</span>
     </button>
     <button class="bnav-btn" onclick="goGrades()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      <span>Grades</span>
+      <span>Điểm số</span>
     </button>
     <button class="bnav-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+      <span>Cá nhân</span>
     </button>
   </div>
 </div>
@@ -1301,8 +1301,8 @@ svg{display:block;flex-shrink:0}
     </button>
     <div class="chat-teacher-av" id="chat-av" style="background:#FDE8D8">👩‍🏫<div class="online-ring"></div></div>
     <div class="chat-teacher-info">
-      <div class="chat-teacher-name" id="chat-teacher-name">Ms. Sarah Jenkins</div>
-      <div class="chat-teacher-status" id="chat-teacher-status">● Online</div>
+      <div class="chat-teacher-name" id="chat-teacher-name">Cô Sarah Jenkins</div>
+      <div class="chat-teacher-status" id="chat-teacher-status">● Trực tuyến</div>
     </div>
     <div class="chat-actions">
       <div class="chat-action-btn">
@@ -1323,7 +1323,7 @@ svg{display:block;flex-shrink:0}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </div>
     <div class="chat-input-wrap">
-      <input type="text" id="chat-input" placeholder="Type a message…">
+      <input type="text" id="chat-input" placeholder="Nhập tin nhắn…">
       <span class="emoji-btn" onclick="insertEmoji()">😊</span>
     </div>
     <div class="send-btn" onclick="sendMessage()">
@@ -1347,7 +1347,7 @@ svg{display:block;flex-shrink:0}
     <button class="icon-btn" onclick="goDash()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>
     </button>
-    <h2>Student Progress</h2>
+    <h2>Tiến độ học tập</h2>
     <div class="grades-header more-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
     </div>
@@ -1362,7 +1362,7 @@ svg{display:block;flex-shrink:0}
       </div>
     </div>
     <div class="stu-hero-name" id="grades-name">Alex Johnson</div>
-    <div class="stu-hero-sub" id="grades-sub">Grade 5 · Section B · ID: 29402</div>
+    <div class="stu-hero-sub" id="grades-sub">Lớp 5 · Nhóm B · ID: 29402</div>
   </div>
 
   <div class="scroll">
@@ -1376,26 +1376,26 @@ svg{display:block;flex-shrink:0}
             stroke-dasharray="226.2"
             stroke-dashoffset="45"/>
         </svg>
-        <div class="ring-pct" id="ring-pct-val">88%<small>Overall</small></div>
+        <div class="ring-pct" id="ring-pct-val">88%<small>Tổng quan</small></div>
       </div>
       <div class="ring-info">
-        <p id="ring-desc">Your child is performing better than <strong>92%</strong> of the class this term.</p>
+        <p id="ring-desc">Con bạn đang học tốt hơn <strong>92%</strong> các bạn khác trong lớp học kỳ này.</p>
         <div class="ring-trend" id="ring-trend">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
-          +2.5% from last month
+          +2.5% so với tháng trước
         </div>
       </div>
     </div>
 
     <!-- Subject Performance -->
     <div class="subj-section">
-      <div class="sec-title"><span>Subject Performance</span><a>View All</a></div>
+      <div class="sec-title"><span>Kết quả theo môn</span><a>Xem tất cả</a></div>
 
       <div class="subj-bar">
         <div class="subj-bar-top">
           <div class="subj-bar-name">
             <div class="subj-icon" style="background:#EFF6FF">📐</div>
-            Mathematics
+            Toán học
           </div>
           <div class="subj-score" id="math-score">92/100</div>
         </div>
@@ -1406,7 +1406,7 @@ svg{display:block;flex-shrink:0}
         <div class="subj-bar-top">
           <div class="subj-bar-name">
             <div class="subj-icon" style="background:#FFF7ED">📚</div>
-            English Language
+            Ngôn ngữ Anh
           </div>
           <div class="subj-score" id="eng-score">85/100</div>
         </div>
@@ -1417,7 +1417,7 @@ svg{display:block;flex-shrink:0}
         <div class="subj-bar-top">
           <div class="subj-bar-name">
             <div class="subj-icon" style="background:#F0FDF4">🔬</div>
-            Science
+            Khoa học
           </div>
           <div class="subj-score" id="sci-score">88/100</div>
         </div>
@@ -1428,7 +1428,7 @@ svg{display:block;flex-shrink:0}
         <div class="subj-bar-top">
           <div class="subj-bar-name">
             <div class="subj-icon" style="background:#FDF4FF">🎨</div>
-            Arts &amp; Design
+            Nghệ thuật &amp; Thiết kế
           </div>
           <div class="subj-score" id="art-score">95/100</div>
         </div>
@@ -1439,7 +1439,7 @@ svg{display:block;flex-shrink:0}
         <div class="subj-bar-top">
           <div class="subj-bar-name">
             <div class="subj-icon" style="background:#F0F9FF">🏃</div>
-            Physical Ed.
+            Giáo dục Thể chất
           </div>
           <div class="subj-score">78/100</div>
         </div>
@@ -1449,14 +1449,14 @@ svg{display:block;flex-shrink:0}
 
     <!-- Soft Skills -->
     <div class="skills-section">
-      <h3>Soft Skills &amp; Habits</h3>
+      <h3>Kỹ năng mềm &amp; Thói quen</h3>
       <div class="skills-wrap">
-        <span class="skill-chip high"><div class="skill-dot"></div>Participation: High</span>
-        <span class="skill-chip med"><div class="skill-dot"></div>Critical Thinking</span>
-        <span class="skill-chip high"><div class="skill-dot"></div>Homework: 100%</span>
-        <span class="skill-chip ok"><div class="skill-dot"></div>Punctuality</span>
-        <span class="skill-chip med"><div class="skill-dot"></div>Problem Solving</span>
-        <span class="skill-chip high"><div class="skill-dot"></div>Teamwork</span>
+        <span class="skill-chip high"><div class="skill-dot"></div>Tham gia: Tích cực</span>
+        <span class="skill-chip med"><div class="skill-dot"></div>Tư duy phản biện</span>
+        <span class="skill-chip high"><div class="skill-dot"></div>Bài tập về nhà: 100%</span>
+        <span class="skill-chip ok"><div class="skill-dot"></div>Đúng giờ</span>
+        <span class="skill-chip med"><div class="skill-dot"></div>Giải quyết vấn đề</span>
+        <span class="skill-chip high"><div class="skill-dot"></div>Làm việc nhóm</span>
       </div>
     </div>
 
@@ -1465,53 +1465,53 @@ svg{display:block;flex-shrink:0}
       <div class="tc-top">
         <div class="tc-av" id="tc-avatar">👩‍🏫</div>
         <div>
-          <div class="tc-name" id="tc-name">Sarah Jenkins</div>
-          <div class="tc-role">Class Teacher</div>
+          <div class="tc-name" id="tc-name">Cô Sarah Jenkins</div>
+          <div class="tc-role">Giáo viên chủ nhiệm</div>
         </div>
       </div>
       <div class="tc-quote" id="tc-quote">
-        "Alex has shown remarkable growth in Mathematical reasoning this term. He consistently helps his peers and maintains a positive attitude. Highly impressed with his recent Science project!"
+        "Alex đã cho thấy sự phát triển vượt bậc về tư duy Toán học trong học kỳ này. Em luôn giúp đỡ bạn bè và duy trì thái độ tích cực. Rất ấn tượng với dự án Khoa học gần đây của em!"
       </div>
     </div>
 
     <!-- Milestones -->
     <div class="milestone-section">
-      <h3>Milestones &amp; Achievements</h3>
+      <h3>Cột mốc & Thành tựu</h3>
 
       <div class="milestone-item">
         <div class="ms-icon" style="background:#FFFBEB">🏆</div>
         <div class="ms-body">
-          <div class="ms-title">Math Olympiad Winner</div>
-          <div class="ms-desc">Ranked 1st place in Inter-School competition</div>
+          <div class="ms-title">Quán quân Olympic Toán học</div>
+          <div class="ms-desc">Xếp hạng 1 cuộc thi Liên trường</div>
         </div>
-        <div class="ms-date">May 13</div>
+        <div class="ms-date">13 thg 5</div>
       </div>
 
       <div class="milestone-item">
         <div class="ms-icon" style="background:#F0FDF4">✅</div>
         <div class="ms-body">
-          <div class="ms-title">Perfect Attendance</div>
-          <div class="ms-desc">100% attendance for the 3rd Quarter</div>
+          <div class="ms-title">Điểm danh chuyên cần</div>
+          <div class="ms-desc">Điểm danh 100% trong Quý 3</div>
         </div>
-        <div class="ms-date">Apr 30</div>
+        <div class="ms-date">30 thg 4</div>
       </div>
 
       <div class="milestone-item">
         <div class="ms-icon" style="background:#EFF6FF">🔬</div>
         <div class="ms-body">
-          <div class="ms-title">Best Science Project</div>
-          <div class="ms-desc">Top award for the Renewable Energy showcase</div>
+          <div class="ms-title">Dự án Khoa học tốt nhất</div>
+          <div class="ms-desc">Giải cao nhất cho buổi triển lãm Năng lượng tái tạo</div>
         </div>
-        <div class="ms-date">Mar 22</div>
+        <div class="ms-date">22 thg 3</div>
       </div>
 
       <div class="milestone-item">
         <div class="ms-icon" style="background:#FDF4FF">🎨</div>
         <div class="ms-body">
-          <div class="ms-title">Art Exhibition Feature</div>
-          <div class="ms-desc">Selected artwork displayed at district gallery</div>
+          <div class="ms-title">Tác phẩm triển lãm Nghệ thuật</div>
+          <div class="ms-desc">Tác phẩm được chọn trưng bày tại triển lãm quận</div>
         </div>
-        <div class="ms-date">Feb 14</div>
+        <div class="ms-date">14 thg 2</div>
       </div>
     </div>
   </div>
@@ -1519,23 +1519,23 @@ svg{display:block;flex-shrink:0}
   <div class="bnav">
     <button class="bnav-btn" onclick="goDash()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span>Home</span>
+      <span>Trang chủ</span>
     </button>
     <button class="bnav-btn" onclick="goMsgList()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Message</span>
+      <span>Tin nhắn</span>
     </button>
     <button class="bnav-btn" onclick="goCal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span>Attendance</span>
+      <span>Điểm danh</span>
     </button>
     <button class="bnav-btn active">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" stroke="#2563EB"/><path d="M6 12v5c3 3 9 3 12 0v-5" stroke="#2563EB"/></svg>
-      <span style="color:var(--blue)">Grades</span>
+      <span style="color:var(--blue)">Điểm số</span>
     </button>
     <button class="bnav-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+      <span>Cá nhân</span>
     </button>
   </div>
 </div>
@@ -1544,31 +1544,31 @@ svg{display:block;flex-shrink:0}
 /* ── MOCK DATA ─────────────────── */
 const gradesData = {
   alex:  {
-    pct:88, ring:45, desc:'Your child is performing better than <strong>92%</strong> of the class this term.',
-    trend:'+2.5% from last month', trendGood:true,
+    pct:88, ring:45, desc:'Con bạn đang học tốt hơn <strong>92%</strong> các bạn khác trong lớp học kỳ này.',
+    trend:'+2.5% so với tháng trước', trendGood:true,
     math:92, eng:85, sci:88, art:95,
-    teacher:'Ms. Sarah Jenkins', teacherAv:'👩‍🏫',
-    quote:'"Alex has shown remarkable growth in Mathematical reasoning this term. He consistently helps his peers and maintains a positive attitude. Highly impressed with his recent Science project!"'
+    teacher:'Cô Sarah Jenkins', teacherAv:'👩‍🏫',
+    quote:'"Alex đã cho thấy sự phát triển vượt bậc về tư duy Toán học trong học kỳ này. Em luôn giúp đỡ bạn bè và duy trì thái độ tích cực. Rất ấn tượng với dự án Khoa học gần đây của em!"'
   },
   sarah: {
-    pct:76, ring:83, desc:'Sarah is making steady progress and <strong>showing improvement</strong> in all subjects.',
-    trend:'+1.8% from last month', trendGood:true,
+    pct:76, ring:83, desc:'Sarah đang đạt được những bước tiến ổn định và <strong>cho thấy sự cải thiện</strong> ở tất cả các môn học.',
+    trend:'+1.8% so với tháng trước', trendGood:true,
     math:72, eng:80, sci:74, art:82,
-    teacher:'Mr. James Carter', teacherAv:'👨‍🏫',
-    quote:'"Sarah is a creative and curious learner. She excels in English and has shown great improvement in her reading comprehension assignments this quarter."'
+    teacher:'Thầy James Carter', teacherAv:'👨‍🏫',
+    quote:'"Sarah là một học sinh sáng tạo và ham học hỏi. Em nổi trội ở môn Tiếng Anh và đã cho thấy sự cải thiện vượt bậc trong các bài tập đọc hiểu trong quý này."'
   },
   maya:  {
-    pct:94, ring:22, desc:'Maya is one of the <strong>top performers</strong> in her class — exceptional work!',
-    trend:'+3.1% from last month', trendGood:true,
+    desc:'Maya là một trong những học sinh <strong>đứng đầu</strong> lớp — thành tích thật xuất sắc!',
+    trend:'+3.1% so với tháng trước', trendGood:true,
     math:96, eng:92, sci:95, art:98,
-    teacher:'Ms. Emily Ross', teacherAv:'👩‍🏫',
-    quote:'"Maya is an absolutely delightful student. Her enthusiasm and dedication to learning inspire the entire class. She consistently goes above and beyond in all activities!"'
+    teacher:'Cô Emily Ross', teacherAv:'👩‍🏫',
+    quote:'"Maya là một học sinh tuyệt vời. Sự nhiệt tình và cống hiến cho việc học của em đã truyền cảm hứng cho cả lớp. Em luôn nỗ lực hết mình trong mọi hoạt động!"'
   }
 };
 const students = {
-  alex:  { name:'Alex Johnson',  grade:'Grade 5 · Section A', emoji:'🧒', bg:'#FEF3C7', id:'#88234', rate:94, abs:5,  late:2, rateSub:'+2% this week' },
-  sarah: { name:'Sarah Johnson', grade:'Grade 3 · Section B', emoji:'👧', bg:'#EDE9FE', id:'#88235', rate:78, abs:10, late:5, rateSub:'-3% this week' },
-  maya:  { name:'Maya Johnson',  grade:'Grade 1 · Section C', emoji:'🧒', bg:'#ECFDF5', id:'#88236', rate:96, abs:2,  late:1, rateSub:'+1% this week' },
+  alex:  { name:'Alex Johnson',  grade:'Khối 5 · Nhóm A', emoji:'🧒', bg:'#FEF3C7', id:'#88234', rate:94, abs:5,  late:2, rateSub:'+2% tuần này' },
+  sarah: { name:'Sarah Johnson', grade:'Khối 3 · Nhóm B', emoji:'👧', bg:'#EDE9FE', id:'#88235', rate:78, abs:10, late:5, rateSub:'-3% tuần này' },
+  maya:  { name:'Maya Johnson',  grade:'Khối 1 · Nhóm C', emoji:'🧒', bg:'#ECFDF5', id:'#88236', rate:96, abs:2,  late:1, rateSub:'+1% tuần này' },
 };
 
 /* October 2023: 1=Sun */
@@ -1605,7 +1605,7 @@ function buildCalendar() {
 function onDayClick(d) {
   const wrap = document.getElementById('day-detail-wrap');
   wrap.style.display = 'block';
-  document.getElementById('day-detail-title').textContent = `Wednesday, Oct ${d}`;
+  document.getElementById('day-detail-title').textContent = `Thứ Tư, 11 thg ${d}`;
 }
 
 /* ── SELECT STUDENT ─────────────── */
@@ -1696,37 +1696,37 @@ function goMsgList(){ show('s-msglist','slide-l'); }
 /* ── CHAT DATA ────────────────────── */
 const teachers = {
   sarah: {
-    name:'Ms. Sarah Jenkins', subject:'Mathematics', emoji:'👩‍🏫', bg:'#FDE8D8', online:true,
+    name:'Cô Sarah Jenkins', subject:'Toán học', emoji:'👩‍🏫', bg:'#FDE8D8', online:true,
     messages:[
-      {from:'them', text:"Hello! I wanted to update you on Leo's progress in math. He did a great job with fractions today.", time:'02:14 PM'},
-      {from:'me',   text:"That's wonderful to hear! He was a bit nervous about the quiz. Did he manage to finish the homework for tomorrow?", time:'02:18 PM'},
-      {from:'them', text:"He really seems to have grasped the concepts. Thanks for the extra support!", time:'02:22 PM'},
+      {from:'them', text:"Chào bạn! Tôi muốn cập nhật cho bạn về tiến độ học toán của Leo. Hôm nay em ấy đã làm rất tốt phần phân số.", time:'02:14 CH'},
+      {from:'me',   text:"Thật vui khi nghe vậy! Con có vẻ hơi lo lắng về bài kiểm tra nhỏ. Con đã hoàn thành bài tập về nhà cho ngày mai chưa ạ?", time:'02:18 CH'},
+      {from:'them', text:"Con thực sự đã nắm vững các khái niệm rồi. Cảm ơn gia đình đã hỗ trợ thêm cho con!", time:'02:22 CH'},
     ]
   },
   david: {
-    name:'Mr. David Wilson', subject:'English', emoji:'👨‍🏫', bg:'#E8F4FD', online:false,
+    name:'Thầy David Wilson', subject:'Tiếng Anh', emoji:'👨‍🏫', bg:'#E8F4FD', online:false,
     messages:[
-      {from:'them', text:"Good afternoon! Just wanted to let you know the worksheet is attached for tomorrow's class.", time:'2:20 PM'},
-      {from:'me',   text:"Thank you Mr. Wilson, I'll make sure Alex reviews it tonight.", time:'2:35 PM'},
+      {from:'them', text:"Chào buổi chiều! Tôi chỉ muốn thông báo rằng phiếu bài tập đã được đính kèm cho buổi học ngày mai.", time:'2:20 CH'},
+      {from:'me',   text:"Cảm ơn thầy Wilson, tôi sẽ nhắc Alex xem lại tối nay.", time:'2:35 CH'},
     ]
   },
   elena: {
-    name:'Mrs. Elena Rodriguez', subject:'History', emoji:'👩‍🏫', bg:'#FEF3C7', online:true,
+    name:'Cô Elena Rodriguez', subject:'Lịch sử', emoji:'👩‍🏫', bg:'#FEF3C7', online:true,
     messages:[
-      {from:'them', text:"Great job on the essay about the Renaissance! Alex showed real understanding of the period.", time:'Yesterday'},
-      {from:'me',   text:"That's so encouraging to hear, thank you!", time:'Yesterday'},
+      {from:'them', text:"Alex đã làm bài luận về thời kỳ Phục hưng rất tốt! Em ấy cho thấy sự hiểu biết thực sự về giai đoạn này.", time:'Hôm qua'},
+      {from:'me',   text:"Thật khích lệ khi nghe điều đó, cảm ơn cô!", time:'Hôm qua'},
     ]
   },
   james: {
-    name:'Mr. James Chen', subject:'Physics', emoji:'👨‍🔬', bg:'#EDE9FE', online:false,
+    name:'Thầy James Chen', subject:'Vật lý', emoji:'👨‍🔬', bg:'#EDE9FE', online:false,
     messages:[
-      {from:'them', text:"Remember the lab safety rules for our experiment on Monday. Please ensure Alex brings their goggles.", time:'Monday'},
+      {from:'them', text:"Hãy nhớ các quy tắc an toàn phòng thí nghiệm cho thí nghiệm của chúng ta vào thứ Hai tới. Vui lòng đảm bảo Alex mang theo kính bảo hộ.", time:'Thứ Hai'},
     ]
   },
   sophia: {
-    name:'Dr. Sophia Williams', subject:'Biology', emoji:'👩‍🔬', bg:'#ECFDF5', online:true,
+    name:'TS. Sophia Williams', subject:'Sinh học', emoji:'👩‍🔬', bg:'#ECFDF5', online:true,
     messages:[
-      {from:'them', text:"The photosynthesis project is due this Friday. Alex is doing wonderfully!", time:'Mar 12'},
+      {from:'them', text:"Dự án quang hợp sẽ đến hạn vào thứ Sáu tuần này. Alex đang làm rất tốt!", time:'12 thg 3'},
     ]
   },
 };
@@ -1752,12 +1752,12 @@ function goChat(teacherKey) {
     if (dot) dot.remove();
   }
   document.getElementById('chat-teacher-name').textContent = t.name;
-  document.getElementById('chat-teacher-status').textContent = t.online ? '● Online' : '● Away';
+  document.getElementById('chat-teacher-status').textContent = t.online ? '● Trực tuyến' : '● Vắng mặt';
   document.getElementById('chat-teacher-status').style.color = t.online ? 'var(--green)' : 'var(--muted)';
 
   // Build messages
   const box = document.getElementById('chat-messages');
-  box.innerHTML = `<div class="chat-date-sep">Today, October 24</div>`;
+  box.innerHTML = `<div class="chat-date-sep">Hôm nay, 24 tháng 10</div>`;
   t.messages.forEach(m => {
     const wrap = document.createElement('div');
     wrap.className = 'msg-bubble-wrap' + (m.from==='me' ? ' me' : '');
@@ -1814,10 +1814,10 @@ function sendMessage() {
   const teacherKey = box.dataset.teacher || 'sarah';
   const t = teachers[teacherKey];
   const replies = [
-    "Of course! I'll look into that right away.",
-    "Thank you for reaching out. I'll get back to you shortly.",
-    "Understood! We can discuss this further at the next parent meeting.",
-    "That's a great question. Let me check and update you soon.",
+    "Tất nhiên rồi! Tôi sẽ kiểm tra ngay lập tức.",
+    "Cảm ơn bạn đã liên hệ. Tôi sẽ phản hồi lại cho bạn sớm.",
+    "Đã hiểu! Chúng ta có thể thảo luận thêm vấn đề này tại buổi họp phụ huynh tới.",
+    "Đó là một câu hỏi rất hay. Để tôi kiểm tra và cập nhật cho bạn sớm.",
   ];
   setTimeout(() => {
     const reply = document.createElement('div');
