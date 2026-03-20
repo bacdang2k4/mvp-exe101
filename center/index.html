@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CenterHub – Quản lý Giáo dục</title>
+<title>EduTrack – Quản Lý Giáo Dục</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -60,13 +60,13 @@ body {
   border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .logo-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; color: #fff; font-size: 14px;
+  display: flex; align-items: center;
 }
 .logo-text { color: #fff; font-weight: 700; font-size: 15px; }
 .logo-sub { color: #64748b; font-size: 10px; margin-top: 1px; }
+.edutrack-logo { display: flex; align-items: center; line-height: 1; }
+.edutrack-logo .edu { color: #1d4ed8; font-size: 19px; font-weight: 900; letter-spacing: -0.5px; }
+.edutrack-logo .track { color: #f97316; font-size: 19px; font-weight: 900; letter-spacing: -0.5px; }
 
 .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
 .nav-label {
@@ -165,10 +165,109 @@ body {
 .btn-sm { padding: 5px 12px; font-size: 12px; }
 .btn-danger { background: #fef2f2; color: var(--danger); }
 
-/* ── PAGE ── */
-.page { display: none; padding: 24px; animation: fadeIn .3s ease; }
-.page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* ── PAGE TRANSITIONS ── */
+.page { display: none; padding: 24px; }
+.page.active { display: block; animation: pageSlideIn .45s cubic-bezier(.22,.68,0,1.1) both; }
+@keyframes pageSlideIn {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.96); filter: blur(3px); }
+  60%  { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes pageSlideOut {
+  0%   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.97); filter: blur(2px); }
+}
+
+/* Staggered children animation */
+.page.active .stat-card,
+.page.active .card,
+.page.active .rev-card,
+.page.active .form-section {
+  animation: fadeInUp .4s ease both;
+}
+.page.active .stat-card:nth-child(1), .page.active .card:nth-child(1), .page.active .rev-card:nth-child(1) { animation-delay: .05s; }
+.page.active .stat-card:nth-child(2), .page.active .card:nth-child(2), .page.active .rev-card:nth-child(2) { animation-delay: .1s; }
+.page.active .stat-card:nth-child(3), .page.active .card:nth-child(3), .page.active .rev-card:nth-child(3) { animation-delay: .15s; }
+.page.active .stat-card:nth-child(4), .page.active .card:nth-child(4) { animation-delay: .2s; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── NOTIFICATION PANEL ── */
+.notif-panel {
+  position: fixed; top: 68px; right: 16px;
+  width: 360px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.14);
+  z-index: 200; opacity: 0; pointer-events: none;
+  transform: translateY(-10px) scale(0.97);
+  transition: all .25s cubic-bezier(.22,.68,0,1.2);
+}
+.notif-panel.open { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+.notif-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border);
+}
+.notif-header-title { font-weight: 700; font-size: 14px; }
+.notif-mark-read { font-size: 11px; color: var(--primary); cursor: pointer; font-weight: 600; }
+.notif-mark-read:hover { text-decoration: underline; }
+.notif-list { max-height: 380px; overflow-y: auto; }
+.notif-item {
+  display: flex; gap: 10px; padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9; cursor: pointer;
+  transition: background .15s;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--bg); }
+.notif-item.unread { background: #eff6ff; }
+.notif-item.unread:hover { background: #dbeafe; }
+.notif-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { font-size: 12px; font-weight: 600; color: var(--text); }
+.notif-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.notif-time { font-size: 10px; color: var(--text-light); margin-top: 4px; }
+.notif-unread-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--primary);
+  margin-top: 5px; flex-shrink: 0;
+}
+.notif-footer { padding: 10px 16px; text-align: center; border-top: 1px solid var(--border); }
+.notif-footer a { font-size: 12px; color: var(--primary); font-weight: 600; text-decoration: none; }
+.notif-count-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--danger); color: #fff;
+  font-size: 9px; font-weight: 800; padding: 1px 5px;
+  border-radius: 10px; min-width: 16px; text-align: center;
+  border: 2px solid var(--card);
+}
+
+/* ── SETTINGS PANEL ── */
+.settings-panel {
+  position: fixed; top: 68px; right: 16px;
+  width: 280px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.14);
+  z-index: 200; opacity: 0; pointer-events: none;
+  transform: translateY(-10px) scale(0.97);
+  transition: all .25s cubic-bezier(.22,.68,0,1.2);
+}
+.settings-panel.open { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+.settings-header { padding: 14px 16px 12px; border-bottom: 1px solid var(--border); }
+.settings-item {
+  display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+  cursor: pointer; font-size: 13px; transition: background .15s;
+}
+.settings-item:hover { background: var(--bg); }
+.settings-item-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.settings-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.panel-backdrop { display: none; position: fixed; inset: 0; z-index: 199; }
+.panel-backdrop.show { display: block; }
 
 /* ── CARDS ── */
 .card {
@@ -528,48 +627,45 @@ tr:hover td { background: #fafbff; }
 
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-icon">CH</div>
-    <div>
-      <div class="logo-text">CenterHub</div>
-      <div class="logo-sub">Quản lý Giáo dục</div>
-    </div>
+  <div class="sidebar-logo" style="flex-direction:column;align-items:flex-start;gap:4px;">
+    <div class="edutrack-logo"><span class="edu">EDU</span><span class="track">TRACK</span></div>
+    <div class="logo-sub">Quản lý giáo dục</div>
   </div>
 
   <nav class="sidebar-nav">
     <div class="nav-label">Chính</div>
     <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="3" height="3"/><rect x="18" y="3" width="3" height="3"/><rect x="14" y="7" width="3" height="3"/><rect x="18" y="7" width="3" height="3"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Bảng điều khiển
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Tổng Quan
     </a>
     <a class="nav-item" data-page="classes" onclick="navigate('classes', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 012-2h12a2 2 0 012 2v14"/><path d="M9 3v16"/></svg>
-      Lớp học
+      Lớp Học
     </a>
     <a class="nav-item" data-page="teachers" onclick="navigate('teachers', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
-      Giáo viên
+      Giáo Viên
     </a>
     <a class="nav-item" data-page="students" onclick="navigate('students', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      Sinh viên
+      Học Sinh
       <span class="nav-badge">24</span>
     </a>
     <a class="nav-item" data-page="finance" onclick="navigate('finance', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
-      Tài chính
+      Tài Chính
     </a>
     <a class="nav-item" data-page="reports" onclick="navigate('reports', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Báo cáo
+      Báo Cáo
     </a>
   </nav>
 
   <div class="sidebar-footer">
     <div class="user-card">
-      <div class="user-avatar">AT</div>
+      <div class="user-avatar">NA</div>
       <div>
-        <div class="user-name">Alex Thompson</div>
+        <div class="user-name">Nguyễn Văn An</div>
         <div class="user-role">Quản trị viên</div>
       </div>
     </div>
@@ -583,16 +679,17 @@ tr:hover td { background: #fafbff; }
     <div class="hamburger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </div>
-    <div class="topbar-title" id="topbar-title">Tổng quan Bảng điều khiển</div>
+    <div class="topbar-title" id="topbar-title">Tổng Quan Dashboard</div>
     <div class="search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" placeholder="Tìm kiếm lớp học, giáo viên, sinh viên…" id="globalSearch">
+      <input type="text" placeholder="Tìm lớp học, giáo viên, học sinh…" id="globalSearch">
     </div>
-    <div class="topbar-icon">
+    <div class="topbar-icon" id="notif-btn" onclick="toggleNotif(event)" style="position:relative;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <div class="notif-dot"></div>
+      <div class="notif-dot" id="notif-dot"></div>
+      <span class="notif-count-badge" id="notif-count">5</span>
     </div>
-    <div class="topbar-icon">
+    <div class="topbar-icon" id="settings-btn" onclick="toggleSettings(event)" style="position:relative;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34"/><path d="M4.93 19.07L6.34 17.66"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
     </div>
   </div>
@@ -603,38 +700,38 @@ tr:hover td { background: #fafbff; }
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
-        <div class="page-title">Chào mừng trở lại, Alex 👋</div>
-        <div class="page-desc">Đây là những gì đang diễn ra hôm nay.</div>
+        <div class="page-title">Chào mừng trở lại, An 👋</div>
+        <div class="page-desc">Đây là những gì đang xảy ra hôm nay.</div>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-outline btn-sm">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Tháng trước
+          Tháng Trước
         </button>
-        <button class="btn btn-primary btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">+ Thêm sinh viên mới</button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">+ Thêm Học Sinh Mới</button>
       </div>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Tổng số sinh viên</div>
+        <div class="stat-label">Tổng Học Sinh</div>
         <div class="stat-value">1,250</div>
         <div class="stat-change up">▲ 12.5% so với tháng trước</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Giáo viên đang hoạt động</div>
+        <div class="stat-label">Giáo Viên Đang Dạy</div>
         <div class="stat-value">48</div>
         <div class="stat-change up">▲ 4.0%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Tổng số lớp học</div>
+        <div class="stat-label">Tổng Lớp Học</div>
         <div class="stat-value">156</div>
         <div class="stat-change down">▼ 2%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Doanh thu hàng tháng</div>
-        <div class="stat-value" style="font-size:22px;">$45,200</div>
+        <div class="stat-label">Doanh Thu Tháng</div>
+        <div class="stat-value" style="font-size:22px;">452.000.000₫</div>
         <div class="stat-change up">▲ 8.4%</div>
       </div>
     </div>
@@ -644,10 +741,10 @@ tr:hover td { background: #fafbff; }
       <div class="card">
         <div class="card-header">
           <div>
-            <div class="card-title">Tăng trưởng doanh thu</div>
-            <div class="card-sub">6 tháng qua</div>
+            <div class="card-title">Tăng Trưởng Doanh Thu</div>
+            <div class="card-sub">6 tháng gần nhất</div>
           </div>
-          <span class="badge badge-blue">+ Thêm sinh viên mới</span>
+          <span class="badge badge-blue">+Thêm Học Sinh</span>
         </div>
         <div class="chart-area">
           <div class="bar" style="height:60%;background:linear-gradient(180deg,#93c5fd,#3b82f6);"></div>
@@ -658,16 +755,16 @@ tr:hover td { background: #fafbff; }
           <div class="bar" style="height:90%;background:linear-gradient(180deg,#1d4ed8,#3b82f6);"></div>
         </div>
         <div class="chart-labels">
-          <div class="chart-label">Jan</div><div class="chart-label">Feb</div>
-          <div class="chart-label">Mar</div><div class="chart-label">Apr</div>
-          <div class="chart-label">May</div><div class="chart-label">Jun</div>
+          <div class="chart-label">Th1</div><div class="chart-label">Th2</div>
+          <div class="chart-label">Th3</div><div class="chart-label">Th4</div>
+          <div class="chart-label">Th5</div><div class="chart-label">Th6</div>
         </div>
       </div>
 
       <!-- Enrollment Trends -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Xu hướng nhập học</div>
+          <div class="card-title">Xu Hướng Ghi Danh</div>
         </div>
         <div class="chart-area">
           <div class="bar" style="height:50%;background:#0f172a;"></div>
@@ -679,10 +776,10 @@ tr:hover td { background: #fafbff; }
           <div class="bar" style="height:75%;background:#0f172a;"></div>
         </div>
         <div class="chart-labels">
-          <div class="chart-label">Oct</div><div class="chart-label">Nov</div>
-          <div class="chart-label">Dec</div><div class="chart-label">Jan</div>
-          <div class="chart-label">Feb</div><div class="chart-label">Mar</div>
-          <div class="chart-label">Apr</div>
+          <div class="chart-label">Th10</div><div class="chart-label">Th11</div>
+          <div class="chart-label">Th12</div><div class="chart-label">Th1</div>
+          <div class="chart-label">Th2</div><div class="chart-label">Th3</div>
+          <div class="chart-label">Th4</div>
         </div>
       </div>
     </div>
@@ -691,47 +788,47 @@ tr:hover td { background: #fafbff; }
       <!-- Pending Tasks -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Nhiệm vụ chờ xử lý</div>
+          <div class="card-title">Công Việc Chờ</div>
           <a href="#" style="font-size:12px;color:var(--primary);">Xem tất cả</a>
         </div>
-        <div class="task-item"><div class="task-check"></div>Xem xét đơn tuyển dụng khoa Q3</div>
-        <div class="task-item"><div class="task-check done"></div><s style="color:var(--text-light)">Phê duyệt bảng lương hàng tháng</s></div>
-        <div class="task-item"><div class="task-check"></div>Cập nhật hướng dẫn an toàn</div>
-        <div class="task-item"><div class="task-check"></div>Gửi bản tin nhập học</div>
-        <div class="task-item"><div class="task-check"></div>Xem xét đề xuất lớp học mới</div>
+        <div class="task-item"><div class="task-check"></div>Xem xét đơn giảng viên Q3</div>
+        <div class="task-item"><div class="task-check done"></div><s style="color:var(--text-light)">Duyệt bảng lương tháng</s></div>
+        <div class="task-item"><div class="task-check"></div>Cập nhật quy định an toàn</div>
+        <div class="task-item"><div class="task-check"></div>Gửi bản tin ghi danh</div>
+        <div class="task-item"><div class="task-check"></div>Xem xét đề xuất lớp mới</div>
       </div>
 
       <!-- Recent Activity -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Hoạt động gần đây</div>
+          <div class="card-title">Hoạt Động Gần Đây</div>
           <span>···</span>
         </div>
         <div class="activity-item">
           <div class="activity-dot"></div>
           <div>
-            <div class="activity-text"><strong>Nhập học sinh viên mới:</strong> Sarah Jenkins đã tham gia "Toán học nâng cao"</div>
+            <div class="activity-text"><strong>Học Sinh Mới Đăng Ký:</strong> Nguyễn Thị Mai Anh tham gia lớp "Toán Nâng Cao"</div>
             <div class="activity-time">2 phút trước</div>
           </div>
         </div>
         <div class="activity-item">
           <div class="activity-dot" style="background:var(--success)"></div>
           <div>
-            <div class="activity-text"><strong>Đã nhận thanh toán:</strong> Hóa đơn #6482 ($1,299) đã được thanh toán bởi Liam O\'Connell.</div>
+            <div class="activity-text"><strong>Thanh Toán Thành Công:</strong> Hóa đơn #6482 (12.990.000₫) đã được thanh toán bởi Trần Quốc Huy.</div>
             <div class="activity-time">18 phút trước</div>
           </div>
         </div>
         <div class="activity-item">
           <div class="activity-dot" style="background:var(--warning)"></div>
           <div>
-            <div class="activity-text"><strong>Lớp học đã đổi lịch:</strong> "Nghệ thuật &amp; Thiết kế 101" chuyển đến Phòng 420.</div>
+            <div class="activity-text"><strong>Lớp Dời Lịch:</strong> "Nghệ Thuật &amp; Thiết Kế 101" chuyển sang Phòng 420.</div>
             <div class="activity-time">1 giờ trước</div>
           </div>
         </div>
         <div class="activity-item">
           <div class="activity-dot" style="background:var(--purple)"></div>
           <div>
-            <div class="activity-text"><strong>Giáo viên mới gia nhập:</strong> TS. Michael Chen bắt đầu vào Thứ Hai.</div>
+            <div class="activity-text"><strong>Giáo Viên Mới Tham Gia:</strong> Thầy Trần Minh Châu bắt đầu vào thứ Hai.</div>
             <div class="activity-time">3 giờ trước</div>
           </div>
         </div>
@@ -745,31 +842,31 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-classes">
     <div class="page-header">
       <div>
-        <div class="page-title">Quản lý lớp học</div>
-        <div class="page-desc">Tổng quan lịch học và phân bổ giáo viên.</div>
+        <div class="page-title">Quản Lý Lớp Học</div>
+        <div class="page-desc">Tổng quan lịch học và phân công giáo viên.</div>
       </div>
-      <button class="btn btn-primary" onclick="navigate('add-class', document.querySelector('[data-page=classes]'))">+ Tạo lớp học mới</button>
+      <button class="btn btn-primary" onclick="navigate('add-class', document.querySelector('[data-page=classes]'))">+ Tạo Lớp Mới</button>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
       <div class="stat-card">
-        <div class="stat-label">Tổng số lớp học</div>
+        <div class="stat-label">Tổng Lớp Học</div>
         <div class="stat-value">128</div>
         <div class="stat-change up">▲ 8% tháng này</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Lớp đang hoạt động</div>
+        <div class="stat-label">Lớp Đang Hoạt Động</div>
         <div class="stat-value">94</div>
         <div class="stat-change up">▲ 5%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Đang chờ phân bổ</div>
+        <div class="stat-label">Chờ Phân Công</div>
         <div class="stat-value">12</div>
-        <div class="stat-change down">▼ cần 2 giáo viên</div>
+        <div class="stat-change down">▼ Cần 2 giáo viên</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Sĩ số trung bình</div>
+        <div class="stat-label">Sĩ Số TB/Lớp</div>
         <div class="stat-value">24</div>
         <div class="stat-change up">▲ 3%</div>
       </div>
@@ -778,7 +875,7 @@ tr:hover td { background: #fafbff; }
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Lớp học gần đây</div>
+          <div class="card-title">Lớp Học Gần Đây</div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-outline btn-sm">⚙ Lọc</button>
@@ -790,13 +887,13 @@ tr:hover td { background: #fafbff; }
         <table>
           <thead>
             <tr>
-              <th>Tên lớp</th>
-              <th>Môn học</th>
-              <th>Giáo viên hiện tại</th>
-              <th>Sinh viên</th>
-              <th>Lịch học</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
+              <th>Tên Lớp</th>
+              <th>Môn Học</th>
+              <th>Giáo Viên Phụ Trách</th>
+              <th>Học Sinh</th>
+              <th>Lịch Học</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody id="classes-table">
@@ -804,7 +901,7 @@ tr:hover td { background: #fafbff; }
         </table>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
-        <div class="page-info">Hiển thị 1–6 của 128 kết quả</div>
+        <div class="page-info">Hiển thị 1–6 trong 128 kết quả</div>
         <div class="pagination">
           <div class="page-btn active">1</div>
           <div class="page-btn">2</div>
@@ -821,13 +918,13 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-teachers">
     <div class="page-header">
       <div>
-        <div class="page-title">Giáo viên</div>
-        <div class="page-desc">Xem và quản lý hồ sơ, đánh giá và lịch trình giảng viên.</div>
+        <div class="page-title">Giáo Viên</div>
+        <div class="page-desc">Xem và quản lý hồ sơ, đánh giá và lịch dạy giáo viên.</div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;">
-        <span class="badge badge-green" style="font-size:12px;padding:5px 12px;">Đang dạy: 124</span>
-        <span class="badge badge-red" style="font-size:12px;padding:5px 12px;">Nghỉ phép: 12</span>
-        <button class="btn btn-primary" onclick="navigate('add-teacher', document.querySelector('[data-page=teachers]'))">+ Thêm giáo viên mới</button>
+        <span class="badge badge-green" style="font-size:12px;padding:5px 12px;">Đang Dạy: 124</span>
+        <span class="badge badge-red" style="font-size:12px;padding:5px 12px;">Nghỉ Phép: 12</span>
+        <button class="btn btn-primary" onclick="navigate('add-teacher', document.querySelector('[data-page=teachers]'))">+ Thêm Giáo Viên Mới</button>
       </div>
     </div>
 
@@ -837,8 +934,8 @@ tr:hover td { background: #fafbff; }
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" placeholder="Tìm theo tên, email hoặc môn học…" style="border:none;background:none;outline:none;font-family:inherit;font-size:13px;width:100%;">
         </div>
-        <select class="filter-select"><option>Tất cả môn</option><option>Toán học</option><option>Khoa học</option><option>Thiết kế</option><option>Ngôn ngữ</option></select>
-        <select class="filter-select"><option>Trạng thái: Tất cả</option><option>Đang hoạt động</option><option>Nghỉ phép</option><option>Sắp tới</option></select>
+        <select class="filter-select"><option>Tất Cả Môn</option><option>Toán Học</option><option>Khoa Học</option><option>Thiết Kế</option><option>Ngôn Ngữ</option></select>
+        <select class="filter-select"><option>Trạng Thái: Tất Cả</option><option>Đang Dạy</option><option>Nghỉ Phép</option><option>Sắp Bắt Đầu</option></select>
         <button class="btn btn-outline btn-sm">⚙ Lọc</button>
       </div>
 
@@ -846,19 +943,19 @@ tr:hover td { background: #fafbff; }
         <table>
           <thead>
             <tr>
-              <th>Giáo viên</th>
-              <th>Môn học</th>
-              <th>Tổng số lớp</th>
-              <th>Đánh giá TB</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
+              <th>Giáo Viên</th>
+              <th>Môn Học</th>
+              <th>Tổng Lớp</th>
+              <th>Đánh Giá TB</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody id="teachers-table"></tbody>
         </table>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
-        <div class="page-info">Hiển thị 1–5 của 136 giáo viên</div>
+        <div class="page-info">Hiển thị 1–5 trong 136 giáo viên</div>
         <div class="pagination">
           <div class="page-btn active">1</div><div class="page-btn">2</div>
           <div class="page-btn">3</div><div class="page-btn">···</div><div class="page-btn">20</div><div class="page-btn">›</div>
@@ -873,10 +970,10 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-add-teacher">
     <div class="page-header">
       <div>
-        <div class="page-title">Thêm giáo viên mới</div>
-        <div class="page-desc">Tạo hồ sơ giảng viên mới và thiết lập lịch học, phân bổ môn học.</div>
+        <div class="page-title">Thêm Giáo Viên Mới</div>
+        <div class="page-desc">Tạo hồ sơ giảng viên mới và thiết lập lịch dạy và phân công môn học.</div>
       </div>
-      <button class="btn btn-outline" onclick="navigate('teachers', document.querySelector('[data-page=teachers]'))">← Quay lại danh sách</button>
+      <button class="btn btn-outline" onclick="navigate('teachers', document.querySelector('[data-page=teachers]'))">← Quay Lại Danh Sách Giáo Viên</button>
     </div>
 
     <div class="grid-12">
@@ -885,34 +982,34 @@ tr:hover td { background: #fafbff; }
         <!-- Avatar upload -->
         <div class="form-section" style="text-align:center;padding:28px 20px;">
           <div id="teacher-avatar-preview" style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;font-weight:800;cursor:pointer;">+</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Tải lên ảnh (tùy chọn)</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Tải ảnh lên (tùy chọn)</div>
           <input type="file" id="teacher-photo" accept="image/*" style="display:none" onchange="previewTeacherPhoto(event)">
-          <button class="btn btn-outline btn-sm" onclick="document.getElementById('teacher-photo').click()">Chọn ảnh</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('teacher-photo').click()">Chọn Ảnh</button>
         </div>
 
         <!-- Personal Information -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">1</div> Thông tin cá nhân</div>
+          <div class="form-section-title"><div class="section-num">1</div> Thông Tin Cá Nhân</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Tên</label><input class="form-input" id="t-firstname" placeholder="vd: Sarah"></div>
-            <div class="form-group"><label class="form-label">Họ</label><input class="form-input" id="t-lastname" placeholder="vd: Jenkins"></div>
+            <div class="form-group"><label class="form-label">Họ</label><input class="form-input" id="t-firstname" placeholder="VD: Nguyễn"></div>
+            <div class="form-group"><label class="form-label">Tên</label><input class="form-input" id="t-lastname" placeholder="VD: Thị Lan"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Ngày sinh</label><input class="form-input" type="date" id="t-dob"></div>
-            <div class="form-group"><label class="form-label">Giới tính</label>
-              <select class="form-select" id="t-gender"><option value="">Chọn giới tính</option><option>Nam</option><option>Nữ</option><option>Khác</option></select>
+            <div class="form-group"><label class="form-label">Ngày Sinh</label><input class="form-input" type="date" id="t-dob"></div>
+            <div class="form-group"><label class="form-label">Giới Tính</label>
+              <select class="form-select" id="t-gender"><option value="">Chọn Giới Tính</option><option>Nam</option><option>Nữ</option><option>Khác</option></select>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">Quốc tịch</label><input class="form-input" id="t-nationality" placeholder="vd: American"></div>
+          <div class="form-group"><label class="form-label">Quốc Tịch</label><input class="form-input" id="t-nationality" placeholder="VD: Việt Nam"></div>
         </div>
 
         <!-- Contact Information -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">2</div> Thông tin liên hệ</div>
-          <div class="form-group"><label class="form-label">Địa chỉ Email</label><input class="form-input" id="t-email" type="email" placeholder="teacher@centerhub.edu"></div>
-          <div class="form-group"><label class="form-label">Số điện thoại</label><input class="form-input" id="t-phone" placeholder="+84 000 000 000"></div>
-          <div class="form-group"><label class="form-label">Địa chỉ thường trú</label><input class="form-input" id="t-address" placeholder="Địa chỉ, Thành phố, Mã bưu điện"></div>
-          <div class="form-group"><label class="form-label">Liên hệ khẩn cấp</label><input class="form-input" id="t-emergency" placeholder="Tên & số điện thoại"></div>
+          <div class="form-section-title"><div class="section-num">2</div> Thông Tin Liên Hệ</div>
+          <div class="form-group"><label class="form-label">Địa Chỉ Email</label><input class="form-input" id="t-email" type="email" placeholder="giaovien@edutrack.edu.vn"></div>
+          <div class="form-group"><label class="form-label">Số Điện Thoại</label><input class="form-input" id="t-phone" placeholder="+84 (0)90-000-0000"></div>
+          <div class="form-group"><label class="form-label">Địa Chỉ Thường Trú</label><input class="form-input" id="t-address" placeholder="Số nhà, Đường, Quận/Huyện, Tỉnh/TP"></div>
+          <div class="form-group"><label class="form-label">Liên Hệ Khẩn Cấp</label><input class="form-input" id="t-emergency" placeholder="Tên & số điện thoại"></div>
         </div>
       </div>
 
@@ -920,80 +1017,80 @@ tr:hover td { background: #fafbff; }
       <div>
         <!-- Professional Details -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">3</div> Chi tiết chuyên môn</div>
+          <div class="form-section-title"><div class="section-num">3</div> Thông Tin Chuyên Môn</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Mã nhân viên</label><input class="form-input" id="t-empid" placeholder="Tự động tạo" readonly style="background:var(--bg);color:var(--text-muted);" value="TCH-2024-06"></div>
-            <div class="form-group"><label class="form-label">Ngày bắt đầu</label><input class="form-input" type="date" id="t-startdate"></div>
+            <div class="form-group"><label class="form-label">Mã Nhân Viên</label><input class="form-input" id="t-empid" placeholder="Tự động tạo" readonly style="background:var(--bg);color:var(--text-muted);" value="TCH-2024-06"></div>
+            <div class="form-group"><label class="form-label">Ngày Bắt Đầu</label><input class="form-input" type="date" id="t-startdate"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Môn học chính</label>
+            <div class="form-group"><label class="form-label">Môn Học Chính</label>
               <select class="form-select" id="t-subject">
-                <option value="">Chọn môn học</option>
-                <option>Toán học</option>
-                <option>Vật lý nâng cao</option>
-                <option>Văn học Anh</option>
-                <option>Lịch sử</option>
-                <option>Thiết kế đồ họa</option>
-                <option>Chiến lược kinh doanh</option>
-                <option>Tiếng Pháp</option>
-                <option>Khoa học máy tính</option>
+                <option value="">Chọn Môn Học</option>
+                <option>Toán Học</option>
+                <option>Vật Lý Nâng Cao</option>
+                <option>Văn Học</option>
+                <option>Lịch Sử</option>
+                <option>Thiết Kế Đồ Họa</option>
+                <option>Chiến Lược Kinh Doanh</option>
+                <option>Tiếng Anh</option>
+                <option>Tin Học</option>
               </select>
             </div>
-            <div class="form-group"><label class="form-label">Loại hình làm việc</label>
+            <div class="form-group"><label class="form-label">Hình Thức Làm Việc</label>
               <select class="form-select" id="t-emptype">
-                <option>Toàn thời gian</option>
-                <option>Bán thời gian</option>
-                <option>Hợp đồng</option>
-                <option>Giảng viên thỉnh giảng</option>
+                <option>Toàn Thời Gian</option>
+                <option>Bán Thời Gian</option>
+                <option>Hợp Đồng</option>
+                <option>Giảng Viên Thỉnh Giảng</option>
               </select>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">Bằng cấp / Chứng chỉ</label><input class="form-input" id="t-qual" placeholder="vd: Thạc sĩ Toán học, Đại học Harvard"></div>
-          <div class="form-group"><label class="form-label">Số năm kinh nghiệm</label><input class="form-input" id="t-exp" type="number" placeholder="vd: 8"></div>
-          <div class="form-group"><label class="form-label">Giới thiệu</label>
-            <textarea class="form-input" id="t-bio" rows="3" placeholder="Giới thiệu ngắn hiển thị cho học sinh và phụ huynh…" style="resize:vertical;"></textarea>
+          <div class="form-group"><label class="form-label">Bằng Cấp / Chứng Chỉ</label><input class="form-input" id="t-qual" placeholder="VD: Thạc sĩ Toán học, ĐH Quốc Gia HN"></div>
+          <div class="form-group"><label class="form-label">Số Năm Kinh Nghiệm</label><input class="form-input" id="t-exp" type="number" placeholder="VD: 8"></div>
+          <div class="form-group"><label class="form-label">Tiểu Sử / Giới Thiệu</label>
+            <textarea class="form-input" id="t-bio" rows="3" placeholder="Mô tả ngắn hiển thị cho học sinh và phụ huynh…" style="resize:vertical;"></textarea>
           </div>
         </div>
 
         <!-- Schedule Assignment -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">4</div> Lịch học &amp; Phân bổ lớp</div>
-          <div class="form-group"><label class="form-label">Ngày làm việc</label>
+          <div class="form-section-title"><div class="section-num">4</div> Lịch Dạy &amp; Phân Công Lớp</div>
+          <div class="form-group"><label class="form-label">Ngày Làm Việc</label>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;" id="days-picker">
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Mon"> Thứ Hai</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Tue"> Thứ Ba</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Wed"> Thứ Tư</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Thu"> Thứ Năm</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Fri"> Thứ Sáu</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Sat"> Thứ Bảy</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Mon"> T2</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Tue"> T3</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Wed"> T4</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Thu"> T5</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Fri"> T6</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="days" value="Sat"> T7</label>
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Giờ bắt đầu</label><input class="form-input" type="time" id="t-starttime" value="08:00"></div>
-            <div class="form-group"><label class="form-label">Giờ kết thúc</label><input class="form-input" type="time" id="t-endtime" value="16:00"></div>
+            <div class="form-group"><label class="form-label">Giờ Bắt Đầu</label><input class="form-input" type="time" id="t-starttime" value="08:00"></div>
+            <div class="form-group"><label class="form-label">Giờ Kết Thúc</label><input class="form-input" type="time" id="t-endtime" value="16:00"></div>
           </div>
-          <div class="form-group"><label class="form-label">Phân bổ lớp ban đầu</label>
+          <div class="form-group"><label class="form-label">Phân Công Lớp Ban Đầu</label>
             <div class="radio-grid" style="grid-template-columns:1fr 1fr;">
-              <label class="radio-item"><input type="checkbox"> Giải tích nâng cao A</label>
-              <label class="radio-item"><input type="checkbox"> Nhập môn Vật lý lượng tử</label>
-              <label class="radio-item"><input type="checkbox"> Chiến lược kinh doanh X2</label>
-              <label class="radio-item"><input type="checkbox"> Cơ bản thiết kế UI</label>
+              <label class="radio-item"><input type="checkbox"> Giải Tích Nâng Cao A</label>
+              <label class="radio-item"><input type="checkbox"> Nhập Môn Vật Lý Lượng Tử</label>
+              <label class="radio-item"><input type="checkbox"> Chiến Lược Kinh Doanh X2</label>
+              <label class="radio-item"><input type="checkbox"> Cơ Bản Thiết Kế UI</label>
             </div>
           </div>
         </div>
 
         <!-- Salary -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">5</div> Lương &amp; Trợ cấp</div>
+          <div class="form-section-title"><div class="section-num">5</div> Lương &amp; Phúc Lợi</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Lương tháng (USD)</label><input class="form-input" id="t-salary" type="number" placeholder="vd: 4500"></div>
-            <div class="form-group"><label class="form-label">Chu kỳ thanh toán</label>
-              <select class="form-select"><option>Hàng tháng</option><option>2 tuần một lần</option><option>Hàng tuần</option></select>
+            <div class="form-group"><label class="form-label">Lương Tháng (VNĐ)</label><input class="form-input" id="t-salary" type="number" placeholder="VD: 15000000"></div>
+            <div class="form-group"><label class="form-label">Kỳ Thanh Toán</label>
+              <select class="form-select"><option>Hàng Tháng</option><option>2 Tuần/Lần</option><option>Hàng Tuần</option></select>
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Tên ngân hàng</label><input class="form-input" placeholder="vd: Chase Bank"></div>
-            <div class="form-group"><label class="form-label">Số tài khoản</label><input class="form-input" placeholder="****  ****  1234" type="password"></div>
+            <div class="form-group"><label class="form-label">Tên Ngân Hàng</label><input class="form-input" placeholder="VD: Vietcombank"></div>
+            <div class="form-group"><label class="form-label">Số Tài Khoản</label><input class="form-input" placeholder="****  ****  1234" type="password"></div>
           </div>
         </div>
 
@@ -1001,7 +1098,7 @@ tr:hover td { background: #fafbff; }
           <button class="btn btn-outline" onclick="navigate('teachers', document.querySelector('[data-page=teachers]'))">Hủy</button>
           <button class="btn btn-primary" onclick="saveTeacher()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Lưu hồ sơ giáo viên
+            Lưu Hồ Sơ Giáo Viên
           </button>
         </div>
       </div>
@@ -1014,25 +1111,25 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-students">
     <div class="page-header">
       <div>
-        <div class="page-title">Quản lý Sinh viên</div>
-        <div class="page-desc">Quản lý tất cả sinh viên đã nhập học.</div>
+        <div class="page-title">Quản Lý Học Sinh</div>
+        <div class="page-desc">Quản lý toàn bộ học sinh đã đăng ký.</div>
       </div>
-      <button class="btn btn-primary" onclick="navigate('add-student',document.querySelector('[data-page=students]'))">+ Thêm sinh viên mới</button>
+      <button class="btn btn-primary" onclick="navigate('add-student',document.querySelector('[data-page=students]'))">+ Thêm Học Sinh Mới</button>
     </div>
 
     <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
       <div class="stat-card">
-        <div class="stat-label">Tổng số sinh viên</div>
+        <div class="stat-label">Tổng Học Sinh</div>
         <div class="stat-value">1,284</div>
         <div class="stat-change up">▲ 6%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Đang theo học</div>
+        <div class="stat-label">Đang Học</div>
         <div class="stat-value">1,150</div>
         <div class="stat-change up">▲ 4%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Thanh toán quá hạn</div>
+        <div class="stat-label">Học Phí Trễ Hạn</div>
         <div class="stat-value">24</div>
         <div class="stat-change down">▲ 2</div>
       </div>
@@ -1042,31 +1139,31 @@ tr:hover td { background: #fafbff; }
       <div class="filters">
         <div class="search-box" style="min-width:220px;display:flex;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Tìm sinh viên theo tên, mã hoặc email…" style="border:none;background:none;outline:none;font-family:inherit;font-size:13px;width:100%;">
+          <input type="text" placeholder="Tìm học sinh theo tên, mã số hoặc email…" style="border:none;background:none;outline:none;font-family:inherit;font-size:13px;width:100%;">
         </div>
-        <select class="filter-select"><option>Tất cả khối lớp</option><option>Lớp 9</option><option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option></select>
-        <select class="filter-select"><option>Trạng thái: Tất cả</option><option>Đang học</option><option>Đang chờ</option><option>Quá hạn</option></select>
-        <button class="btn btn-outline btn-sm">⚙ Lọc thêm</button>
+        <select class="filter-select"><option>Tất Cả Khối</option><option>Khối 9</option><option>Khối 10</option><option>Khối 11</option><option>Khối 12</option></select>
+        <select class="filter-select"><option>Trạng Thái: Tất Cả</option><option>Đang Học</option><option>Chờ Xác Nhận</option><option>Trễ Hạn</option></select>
+        <button class="btn btn-outline btn-sm">⚙ Bộ Lọc Thêm</button>
       </div>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Tên sinh viên</th>
-              <th>Mã sinh viên</th>
-              <th>Khối lớp</th>
-              <th>Lớp đã đăng ký</th>
-              <th>Điểm danh</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
+              <th>Tên Học Sinh</th>
+              <th>Mã Học Sinh</th>
+              <th>Khối</th>
+              <th>Lớp Đã Đăng Ký</th>
+              <th>Điểm Danh</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody id="students-table"></tbody>
         </table>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
-        <div class="page-info">Hiển thị 1–8 của 1,284 sinh viên</div>
+        <div class="page-info">Hiển thị 1–8 trong 1,284 học sinh</div>
         <div class="pagination">
           <div class="page-btn">‹</div>
           <div class="page-btn active">1</div><div class="page-btn">2</div>
@@ -1082,10 +1179,10 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-add-student">
     <div class="page-header">
       <div>
-        <div class="page-title">Đăng ký sinh viên mới</div>
-        <div class="page-desc">Tạo hồ sơ sinh viên mới và thiết lập nhập học ban đầu và chi tiết thanh toán.</div>
+        <div class="page-title">Đăng Ký Học Sinh Mới</div>
+        <div class="page-desc">Tạo hồ sơ học sinh mới và thiết lập thông tin đăng ký và thanh toán.</div>
       </div>
-      <button class="btn btn-outline" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Quay lại danh sách</button>
+      <button class="btn btn-outline" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Quay Lại Danh Sách Học Sinh</button>
     </div>
 
     <div class="grid-12">
@@ -1093,82 +1190,82 @@ tr:hover td { background: #fafbff; }
         <!-- Avatar placeholder -->
         <div class="form-section" style="text-align:center;padding:24px;">
           <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px dashed var(--border);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;color:var(--text-light)">+</div>
-          <div style="font-size:12px;color:var(--text-muted)">Tải lên ảnh (tùy chọn)</div>
+          <div style="font-size:12px;color:var(--text-muted)">Tải ảnh lên (tùy chọn)</div>
         </div>
 
         <!-- Personal Info -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">1</div> Thông tin cá nhân</div>
+          <div class="form-section-title"><div class="section-num">1</div> Thông Tin Cá Nhân</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Họ và tên</label><input class="form-input" placeholder="Họ và tên sinh viên"></div>
-            <div class="form-group"><label class="form-label">Ngày sinh</label><input class="form-input" type="date"></div>
+            <div class="form-group"><label class="form-label">Họ Và Tên</label><input class="form-input" placeholder="Nhập họ và tên đầy đủ"></div>
+            <div class="form-group"><label class="form-label">Ngày Sinh</label><input class="form-input" type="date"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Giới tính</label>
-              <select class="form-select"><option>Chọn giới tính</option><option>Nam</option><option>Nữ</option></select>
+            <div class="form-group"><label class="form-label">Giới Tính</label>
+              <select class="form-select"><option>Chọn Giới Tính</option><option>Nam</option><option>Nữ</option></select>
             </div>
-            <div class="form-group"><label class="form-label">Quốc tịch</label><input class="form-input" placeholder="vd: American"></div>
+            <div class="form-group"><label class="form-label">Quốc Tịch</label><input class="form-input" placeholder="VD: Việt Nam"></div>
           </div>
         </div>
 
         <!-- Parent Info -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">2</div> Thông tin Phụ huynh / Người giám hộ</div>
+          <div class="form-section-title"><div class="section-num">2</div> Thông Tin Phụ Huynh / Người Giám Hộ</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Tên người giám hộ</label><input class="form-input" placeholder="Họ và tên phụ huynh"></div>
-            <div class="form-group"><label class="form-label">Mối quan hệ</label>
-              <select class="form-select"><option>vd: Mẹ, Cha, Người giám hộ hợp pháp</option><option>Mẹ</option><option>Cha</option><option>Người giám hộ</option></select>
+            <div class="form-group"><label class="form-label">Tên Phụ Huynh</label><input class="form-input" placeholder="Họ và tên đầy đủ"></div>
+            <div class="form-group"><label class="form-label">Mối Quan Hệ</label>
+              <select class="form-select"><option>VD: Mẹ, Bố, Người Giám Hộ</option><option>Mẹ</option><option>Bố</option><option>Người Giám Hộ</option></select>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">Email liên hệ</label><input class="form-input" placeholder="phuhuynh@email.com" type="email"></div>
-          <div class="form-group"><label class="form-label">Số điện thoại</label><input class="form-input" placeholder="+84 000 000 000"></div>
-          <div class="form-group"><label class="form-label">Địa chỉ thường trú</label><input class="form-input" placeholder="Địa chỉ, Thành phố, Mã bưu điện"></div>
+          <div class="form-group"><label class="form-label">Email Liên Hệ</label><input class="form-input" placeholder="phuhuynh@email.com" type="email"></div>
+          <div class="form-group"><label class="form-label">Số Điện Thoại</label><input class="form-input" placeholder="+84 (0)90-000-0000"></div>
+          <div class="form-group"><label class="form-label">Địa Chỉ Thường Trú</label><input class="form-input" placeholder="Số nhà, Đường, Quận/Huyện, Tỉnh/TP"></div>
         </div>
       </div>
 
       <div>
         <!-- Enrollment -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">3</div> Chi tiết nhập học</div>
+          <div class="form-section-title"><div class="section-num">3</div> Thông Tin Đăng Ký</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Khối lớp</label>
-              <select class="form-select"><option>Chọn khối lớp</option><option>Lớp 9</option><option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option></select>
+            <div class="form-group"><label class="form-label">Khối Lớp</label>
+              <select class="form-select"><option>Chọn Khối</option><option>Khối 9</option><option>Khối 10</option><option>Khối 11</option><option>Khối 12</option></select>
             </div>
-            <div class="form-group"><label class="form-label">Ngày bắt đầu</label><input class="form-input" type="date"></div>
+            <div class="form-group"><label class="form-label">Ngày Bắt Đầu</label><input class="form-input" type="date"></div>
           </div>
           <div class="form-group">
-            <label class="form-label">Chọn lớp học</label>
+            <label class="form-label">Chọn Lớp Học</label>
             <div class="radio-grid">
-              <label class="radio-item"><input type="checkbox" id="c1"> Toán học (B)</label>
-              <label class="radio-item"><input type="checkbox" id="c2"> Văn học Anh</label>
-              <label class="radio-item"><input type="checkbox" id="c3"> Nhập môn Vật lý</label>
-              <label class="radio-item"><input type="checkbox" id="c4"> Lịch sử (02)</label>
-              <label class="radio-item"><input type="checkbox" id="c5"> Thiết kế đồ họa</label>
-              <label class="radio-item"><input type="checkbox" id="c6"> Tiếng Pháp cấp độ 1</label>
+              <label class="radio-item"><input type="checkbox" id="c1"> Toán Học (B)</label>
+              <label class="radio-item"><input type="checkbox" id="c2"> Văn Học</label>
+              <label class="radio-item"><input type="checkbox" id="c3"> Nhập Môn Vật Lý</label>
+              <label class="radio-item"><input type="checkbox" id="c4"> Lịch Sử (02)</label>
+              <label class="radio-item"><input type="checkbox" id="c5"> Thiết Kế Đồ Họa</label>
+              <label class="radio-item"><input type="checkbox" id="c6"> Tiếng Anh Cấp 1</label>
             </div>
           </div>
         </div>
 
         <!-- Payment -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">4</div> Thiết lập thanh toán</div>
+          <div class="form-section-title"><div class="section-num">4</div> Thiết Lập Thanh Toán</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Mã nhập học</label><input class="form-input" placeholder="Nhập mã"></div>
-            <div class="form-group"><label class="form-label">Phương thức thanh toán ban đầu</label>
-              <select class="form-select"><option>Thẻ Tín dụng / Ghi nợ</option><option>Chuyển khoản ngân hàng</option><option>Tiền mặt</option></select>
+            <div class="form-group"><label class="form-label">Mã Đăng Ký</label><input class="form-input" placeholder="Nhập mã"></div>
+            <div class="form-group"><label class="form-label">Phương Thức Thanh Toán</label>
+              <select class="form-select"><option>Thẻ Tín Dụng / Ghi Nợ</option><option>Chuyển Khoản Ngân Hàng</option><option>Tiền Mặt</option></select>
             </div>
           </div>
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;">
-            <div class="summary-row"><span style="color:var(--text-muted)">Phí đăng ký</span><span>$50.00</span></div>
-            <div class="summary-row"><span style="color:var(--text-muted)">Học phí (Hàng tháng)</span><span>$240.00</span></div>
-            <div class="summary-row"><span style="color:var(--text-muted)">Giảm giá</span><span style="color:var(--success)">-$0.00</span></div>
-            <div class="summary-row"><span>Tổng thanh toán lần đầu:</span><span style="color:var(--primary);font-size:16px;">$290.00</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted)">Phí Đăng Ký</span><span>500.000₫</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted)">Học Phí (Hàng Tháng)</span><span>2.400.000₫</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted)">Giảm Giá</span><span style="color:var(--success)">-0₫</span></div>
+            <div class="summary-row"><span>Tổng Thanh Toán Đầu:</span><span style="color:var(--primary);font-size:16px;">2.900.000₫</span></div>
           </div>
         </div>
 
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
           <button class="btn btn-outline" onclick="navigate('students',document.querySelector('[data-page=students]'))">Hủy</button>
-          <button class="btn btn-primary" onclick="saveStudent()">Lưu hồ sơ sinh viên</button>
+          <button class="btn btn-primary" onclick="saveStudent()">Lưu Hồ Sơ Học Sinh</button>
         </div>
       </div>
     </div>
@@ -1179,75 +1276,75 @@ tr:hover td { background: #fafbff; }
   ════════════════════════════════════ -->
   <div class="page" id="page-student-detail">
     <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
-      <button class="btn btn-outline btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Sinh viên</button>
-      <button class="btn btn-primary btn-sm">✎ Chỉnh sửa hồ sơ</button>
+      <button class="btn btn-outline btn-sm" onclick="navigate('students',document.querySelector('[data-page=students]'))">← Học Sinh</button>
+      <button class="btn btn-primary btn-sm">✎ Chỉnh Sửa Hồ Sơ</button>
     </div>
 
     <div class="detail-header">
       <div class="detail-avatar" id="detail-avatar">AJ</div>
       <div>
-        <div class="detail-name" id="detail-name">Alex Johnson</div>
-        <div class="detail-meta" id="detail-meta">STU-10001 · Đã nhập học 12 thg 9, 2023</div>
-        <div class="detail-meta" id="detail-contact">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="640508011c4a0e0b0c0a170b0a240100114a070b09">[email&#160;protected]</a> · 📞 (555) 123-4567 · 📍 Austin, TX</div>
+        <div class="detail-name" id="detail-name">Nguyễn Thị Mai Anh</div>
+        <div class="detail-meta" id="detail-meta">HS-2024-01 · Nhập học Tháng 9/2023</div>
+        <div class="detail-meta" id="detail-contact">📧 maianh.nt@edu.vn · 📞 0901-234-567 · 📍 Hà Nội</div>
         <div class="detail-stats">
           <div>
             <div class="detail-stat-val" id="detail-gpa">3.85</div>
-            <div class="detail-stat-lbl">GPA hiện tại</div>
+            <div class="detail-stat-lbl">GPA Hiện Tại</div>
           </div>
           <div>
             <div class="detail-stat-val" id="detail-att">94.2%</div>
-            <div class="detail-stat-lbl">Điểm danh ↑</div>
+            <div class="detail-stat-lbl">Điểm Danh ↑</div>
           </div>
           <div>
-            <div class="detail-stat-val" style="color:#ef4444;" id="detail-balance">$120.00</div>
-            <div class="detail-stat-lbl">Số dư còn lại</div>
+            <div class="detail-stat-val" style="color:#ef4444;" id="detail-balance">1.200.000₫</div>
+            <div class="detail-stat-lbl">Số Dư Còn Lại</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="tabs">
-      <div class="tab-item active" onclick="switchTab('overview')">Tổng quan</div>
-      <div class="tab-item" onclick="switchTab('academic')">Tiến độ học tập</div>
-      <div class="tab-item" onclick="switchTab('attendance')">Lịch sử điểm danh</div>
-      <div class="tab-item" onclick="switchTab('billing')">Thanh toán &amp; Hóa đơn</div>
+      <div class="tab-item active" onclick="switchTab('overview')">Tổng Quan</div>
+      <div class="tab-item" onclick="switchTab('academic')">Tiến Độ Học Tập</div>
+      <div class="tab-item" onclick="switchTab('attendance')">Lịch Sử Điểm Danh</div>
+      <div class="tab-item" onclick="switchTab('billing')">Hóa Đơn &amp; Thanh Toán</div>
     </div>
 
     <div class="tab-pane active" id="tab-overview">
       <div class="grid-2">
         <div class="card">
-          <div class="card-header"><div class="card-title">Lớp đã đăng ký</div><a href="#" style="font-size:12px;color:var(--primary);">Xem lịch học</a></div>
+          <div class="card-header"><div class="card-title">Lớp Đã Đăng Ký</div><a href="#" style="font-size:12px;color:var(--primary);">Xem Lịch Học</a></div>
           <div class="class-mini">
             <div class="class-mini-dot"></div>
-            <div><div class="class-mini-name">Toán học Nâng cao</div><div class="class-mini-time">Thứ 2, 4, 6 · 09:00 SA – 10:30 SA</div></div>
-            <span class="class-mini-badge badge badge-green">ĐANG HOẠT ĐỘNG</span>
+            <div><div class="class-mini-name">Toán Học Nâng Cao</div><div class="class-mini-time">Thứ 2, 4, 6 · 9:00 – 10:30</div></div>
+            <span class="class-mini-badge badge badge-green">ĐANG HỌC</span>
           </div>
           <div class="class-mini">
             <div class="class-mini-dot"></div>
-            <div><div class="class-mini-name">Vật lý Hiện đại</div><div class="class-mini-time">Thứ 3, 5 · 11:00 SA – 12:30 CH</div></div>
-            <span class="class-mini-badge badge badge-green">ĐANG HOẠT ĐỘNG</span>
+            <div><div class="class-mini-name">Vật Lý Hiện Đại</div><div class="class-mini-time">Thứ 3, 5 · 11:00 – 12:30</div></div>
+            <span class="class-mini-badge badge badge-green">ĐANG HỌC</span>
           </div>
           <div class="class-mini">
             <div class="class-mini-dot"></div>
-            <div><div class="class-mini-name">Thiết kế Đồ họa 101</div><div class="class-mini-time">Thứ 6 · 01:00 CH – 03:00 CH</div></div>
-            <span class="class-mini-badge badge badge-green">ĐANG HOẠT ĐỘNG</span>
+            <div><div class="class-mini-name">Thiết Kế Đồ Họa 101</div><div class="class-mini-time">Thứ 6 · 13:00 – 15:00</div></div>
+            <span class="class-mini-badge badge badge-green">ĐANG HỌC</span>
           </div>
-          <a href="#" style="font-size:12px;color:var(--primary);display:block;text-align:center;margin-top:10px;">Xem tất cả đánh giá →</a>
+          <a href="#" style="font-size:12px;color:var(--primary);display:block;text-align:center;margin-top:10px;">Xem Tất Cả Phản Hồi →</a>
         </div>
         <div class="card">
-          <div class="card-header"><div class="card-title">Đánh giá của giáo viên</div></div>
+          <div class="card-header"><div class="card-title">Nhận Xét Của Giáo Viên</div></div>
           <div class="feedback-item">
             <div class="avatar av-blue">SM</div>
             <div>
-              <div style="font-weight:600;font-size:13px;">Cô Sarah Miller</div>
-              <div class="feedback-text">"Alex luôn tích cực tham gia thảo luận trong lớp. Tôi tin tưởng vào tiềm năng của em."</div>
+              <div style="font-weight:600;font-size:13px;">Cô Nguyễn Thị Lan</div>
+              <div class="feedback-text">"Mai Anh luôn tích cực tham gia thảo luận. Tôi tin tưởng vào tiềm năng của em."</div>
             </div>
           </div>
           <div class="feedback-item">
             <div class="avatar av-green">DC</div>
             <div>
-              <div style="font-weight:600;font-size:13px;">Thầy David Chen</div>
-              <div class="feedback-text">"Tham gia tốt trong mọi hoạt động. Nên tập trung nhiều hơn vào kỹ năng cộng tác nhóm."</div>
+              <div style="font-weight:600;font-size:13px;">Thầy Trần Minh Châu</div>
+              <div class="feedback-text">"Tham gia tốt các hoạt động. Cần tập trung hơn vào kỹ năng làm việc nhóm."</div>
             </div>
           </div>
         </div>
@@ -1255,12 +1352,12 @@ tr:hover td { background: #fafbff; }
     </div>
     <div class="tab-pane" id="tab-academic">
       <div class="card">
-        <div class="card-title" style="margin-bottom:16px;">Tiến độ học tập</div>
-        <table><thead><tr><th>Môn học</th><th>Điểm</th><th>Tiến độ</th><th>Xu hướng</th></tr></thead>
+        <div class="card-title" style="margin-bottom:16px;">Tiến Độ Học Tập</div>
+        <table><thead><tr><th>Môn Học</th><th>Điểm</th><th>Tiến Độ</th><th>Xu Hướng</th></tr></thead>
         <tbody>
-          <tr><td>Toán học Nâng cao</td><td><strong>A+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--success)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 3%</td></tr>
-          <tr><td>Vật lý Hiện đại</td><td><strong>B+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--primary)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 1%</td></tr>
-          <tr><td>Thiết kế Đồ họa 101</td><td><strong>A</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--purple)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 5%</td></tr>
+          <tr><td>Toán Học Nâng Cao</td><td><strong>A+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--success)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 3%</td></tr>
+          <tr><td>Vật Lý Hiện Đại</td><td><strong>B+</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--primary)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 1%</td></tr>
+          <tr><td>Thiết Kế Đồ Họa 101</td><td><strong>A</strong></td><td><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--purple)"></div></div></td><td class="stat-change up" style="font-size:11px;display:inline-flex;">▲ 5%</td></tr>
         </tbody></table>
       </div>
     </div>
@@ -1278,30 +1375,30 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-finance">
     <div class="page-header">
       <div>
-        <div class="page-title">Báo cáo Tài chính &amp; Doanh thu</div>
+        <div class="page-title">Báo Cáo Tài Chính &amp; Doanh Thu</div>
         <div class="page-desc">Tổng quan thời gian thực về hiệu quả tài chính của trung tâm.</div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-outline btn-sm">📅 30 ngày qua</button>
+        <button class="btn btn-outline btn-sm">📅 30 Ngày Qua</button>
         <button class="btn btn-primary btn-sm">↓ Xuất PDF</button>
-        <button class="btn btn-primary btn-sm" onclick="navigate('finance', document.querySelector('[data-page=finance]'))">+ Ghi nhận thanh toán</button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('finance', document.querySelector('[data-page=finance]'))">+ Ghi Nhận Thanh Toán</button>
       </div>
     </div>
 
     <div class="revenue-summary">
       <div class="rev-card">
-        <div class="rev-label">Tổng doanh thu</div>
-        <div class="rev-amount">$128,450.00</div>
+        <div class="rev-label">Doanh Thu Gộp</div>
+        <div class="rev-amount">1.284.500.000₫</div>
         <div class="stat-change up" style="margin-top:6px;">▲ 12.5%</div>
       </div>
       <div class="rev-card">
-        <div class="rev-label">Lợi nhuận ròng</div>
-        <div class="rev-amount">$42,300.00</div>
+        <div class="rev-label">Lợi Nhuận Ròng</div>
+        <div class="rev-amount">423.000.000₫</div>
         <div class="stat-change down" style="margin-top:6px;">▼ 0.4%</div>
       </div>
       <div class="rev-card">
-        <div class="rev-label">Hạng mục quảng cáo</div>
-        <div class="rev-amount">$8,120.00</div>
+        <div class="rev-label">Chi Phí Quảng Cáo</div>
+        <div class="rev-amount">81.200.000₫</div>
         <div class="stat-change up" style="margin-top:6px;">▲ 9.1%</div>
       </div>
     </div>
@@ -1310,12 +1407,12 @@ tr:hover td { background: #fafbff; }
       <div class="card">
         <div class="card-header">
           <div>
-            <div class="card-title">Xu hướng doanh thu hàng tháng</div>
-            <div class="card-sub">Phân bổ doanh thu theo tháng cho năm tài chính hiện tại.</div>
+            <div class="card-title">Xu Hướng Doanh Thu Hàng Tháng</div>
+            <div class="card-sub">Phân bổ doanh thu theo tháng trong năm tài chính hiện tại.</div>
           </div>
           <div style="display:flex;gap:10px;font-size:11px;align-items:center;">
-            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#3b82f6;display:inline-block;border-radius:2px;"></span> Học phí</span>
-            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#fca5a5;display:inline-block;border-radius:2px;"></span> Chi phí</span>
+            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#3b82f6;display:inline-block;border-radius:2px;"></span> Học Phí</span>
+            <span style="display:flex;gap:5px;align-items:center;"><span style="width:10px;height:10px;background:#fca5a5;display:inline-block;border-radius:2px;"></span> Chi Phí</span>
           </div>
         </div>
         <div style="display:flex;align-items:flex-end;gap:4px;height:140px;">
@@ -1352,7 +1449,7 @@ tr:hover td { background: #fafbff; }
       </div>
 
       <div class="card">
-        <div class="card-title" style="margin-bottom:16px;">Phân tích doanh thu</div>
+        <div class="card-title" style="margin-bottom:16px;">Phân Tích Doanh Thu</div>
         <svg viewBox="0 0 120 120" style="width:110px;height:110px;display:block;margin:0 auto;">
           <circle cx="60" cy="60" r="50" fill="none" stroke="#3b82f6" stroke-width="20" stroke-dasharray="188 126" stroke-dashoffset="0"/>
           <circle cx="60" cy="60" r="50" fill="none" stroke="#22c55e" stroke-width="20" stroke-dasharray="75 239" stroke-dashoffset="-188"/>
@@ -1360,9 +1457,9 @@ tr:hover td { background: #fafbff; }
           <circle cx="60" cy="60" r="50" fill="none" stroke="#8b5cf6" stroke-width="20" stroke-dasharray="14 300" stroke-dashoffset="-300"/>
         </svg>
         <div class="donut-legend" style="margin-top:14px;">
-          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Học phí <strong style="margin-left:auto;">60%</strong></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Nhập học <strong style="margin-left:auto;">24%</strong></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Học liệu <strong style="margin-left:auto;">12%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Học Phí <strong style="margin-left:auto;">60%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Ghi Danh <strong style="margin-left:auto;">24%</strong></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Giáo Cụ <strong style="margin-left:auto;">12%</strong></div>
           <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Khác <strong style="margin-left:auto;">4%</strong></div>
         </div>
       </div>
@@ -1370,12 +1467,12 @@ tr:hover td { background: #fafbff; }
 
     <div class="card">
       <div class="card-header">
-        <div class="card-title">Giao dịch gần đây</div>
+        <div class="card-title">Giao Dịch Gần Đây</div>
         <a href="#" style="font-size:12px;color:var(--primary);">Xem tất cả</a>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tên sinh viên</th><th>Lớp</th><th>Số tiền</th><th>Trạng thái</th><th>Ngày</th><th>Hành động</th></tr></thead>
+          <thead><tr><th>Tên Học Sinh</th><th>Lớp Học</th><th>Số Tiền</th><th>Trạng Thái</th><th>Ngày</th><th>Thao Tác</th></tr></thead>
           <tbody id="finance-table"></tbody>
         </table>
       </div>
@@ -1388,31 +1485,31 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-reports">
     <div class="page-header">
       <div>
-        <div class="page-title">Báo cáo &amp; Phân tích</div>
-        <div class="page-desc">Thông tin dữ liệu toàn diện để hỗ trợ ra quyết định.</div>
+        <div class="page-title">Báo Cáo &amp; Phân Tích</div>
+        <div class="page-desc">Thông tin chi tiết toàn diện hỗ trợ ra quyết định.</div>
       </div>
-      <button class="btn btn-primary">↓ Xuất tất cả</button>
+      <button class="btn btn-primary">↓ Xuất Tất Cả</button>
     </div>
     <div class="grid-2" style="margin-bottom:20px;">
       <div class="card" style="cursor:pointer;" onclick="navigate('finance',document.querySelector('[data-page=finance]'))">
-        <div class="card-title" style="margin-bottom:8px;">📊 Báo cáo Tài chính</div>
-        <p style="font-size:13px;color:var(--text-muted);">Xu hướng doanh thu, chi phí và lợi nhuận.</p>
-        <div style="margin-top:12px;"><span class="badge badge-green">Cập nhật hôm nay</span></div>
+        <div class="card-title" style="margin-bottom:8px;">📊 Báo Cáo Tài Chính</div>
+        <p style="font-size:13px;color:var(--text-muted);">Doanh thu, chi phí và xu hướng lợi nhuận.</p>
+        <div style="margin-top:12px;"><span class="badge badge-green">Cập Nhật Hôm Nay</span></div>
       </div>
       <div class="card" style="cursor:pointer;">
-        <div class="card-title" style="margin-bottom:8px;">👨‍🎓 Báo cáo Nhập học</div>
-        <p style="font-size:13px;color:var(--text-muted);">Số liệu nhập học mới, thôi học, tỷ lệ giữ chân.</p>
-        <div style="margin-top:12px;"><span class="badge badge-blue">Hàng tháng</span></div>
+        <div class="card-title" style="margin-bottom:8px;">👨‍🎓 Báo Cáo Ghi Danh</div>
+        <p style="font-size:13px;color:var(--text-muted);">Đăng ký mới, nghỉ học, tỷ lệ giữ chân học sinh.</p>
+        <div style="margin-top:12px;"><span class="badge badge-blue">Hàng Tháng</span></div>
       </div>
       <div class="card" style="cursor:pointer;">
-        <div class="card-title" style="margin-bottom:8px;">📅 Báo cáo Điểm danh</div>
-        <p style="font-size:13px;color:var(--text-muted);">Phân tích điểm danh của sinh viên và giáo viên.</p>
-        <div style="margin-top:12px;"><span class="badge badge-yellow">Hàng tuần</span></div>
+        <div class="card-title" style="margin-bottom:8px;">📅 Báo Cáo Điểm Danh</div>
+        <p style="font-size:13px;color:var(--text-muted);">Phân tích điểm danh của học sinh và giáo viên.</p>
+        <div style="margin-top:12px;"><span class="badge badge-yellow">Hàng Tuần</span></div>
       </div>
       <div class="card" style="cursor:pointer;">
-        <div class="card-title" style="margin-bottom:8px;">⭐ Báo cáo Hiệu quả</div>
-        <p style="font-size:13px;color:var(--text-muted);">Điểm học tập, GPA, theo dõi sự tiến bộ.</p>
-        <div style="margin-top:12px;"><span class="badge badge-purple">Hàng quý</span></div>
+        <div class="card-title" style="margin-bottom:8px;">⭐ Báo Cáo Thành Tích</div>
+        <p style="font-size:13px;color:var(--text-muted);">Điểm số, GPA, theo dõi tiến bộ học sinh.</p>
+        <div style="margin-top:12px;"><span class="badge badge-purple">Hàng Quý</span></div>
       </div>
     </div>
   </div>
@@ -1423,10 +1520,10 @@ tr:hover td { background: #fafbff; }
   <div class="page" id="page-add-class">
     <div class="page-header">
       <div>
-        <div class="page-title">Tạo lớp học mới</div>
-        <div class="page-desc">Thiết lập lớp học mới với lịch học, giáo viên, giá cả và chi tiết nhập học.</div>
+        <div class="page-title">Tạo Lớp Học Mới</div>
+        <div class="page-desc">Thiết lập lớp học mới với lịch học, giáo viên, học phí và thông tin ghi danh.</div>
       </div>
-      <button class="btn btn-outline" onclick="navigate('classes',document.querySelector('[data-page=classes]'))">← Quay lại danh sách lớp</button>
+      <button class="btn btn-outline" onclick="navigate('classes',document.querySelector('[data-page=classes]'))">← Quay Lại Danh Sách Lớp</button>
     </div>
 
     <div class="grid-12">
@@ -1434,46 +1531,46 @@ tr:hover td { background: #fafbff; }
       <div>
         <!-- Class Identity -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">1</div> Nhận diện lớp học</div>
+          <div class="form-section-title"><div class="section-num">1</div> Thông Tin Lớp Học</div>
           <div class="form-group">
-            <label class="form-label">Tên lớp học</label>
-            <input class="form-input" id="cl-name" placeholder="vd: Giải tích nâng cao A">
+            <label class="form-label">Tên Lớp Học</label>
+            <input class="form-input" id="cl-name" placeholder="VD: Giải Tích Nâng Cao A">
           </div>
           <div class="form-group">
-            <label class="form-label">Mã lớp học</label>
+            <label class="form-label">Mã Lớp</label>
             <input class="form-input" id="cl-code" placeholder="Tự động tạo" readonly style="background:var(--bg);color:var(--text-muted);" value="CLS-2024-129">
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Danh mục môn học</label>
+              <label class="form-label">Danh Mục Môn Học</label>
               <select class="form-select" id="cl-subject" onchange="updateSubjectColor()">
-                <option value="">Chọn môn học</option>
-                <option value="math">Toán học</option>
-                <option value="sci">Khoa học / Vật lý</option>
-                <option value="design">Thiết kế &amp; Nghệ thuật</option>
-                <option value="biz">Kinh doanh</option>
-                <option value="lang">Ngôn ngữ</option>
-                <option value="hist">Lịch sử</option>
-                <option value="cs">Khoa học máy tính</option>
+                <option value="">Chọn Môn Học</option>
+                <option value="math">Toán Học</option>
+                <option value="sci">Khoa Học / Vật Lý</option>
+                <option value="design">Thiết Kế &amp; Nghệ Thuật</option>
+                <option value="biz">Kinh Doanh</option>
+                <option value="lang">Ngôn Ngữ</option>
+                <option value="hist">Lịch Sử</option>
+                <option value="cs">Tin Học</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Cấp độ / Khối lớp</label>
+              <label class="form-label">Cấp Độ / Khối</label>
               <select class="form-select" id="cl-level">
-                <option>Chọn cấp độ</option>
-                <option>Mới bắt đầu</option>
-                <option>Trung cấp</option>
-                <option>Nâng cao</option>
-                <option>Lớp 9</option>
-                <option>Lớp 10</option>
-                <option>Lớp 11</option>
-                <option>Lớp 12</option>
+                <option>Chọn Cấp Độ</option>
+                <option>Cơ Bản</option>
+                <option>Trung Cấp</option>
+                <option>Nâng Cao</option>
+                <option>Khối 9</option>
+                <option>Khối 10</option>
+                <option>Khối 11</option>
+                <option>Khối 12</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Mô tả lớp học</label>
-            <textarea class="form-input" id="cl-desc" rows="3" placeholder="Tổng quan ngắn gọn về những gì sinh viên sẽ học trong lớp này…" style="resize:vertical;"></textarea>
+            <label class="form-label">Mô Tả Lớp Học</label>
+            <textarea class="form-input" id="cl-desc" rows="3" placeholder="Tổng quan ngắn gọn về nội dung học sinh sẽ được học…" style="resize:vertical;"></textarea>
           </div>
           <!-- Subject color preview -->
           <div id="subject-preview" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-top:4px;"></div>
@@ -1481,26 +1578,26 @@ tr:hover td { background: #fafbff; }
 
         <!-- Room & Location -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">2</div> Phòng học &amp; Địa điểm</div>
+          <div class="form-section-title"><div class="section-num">2</div> Phòng Học &amp; Địa Điểm</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Phòng / Địa điểm</label>
+              <label class="form-label">Phòng Học / Địa Điểm</label>
               <select class="form-select" id="cl-room">
-                <option>Chọn phòng học</option>
-                <option>Phòng 101 – Tòa nhà chính</option>
-                <option>Phòng 204 – Phòng thí nghiệm Khoa học</option>
-                <option>Phòng 310 – Studio Thiết kế</option>
-                <option>Phòng 420 – Trung tâm Ngôn ngữ</option>
-                <option>Hội trường A</option>
-                <option>Trực tuyến / Từ xa</option>
+                <option>Chọn Phòng</option>
+                <option>Phòng 101 – Nhà Chính</option>
+                <option>Phòng 204 – Phòng Thí Nghiệm</option>
+                <option>Phòng 310 – Xưởng Thiết Kế</option>
+                <option>Phòng 420 – Trung Tâm Ngôn Ngữ</option>
+                <option>Hội Trường A</option>
+                <option>Trực Tuyến / Từ Xa</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Hình thức học</label>
+              <label class="form-label">Hình Thức Giảng Dạy</label>
               <select class="form-select" id="cl-mode">
-                <option>Trực tiếp</option>
-                <option>Trực tuyến</option>
-                <option>Kết hợp (Hybrid)</option>
+                <option>Trực Tiếp</option>
+                <option>Trực Tuyến</option>
+                <option>Kết Hợp</option>
               </select>
             </div>
           </div>
@@ -1508,32 +1605,32 @@ tr:hover td { background: #fafbff; }
 
         <!-- Pricing -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">3</div> Giá cả &amp; Lệ phí</div>
+          <div class="form-section-title"><div class="section-num">3</div> Học Phí &amp; Chi Phí</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Học phí (Hàng tháng)</label>
+              <label class="form-label">Học Phí (Hàng Tháng)</label>
               <div style="position:relative;">
-                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">$</span>
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">₫</span>
                 <input class="form-input" id="cl-fee" type="number" placeholder="240" style="padding-left:28px;" oninput="updateFeePreview()">
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Phí đăng ký</label>
+              <label class="form-label">Phí Đăng Ký</label>
               <div style="position:relative;">
-                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">$</span>
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:600;">₫</span>
                 <input class="form-input" id="cl-regfee" type="number" placeholder="50" style="padding-left:28px;" oninput="updateFeePreview()">
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Mã giảm giá / Học bổng</label>
-            <input class="form-input" id="cl-discount" placeholder="vd: SCHOLAR10 giảm 10%">
+            <label class="form-label">Mã Giảm Giá / Học Bổng</label>
+            <input class="form-input" id="cl-discount" placeholder="VD: SCHOLAR10 giảm 10%">
           </div>
           <!-- Fee summary preview -->
           <div style="background:var(--bg);border-radius:8px;padding:12px 14px;font-size:13px;">
-            <div class="summary-row"><span style="color:var(--text-muted);">Học phí hàng tháng</span><span id="fp-tuition">$0.00</span></div>
-            <div class="summary-row"><span style="color:var(--text-muted);">Phí đăng ký</span><span id="fp-reg">$0.00</span></div>
-            <div class="summary-row"><span style="font-weight:700;">Tổng thanh toán lần đầu</span><span id="fp-total" style="color:var(--primary);font-weight:800;">$0.00</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted);">Học Phí Hàng Tháng</span><span id="fp-tuition">0₫</span></div>
+            <div class="summary-row"><span style="color:var(--text-muted);">Phí Đăng Ký</span><span id="fp-reg">0₫</span></div>
+            <div class="summary-row"><span style="font-weight:700;">Tổng Thanh Toán Đầu</span><span id="fp-total" style="color:var(--primary);font-weight:800;">0₫</span></div>
           </div>
         </div>
       </div>
@@ -1542,120 +1639,120 @@ tr:hover td { background: #fafbff; }
       <div>
         <!-- Teacher & Capacity -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">4</div> Giáo viên &amp; Sĩ số</div>
+          <div class="form-section-title"><div class="section-num">4</div> Giáo Viên &amp; Sĩ Số</div>
           <div class="form-group">
-            <label class="form-label">Chỉ định giáo viên</label>
+            <label class="form-label">Phân Công Giáo Viên</label>
             <select class="form-select" id="cl-teacher" onchange="updateTeacherPreview()">
-              <option value="">Chọn một giáo viên</option>
-              <option value="0">Cô Sarah Jenkins – Toán học ★4.9</option>
-              <option value="1">Thầy Michael Chen – Vật lý ★4.7</option>
-              <option value="2">Thầy David Rodriguez – Toán học ★4.5</option>
-              <option value="3">Cô Emily Wilson – Tiếng Anh ★5.0</option>
-              <option value="4">Thầy Robert Taylor – Lịch sử ★4.2</option>
+              <option value="">Chọn Giáo Viên</option>
+              <option value="0">Nguyễn Thị Lan – Toán Học ★4.9</option>
+              <option value="1">Trần Minh Châu – Vật Lý ★4.7</option>
+              <option value="2">Phạm Đức Trung – Toán Học ★4.5</option>
+              <option value="3">Lê Thị Hương – Ngữ Văn ★5.0</option>
+              <option value="4">Hoàng Văn Nam – Lịch Sử ★4.2</option>
             </select>
           </div>
           <!-- Teacher card preview -->
           <div id="teacher-preview-card" style="display:none;background:var(--bg);border-radius:10px;padding:12px;display:none;align-items:center;gap:12px;margin-top:-6px;margin-bottom:14px;">
-            <div class="avatar av-blue" id="tp-av">SJ</div>
+            <div class="avatar av-blue" id="tp-av">NL</div>
             <div>
-              <div style="font-weight:700;font-size:13px;" id="tp-name">Sarah Jenkins</div>
-              <div style="font-size:11px;color:var(--text-muted);" id="tp-sub">Toán học · 42 lớp · ★ 4.9</div>
+              <div style="font-weight:700;font-size:13px;" id="tp-name">Nguyễn Thị Lan</div>
+              <div style="font-size:11px;color:var(--text-muted);" id="tp-sub">Toán Học · 42 lớp · ★ 4.9</div>
             </div>
-            <span class="badge badge-green" style="margin-left:auto;">Đang hoạt động</span>
+            <span class="badge badge-green" style="margin-left:auto;">Đang Dạy</span>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Sinh viên tối đa</label>
+              <label class="form-label">Sĩ Số Tối Đa</label>
               <input class="form-input" id="cl-maxstu" type="number" placeholder="30" min="1" max="100">
             </div>
             <div class="form-group">
-              <label class="form-label">Sinh viên tối thiểu</label>
+              <label class="form-label">Sĩ Số Tối Thiểu</label>
               <input class="form-input" id="cl-minstu" type="number" placeholder="5" min="1">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Trạng thái đăng ký</label>
+            <label class="form-label">Trạng Thái Ghi Danh</label>
             <select class="form-select" id="cl-enroll-status">
-              <option>Mở đăng ký</option>
-              <option>Chỉ dành cho khách mời</option>
-              <option>Danh sách chờ</option>
-              <option>Đã đóng</option>
+              <option>Mở Ghi Danh</option>
+              <option>Chỉ Mời</option>
+              <option>Danh Sách Chờ</option>
+              <option>Đã Đóng</option>
             </select>
           </div>
         </div>
 
         <!-- Schedule -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">5</div> Lịch học</div>
+          <div class="form-section-title"><div class="section-num">5</div> Lịch Học</div>
           <div class="form-group">
-            <label class="form-label">Ngày học</label>
+            <label class="form-label">Ngày Học</label>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Mon"> Thứ Hai</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Tue"> Thứ Ba</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Wed"> Thứ Tư</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Thu"> Thứ Năm</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Fri"> Thứ Sáu</label>
-              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Sat"> Thứ Bảy</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Mon"> T2</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Tue"> T3</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Wed"> T4</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Thu"> T5</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Fri"> T6</label>
+              <label class="radio-item" style="padding:6px 12px;"><input type="checkbox" name="cl-days" value="Sat"> T7</label>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Giờ bắt đầu</label>
+              <label class="form-label">Giờ Bắt Đầu</label>
               <input class="form-input" type="time" id="cl-starttime" value="09:00">
             </div>
             <div class="form-group">
-              <label class="form-label">Giờ kết thúc</label>
+              <label class="form-label">Giờ Kết Thúc</label>
               <input class="form-input" type="time" id="cl-endtime" value="10:30">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Ngày bắt đầu</label>
+              <label class="form-label">Ngày Bắt Đầu</label>
               <input class="form-input" type="date" id="cl-startdate">
             </div>
             <div class="form-group">
-              <label class="form-label">Ngày kết thúc</label>
+              <label class="form-label">Ngày Kết Thúc</label>
               <input class="form-input" type="date" id="cl-enddate">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Thời gian khóa học</label>
+            <label class="form-label">Thời Hạn Khóa Học</label>
             <select class="form-select">
-              <option>1 Học kỳ (6 tháng)</option>
-              <option>1 Khóa (3 tháng)</option>
-              <option>Cả năm</option>
-              <option>Tùy chỉnh</option>
+              <option>1 Học Kỳ (6 tháng)</option>
+              <option>1 Học Phần (3 tháng)</option>
+              <option>Cả Năm</option>
+              <option>Tùy Chỉnh</option>
             </select>
           </div>
         </div>
 
         <!-- Requirements -->
         <div class="form-section">
-          <div class="form-section-title"><div class="section-num">6</div> Điều kiện &amp; Tài liệu</div>
+          <div class="form-section-title"><div class="section-num">6</div> Yêu Cầu &amp; Tài Liệu</div>
           <div class="form-group">
-            <label class="form-label">Điều kiện tiên quyết</label>
-            <input class="form-input" placeholder="vd: Giải tích I hoặc sự phê duyệt của giảng viên">
+            <label class="form-label">Điều Kiện Tiên Quyết</label>
+            <input class="form-input" placeholder="VD: Giải Tích I hoặc được giáo viên chấp thuận">
           </div>
           <div class="form-group">
-            <label class="form-label">Phụ kiện / Tài liệu bắt buộc</label>
-            <textarea class="form-input" rows="2" placeholder="vd: Giáo trình Giải tích tái bản lần 10, máy tính bỏ túi…" style="resize:vertical;"></textarea>
+            <label class="form-label">Tài Liệu Cần Thiết</label>
+            <textarea class="form-input" rows="2" placeholder="VD: Giáo trình: Giải Tích Tập 1, Máy tính khoa học…" style="resize:vertical;"></textarea>
           </div>
           <div style="display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;">
             <input type="checkbox" id="cl-cert" style="accent-color:var(--primary);width:16px;height:16px;">
-            <label for="cl-cert">Cấp chứng chỉ sau khi hoàn thành</label>
+            <label for="cl-cert">Cấp chứng chỉ khi hoàn thành</label>
           </div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
             <input type="checkbox" id="cl-notify" checked style="accent-color:var(--primary);width:16px;height:16px;">
-            <label for="cl-notify">Thông báo cho sinh viên khi lớp học bắt đầu</label>
+            <label for="cl-notify">Thông báo cho học sinh khi lớp bắt đầu</label>
           </div>
         </div>
 
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
           <button class="btn btn-outline" onclick="navigate('classes',document.querySelector('[data-page=classes]'))">Hủy</button>
-          <button class="btn btn-outline" style="color:var(--primary);border-color:var(--primary);">Lưu nháp</button>
+          <button class="btn btn-outline" style="color:var(--primary);border-color:var(--primary);">Lưu Nháp</button>
           <button class="btn btn-primary" onclick="saveClass()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Tạo lớp học
+            Tạo Lớp Học
           </button>
         </div>
       </div>
@@ -1664,47 +1761,87 @@ tr:hover td { background: #fafbff; }
 
 </div><!-- /main -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<!-- ── NOTIFICATION PANEL ── -->
+<div class="panel-backdrop" id="panel-backdrop" onclick="closeAllPanels()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-header-title">🔔 Thông Báo <span id="notif-unread-count" style="background:#ef4444;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">5</span></span>
+    <span class="notif-mark-read" onclick="markAllRead()">Đánh dấu đã đọc</span>
+  </div>
+  <div class="notif-list" id="notif-list"></div>
+  <div class="notif-footer"><a href="#">Xem tất cả thông báo →</a></div>
+</div>
+
+<!-- ── SETTINGS PANEL ── -->
+<div class="settings-panel" id="settings-panel">
+  <div class="settings-header">
+    <div style="font-weight:700;font-size:13px;">⚙️ Cài Đặt & Tài Khoản</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">an.nguyen@edutrack.vn</div>
+  </div>
+  <div class="settings-item" onclick="closeAllPanels()">
+    <div class="settings-item-icon" style="background:#dbeafe;">👤</div>
+    <span>Hồ Sơ Cá Nhân</span>
+  </div>
+  <div class="settings-item" onclick="closeAllPanels()">
+    <div class="settings-item-icon" style="background:#dcfce7;">🔒</div>
+    <span>Bảo Mật & Mật Khẩu</span>
+  </div>
+  <div class="settings-item" onclick="closeAllPanels()">
+    <div class="settings-item-icon" style="background:#fef3c7;">🌐</div>
+    <span>Ngôn Ngữ & Khu Vực</span>
+  </div>
+  <div class="settings-item" onclick="toggleTheme(); closeAllPanels()">
+    <div class="settings-item-icon" style="background:#ede9fe;">🎨</div>
+    <span id="theme-label">Giao Diện Tối</span>
+  </div>
+  <div class="settings-divider"></div>
+  <div class="settings-item" onclick="closeAllPanels()" style="color:var(--danger);">
+    <div class="settings-item-icon" style="background:#fef2f2;">🚪</div>
+    <span>Đăng Xuất</span>
+  </div>
+</div>
+
+<script>
 /* ── MOCK DATA ── */
 const classes = [
-  { name:'Giải tích nâng cao A', subject:'Toán học', subj:'math', teacher:'Robert Chen', students:'24/30', schedule:'Thứ 2, 4, 6', status:'Đang học' },
-  { name:'Nhập môn Vật lý lượng tử', subject:'Khoa học', subj:'sci', teacher:'James Chen', students:'18/24', schedule:'Thứ 3, 5', status:'Đang chờ' },
-  { name:'Cơ bản thiết kế UI', subject:'Thiết kế', subj:'design', teacher:'Sarah Janero', students:'12/15', schedule:'Chỉ thứ 6', status:'Đang học' },
-  { name:'Chiến lược kinh doanh X2', subject:'Kinh doanh', subj:'biz', teacher:'David Miller', students:'45/50', schedule:'Thứ 2, 5', status:'Đã kết thúc' },
-  { name:'Tây Ban Nha nâng cao', subject:'Ngôn ngữ', subj:'lang', teacher:'Elena Gomez', students:'10/12', schedule:'Thứ 2, 4', status:'Đang chờ' },
-  { name:'Thiết kế đồ họa 101', subject:'Thiết kế', subj:'design', teacher:'Lisa Park', students:'14/20', schedule:'Thứ 6', status:'Đang học' },
+  { name:'Giải Tích Nâng Cao A', subject:'Toán Học', subj:'math', teacher:'Trần Văn Hùng', students:'24/30', schedule:'Thứ 2, 4, 6', status:'Đang hoạt động' },
+  { name:'Nhập Môn Vật Lý Lượng Tử', subject:'Khoa Học', subj:'sci', teacher:'Lê Minh Đức', students:'18/24', schedule:'Thứ 3, 5', status:'Chờ duyệt' },
+  { name:'Cơ Bản Thiết Kế UI', subject:'Thiết Kế', subj:'design', teacher:'Nguyễn Thị Hoa', students:'12/15', schedule:'Thứ 6', status:'Đang hoạt động' },
+  { name:'Chiến Lược Kinh Doanh X2', subject:'Kinh Doanh', subj:'biz', teacher:'Phạm Quốc Bảo', students:'45/50', schedule:'Thứ 2, 5', status:'Đã kết thúc' },
+  { name:'Tiếng Anh Giao Tiếp Nâng Cao', subject:'Ngôn Ngữ', subj:'lang', teacher:'Hoàng Thị Mai', students:'10/12', schedule:'Thứ 2, 4', status:'Chờ duyệt' },
+  { name:'Thiết Kế Đồ Họa 101', subject:'Thiết Kế', subj:'design', teacher:'Vũ Thanh Tùng', students:'14/20', schedule:'Thứ 6', status:'Đang hoạt động' },
 ];
 
 const teachers = [
-  { name:'Sarah Jenkins', email:'sarah.j@edu.com', subject:'Toán học', subj:'math', classes:42, rating:4.9, status:'Đang dạy', av:'SJ', avClass:'av-blue' },
-  { name:'Michael Chen', email:'m.chen@edu.com', subject:'Vật lý nâng cao', subj:'sci', classes:38, rating:4.7, status:'Sắp tới', av:'MC', avClass:'av-green' },
-  { name:'David Rodriguez', email:'d.rod@edu.com', subject:'Toán học', subj:'math', classes:39, rating:4.5, status:'Đang dạy', av:'DR', avClass:'av-orange' },
-  { name:'Emily Wilson', email:'e.wilson@edu.com', subject:'Văn học Anh', subj:'lang', classes:81, rating:5.0, status:'Đang dạy', av:'EW', avClass:'av-purple' },
-  { name:'Robert Taylor', email:'r.taylor@edu.com', subject:'Lịch sử', subj:'hist', classes:19, rating:4.2, status:'Sắp tới', av:'RT', avClass:'av-cyan' },
+  { name:'Nguyễn Thị Lan', email:'lan.nt@edutrack.vn', subject:'Toán Học', subj:'math', classes:42, rating:4.9, status:'Đang hoạt động', av:'NL', avClass:'av-blue' },
+  { name:'Trần Minh Châu', email:'chau.tm@edutrack.vn', subject:'Vật Lý Nâng Cao', subj:'sci', classes:38, rating:4.7, status:'Sắp bắt đầu', av:'TC', avClass:'av-green' },
+  { name:'Phạm Đức Trung', email:'trung.pd@edutrack.vn', subject:'Toán Học', subj:'math', classes:39, rating:4.5, status:'Đang hoạt động', av:'PT', avClass:'av-orange' },
+  { name:'Lê Thị Hương', email:'huong.lt@edutrack.vn', subject:'Ngữ Văn', subj:'lang', classes:81, rating:5.0, status:'Đang hoạt động', av:'LH', avClass:'av-purple' },
+  { name:'Hoàng Văn Nam', email:'nam.hv@edutrack.vn', subject:'Lịch Sử', subj:'hist', classes:19, rating:4.2, status:'Sắp bắt đầu', av:'HN', avClass:'av-cyan' },
 ];
 
 const students = [
-  { name:'Emma Thompson', email:'emma.t@edu.com', id:'STU-2024-01', grade:'Lớp 11', classes:3, att:98, status:'Đang học', av:'ET', avClass:'av-blue', balance:0 },
-  { name:'Julian Martinez', email:'j.mart@edu.com', id:'STU-2024-02', grade:'Lớp 10', classes:4, att:87, status:'Đang học', av:'JM', avClass:'av-green', balance:240 },
-  { name:'Sophie Anderson', email:'s.and@edu.com', id:'STU-2024-03', grade:'Lớp 9', classes:2, att:92, status:'Đang chờ', av:'SA', avClass:'av-purple', balance:0 },
-  { name:'Liam Carter', email:'l.car@edu.com', id:'STU-2024-04', grade:'Lớp 12', classes:5, att:80, status:'Quá hạn', av:'LC', avClass:'av-orange', balance:480 },
-  { name:'Mia Nguyen', email:'m.ngu@edu.com', id:'STU-2024-05', grade:'Lớp 11', classes:3, att:95, status:'Đang học', av:'MN', avClass:'av-pink', balance:0 },
-  { name:'Noah Park', email:'n.park@edu.com', id:'STU-2024-06', grade:'Lớp 10', classes:4, att:88, status:'Đang học', av:'NP', avClass:'av-cyan', balance:120 },
-  { name:'Olivia Brown', email:'o.bro@edu.com', id:'STU-2024-07', grade:'Lớp 9', classes:2, att:91, status:'Đang học', av:'OB', avClass:'av-blue', balance:0 },
-  { name:'Ethan Davis', email:'e.dav@edu.com', id:'STU-2024-08', grade:'Lớp 12', classes:5, att:76, status:'Quá hạn', av:'ED', avClass:'av-orange', balance:360 },
+  { name:'Nguyễn Thị Mai Anh', email:'maianh.nt@edu.vn', id:'HS-2024-01', grade:'Khối 11', classes:3, att:98, status:'Đang học', av:'MA', avClass:'av-blue', balance:0 },
+  { name:'Trần Quốc Huy', email:'huy.tq@edu.vn', id:'HS-2024-02', grade:'Khối 10', classes:4, att:87, status:'Đang học', av:'TH', avClass:'av-green', balance:2400000 },
+  { name:'Phạm Thanh Hà', email:'ha.pt@edu.vn', id:'HS-2024-03', grade:'Khối 9', classes:2, att:92, status:'Chờ xác nhận', av:'PH', avClass:'av-purple', balance:0 },
+  { name:'Lê Hoàng Long', email:'long.lh@edu.vn', id:'HS-2024-04', grade:'Khối 12', classes:5, att:80, status:'Trễ hạn', av:'LL', avClass:'av-orange', balance:4800000 },
+  { name:'Võ Ngọc Minh', email:'minh.vn@edu.vn', id:'HS-2024-05', grade:'Khối 11', classes:3, att:95, status:'Đang học', av:'VM', avClass:'av-pink', balance:0 },
+  { name:'Đặng Tuấn Kiệt', email:'kiet.dt@edu.vn', id:'HS-2024-06', grade:'Khối 10', classes:4, att:88, status:'Đang học', av:'ĐK', avClass:'av-cyan', balance:1200000 },
+  { name:'Bùi Thị Ngọc', email:'ngoc.bt@edu.vn', id:'HS-2024-07', grade:'Khối 9', classes:2, att:91, status:'Đang học', av:'BN', avClass:'av-blue', balance:0 },
+  { name:'Huỳnh Đức Thắng', email:'thang.hd@edu.vn', id:'HS-2024-08', grade:'Khối 12', classes:5, att:76, status:'Trễ hạn', av:'HĐ', avClass:'av-orange', balance:3600000 },
 ];
 
 const transactions = [
-  { student:'Alex Johnson', av:'AJ', avClass:'av-blue', class:'Toán học nâng cao', amount:'$480.00', status:'Đã thanh toán', date:'21 thg 10, 2023' },
-  { student:'Emma Thompson', av:'ET', avClass:'av-green', class:'Vật lý 101', amount:'$320.00', status:'Đã thanh toán', date:'20 thg 10, 2023' },
-  { student:'Liam Carter', av:'LC', avClass:'av-orange', class:'Cơ bản thiết kế', amount:'$240.00', status:'Quá hạn', date:'18 thg 10, 2023' },
-  { student:'Sophie Anderson', av:'SA', avClass:'av-purple', class:'Văn học Anh', amount:'$180.00', status:'Đang chờ', date:'15 thg 10, 2023' },
+  { student:'Nguyễn Thị Mai Anh', av:'MA', avClass:'av-blue', class:'Toán Học Nâng Cao', amount:'4.800.000₫', status:'Đã thanh toán', date:'21/10/2023' },
+  { student:'Trần Quốc Huy', av:'TH', avClass:'av-green', class:'Vật Lý 101', amount:'3.200.000₫', status:'Đã thanh toán', date:'20/10/2023' },
+  { student:'Lê Hoàng Long', av:'LL', avClass:'av-orange', class:'Cơ Bản Thiết Kế', amount:'2.400.000₫', status:'Trễ hạn', date:'18/10/2023' },
+  { student:'Phạm Thanh Hà', av:'PH', avClass:'av-purple', class:'Ngữ Văn', amount:'1.800.000₫', status:'Chờ xác nhận', date:'15/10/2023' },
 ];
 
 const subjMap = {math:'subj-math',sci:'subj-sci',design:'subj-design',biz:'subj-biz',lang:'subj-lang',hist:'subj-hist'};
 
 function statusBadge(s) {
-  const m = {'Đang học':'badge-green','Đang chờ':'badge-yellow','Quá hạn':'badge-red','Đã kết thúc':'badge-gray','Sắp tới':'badge-blue','Đã thanh toán':'badge-green'};
+  const m = {'Đang hoạt động':'badge-green','Đang học':'badge-green','Đã thanh toán':'badge-green','Chờ duyệt':'badge-yellow','Chờ xác nhận':'badge-yellow','Trễ hạn':'badge-red','Đã kết thúc':'badge-gray','Sắp bắt đầu':'badge-blue'};
   return `<span class="badge ${m[s]||'badge-gray'}">${s}</span>`;
 }
 
@@ -1727,7 +1864,7 @@ function renderClasses() {
         <div class="actions-td">
           <button class="action-btn action-view" onclick="navigate('student-detail',null)">Xem</button>
           <button class="action-btn action-edit">Sửa</button>
-          ${c.status==='Đang chờ'?`<button class="action-btn action-assign">Chỉ định Gv</button>`:`<button class="action-btn action-del">Lưu trữ</button>`}
+          ${c.status==='Chờ duyệt'?`<button class="action-btn action-assign">Phân công GV</button>`:`<button class="action-btn action-del">Lưu trữ</button>`}
         </div>
       </td>
     </tr>`).join('');
@@ -1772,7 +1909,7 @@ function renderStudents() {
       </td>
       <td style="font-size:12px;font-weight:600;color:var(--text-muted)">${s.id}</td>
       <td>${s.grade}</td>
-      <td>${s.classes} lớp học</td>
+      <td>${s.classes} lớp</td>
       <td>
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="progress-bar" style="width:60px;"><div class="progress-fill" style="width:${s.att}%;background:${s.att>90?'var(--success)':s.att>80?'var(--warning)':'var(--danger)'}"></div></div>
@@ -1802,50 +1939,65 @@ function renderFinance() {
       <td><strong>${t.amount}</strong></td>
       <td>${statusBadge(t.status)}</td>
       <td style="font-size:12px;color:var(--text-muted)">${t.date}</td>
-      <td><button class="action-btn action-view">Biên lai</button></td>
+      <td><button class="action-btn action-view">Biên Lai</button></td>
     </tr>`).join('');
 }
 
 /* ── NAVIGATION ── */
 const titles = {
-  dashboard:'Tổng quan Dashboard',
-  classes:'Quản lý lớp học',
-  teachers:'Giáo viên',
-  students:'Quản lý sinh viên',
-  finance:'Tài chính & Doanh thu',
-  reports:'Báo cáo & Phân tích',
-  'add-student':'Đăng ký sinh viên mới',
-  'student-detail':'Hồ sơ sinh viên',
-  'add-class':'Tạo lớp học mới',
-  'add-teacher':'Thêm giáo viên mới',
+  dashboard:'Tổng Quan Dashboard',
+  classes:'Quản Lý Lớp Học',
+  teachers:'Giáo Viên',
+  students:'Quản Lý Học Sinh',
+  finance:'Tài Chính & Doanh Thu',
+  reports:'Báo Cáo & Phân Tích',
+  'add-student':'Đăng Ký Học Sinh Mới',
+  'student-detail':'Hồ Sơ Học Sinh',
+  'add-class':'Tạo Lớp Học Mới',
+  'add-teacher':'Thêm Giáo Viên Mới',
 };
 
+let isNavigating = false;
 function navigate(pageId, el) {
-  // deactivate all pages
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  // activate target
-  const target = document.getElementById('page-'+pageId);
-  if(target) target.classList.add('active');
-  // update sidebar active
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  if(el) el.classList.add('active');
-  // update topbar title
-  document.getElementById('topbar-title').textContent = titles[pageId]||pageId;
-  // close mobile sidebar
-  closeSidebar();
-  // scroll to top
-  window.scrollTo(0,0);
+  if (isNavigating) return;
+  closeAllPanels();
+  const current = document.querySelector('.page.active');
+  const target  = document.getElementById('page-'+pageId);
+  if (!target || current === target) return;
+  isNavigating = true;
+  if (current) {
+    current.style.animation = 'pageSlideOut .25s ease forwards';
+    setTimeout(() => {
+      current.style.animation = '';
+      current.classList.remove('active');
+      target.classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      if(el) el.classList.add('active');
+      document.getElementById('topbar-title').textContent = titles[pageId]||pageId;
+      closeSidebar();
+      window.scrollTo(0,0);
+      isNavigating = false;
+    }, 230);
+  } else {
+    target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    if(el) el.classList.add('active');
+    document.getElementById('topbar-title').textContent = titles[pageId]||pageId;
+    closeSidebar();
+    window.scrollTo(0,0);
+    isNavigating = false;
+  }
 }
 
 function openStudentDetail(idx) {
   const s = students[idx];
   document.getElementById('detail-avatar').textContent = s.av;
   document.getElementById('detail-name').textContent = s.name;
-  document.getElementById('detail-meta').textContent = s.id+' · Nhập học Thg 9 2023';
-  document.getElementById('detail-contact').textContent = `📧 ${s.email} · 📞 (555) 100-${1000+idx} · 📍 Austin, TX`;
+  document.getElementById('detail-meta').textContent = s.id+' · Nhập Học Tháng 9/2023';
+  document.getElementById('detail-contact').textContent = `📧 ${s.email} · 📞 090-${1000+idx}-${2000+idx} · 📍 Hà Nội`;
   document.getElementById('detail-gpa').textContent = (3.5+Math.random()*.5).toFixed(2);
   document.getElementById('detail-att').textContent = s.att+'%';
-  document.getElementById('detail-balance').textContent = s.balance>0?'$'+s.balance+'.00':'$0.00';
+  document.getElementById('detail-balance').textContent = s.balance>0?new Intl.NumberFormat('vi-VN').format(s.balance)+'₫':'0₫';
   navigate('student-detail', document.querySelector('[data-page=students]'));
 }
 
@@ -1874,27 +2026,27 @@ function previewTeacherPhoto(e) {
 function saveClass() {
   const name = document.getElementById('cl-name').value.trim();
   if (!name) { alert('⚠️ Vui lòng nhập tên lớp học.'); return; }
-  alert(`✅ Lớp học "${name}" đã được tạo thành công!`);
+  alert(`✅ Lớp "${name}" đã được tạo thành công!`);
   navigate('classes', document.querySelector('[data-page=classes]'));
 }
 
 function updateFeePreview() {
   const fee = parseFloat(document.getElementById('cl-fee').value) || 0;
   const reg = parseFloat(document.getElementById('cl-regfee').value) || 0;
-  document.getElementById('fp-tuition').textContent = '$' + fee.toFixed(2);
-  document.getElementById('fp-reg').textContent = '$' + reg.toFixed(2);
-  document.getElementById('fp-total').textContent = '$' + (fee + reg).toFixed(2);
+  document.getElementById('fp-tuition').textContent = new Intl.NumberFormat('vi-VN').format(fee) + '₫';
+  document.getElementById('fp-reg').textContent = new Intl.NumberFormat('vi-VN').format(reg) + '₫';
+  document.getElementById('fp-total').textContent = new Intl.NumberFormat('vi-VN').format(fee + reg) + '₫';
 }
 
 function updateSubjectColor() {
   const map = {
-    math:  { bg:'#dbeafe', color:'#1d4ed8', label:'📐 Toán học' },
-    sci:   { bg:'#dcfce7', color:'#15803d', label:'🔬 Khoa học / Vật lý' },
-    design:{ bg:'#ede9fe', color:'#6d28d9', label:'🎨 Thiết kế & Nghệ thuật' },
-    biz:   { bg:'#fef3c7', color:'#92400e', label:'💼 Kinh doanh' },
-    lang:  { bg:'#fce7f3', color:'#be185d', label:'🗣️ Ngôn ngữ' },
-    hist:  { bg:'#cffafe', color:'#0e7490', label:'📜 Lịch sử' },
-    cs:    { bg:'#f1f5f9', color:'#0f172a', label:'💻 Khoa học máy tính' },
+    math:  { bg:'#dbeafe', color:'#1d4ed8', label:'📐 Toán Học' },
+    sci:   { bg:'#dcfce7', color:'#15803d', label:'🔬 Khoa Học / Vật Lý' },
+    design:{ bg:'#ede9fe', color:'#6d28d9', label:'🎨 Thiết Kế & Nghệ Thuật' },
+    biz:   { bg:'#fef3c7', color:'#92400e', label:'💼 Kinh Doanh' },
+    lang:  { bg:'#fce7f3', color:'#be185d', label:'🗣️ Ngôn Ngữ' },
+    hist:  { bg:'#cffafe', color:'#0e7490', label:'📜 Lịch Sử' },
+    cs:    { bg:'#f1f5f9', color:'#0f172a', label:'💻 Tin Học' },
   };
   const val = document.getElementById('cl-subject').value;
   const el = document.getElementById('subject-preview');
@@ -1910,11 +2062,11 @@ function updateSubjectColor() {
 
 function updateTeacherPreview() {
   const teacherData = [
-    { av:'SJ', avClass:'av-blue',   name:'Sarah Jenkins',   sub:'Toán học · 42 lớp · ★ 4.9' },
-    { av:'MC', avClass:'av-green',  name:'Michael Chen',    sub:'Vật lý · 38 lớp · ★ 4.7' },
-    { av:'DR', avClass:'av-orange', name:'David Rodriguez', sub:'Toán học · 39 lớp · ★ 4.5' },
-    { av:'EW', avClass:'av-purple', name:'Emily Wilson',    sub:'Tiếng Anh · 81 lớp · ★ 5.0' },
-    { av:'RT', avClass:'av-cyan',   name:'Robert Taylor',   sub:'Lịch sử · 19 lớp · ★ 4.2' },
+    { av:'NL', avClass:'av-blue',   name:'Nguyễn Thị Lan',   sub:'Toán Học · 42 lớp · ★ 4.9' },
+    { av:'TC', avClass:'av-green',  name:'Trần Minh Châu',    sub:'Vật Lý · 38 lớp · ★ 4.7' },
+    { av:'PT', avClass:'av-orange', name:'Phạm Đức Trung', sub:'Toán Học · 39 lớp · ★ 4.5' },
+    { av:'LH', avClass:'av-purple', name:'Lê Thị Hương',    sub:'Ngữ Văn · 81 lớp · ★ 5.0' },
+    { av:'HN', avClass:'av-cyan',   name:'Hoàng Văn Nam',   sub:'Lịch Sử · 19 lớp · ★ 4.2' },
   ];
   const idx = parseInt(document.getElementById('cl-teacher').value);
   const card = document.getElementById('teacher-preview-card');
@@ -1931,7 +2083,7 @@ function updateTeacherPreview() {
 }
 
 function saveStudent() {
-  alert('✅ Đã lưu sinh viên thành công!');
+  alert('✅ Học sinh đã được lưu thành công!');
   navigate('students', document.querySelector('[data-page=students]'));
 }
 
@@ -1953,11 +2105,102 @@ function closeSidebar() {
   document.getElementById('overlay').classList.remove('show');
 }
 
+/* ── NOTIFICATIONS DATA ── */
+const notifications = [
+  { id:1, unread:true,  icon:'👨‍🎓', iconBg:'#dbeafe', title:'Học sinh mới đăng ký', desc:'Nguyễn Thị Mai Anh đã đăng ký lớp Toán Nâng Cao A', time:'2 phút trước' },
+  { id:2, unread:true,  icon:'💰', iconBg:'#dcfce7', title:'Thanh toán thành công', desc:'Hóa đơn #6482 (12.990.000₫) được thanh toán bởi Trần Quốc Huy', time:'18 phút trước' },
+  { id:3, unread:true,  icon:'📅', iconBg:'#fef3c7', title:'Lịch học thay đổi', desc:'Lớp "Nghệ Thuật & Thiết Kế 101" chuyển sang Phòng 420', time:'1 giờ trước' },
+  { id:4, unread:true,  icon:'👩‍🏫', iconBg:'#ede9fe', title:'Giáo viên mới tham gia', desc:'Thầy Trần Minh Châu sẽ bắt đầu giảng dạy vào thứ Hai', time:'3 giờ trước' },
+  { id:5, unread:true,  icon:'⚠️', iconBg:'#fef2f2', title:'Học phí trễ hạn', desc:'4 học sinh chưa thanh toán học phí tháng 10', time:'5 giờ trước' },
+  { id:6, unread:false, icon:'✅', iconBg:'#dcfce7', title:'Lớp học đã hoàn thành', desc:'Lớp "Chiến Lược Kinh Doanh X2" đã kết thúc thành công', time:'1 ngày trước' },
+  { id:7, unread:false, icon:'📊', iconBg:'#f1f5f9', title:'Báo cáo tháng sẵn sàng', desc:'Báo cáo tài chính tháng 9/2024 đã được tạo', time:'2 ngày trước' },
+];
+
+function renderNotifications() {
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+  list.innerHTML = notifications.map(n => `
+    <div class="notif-item ${n.unread?'unread':''}" onclick="readNotif(${n.id})">
+      <div class="notif-icon" style="background:${n.iconBg}">${n.icon}</div>
+      <div class="notif-content">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-desc">${n.desc}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      ${n.unread ? '<div class="notif-unread-dot"></div>' : ''}
+    </div>`).join('');
+  updateNotifCount();
+}
+
+function updateNotifCount() {
+  const unread = notifications.filter(n=>n.unread).length;
+  const badge = document.getElementById('notif-count');
+  const dot   = document.getElementById('notif-dot');
+  const ubadge = document.getElementById('notif-unread-count');
+  if (badge)  { badge.textContent = unread; badge.style.display = unread>0?'block':'none'; }
+  if (dot)    { dot.style.display = unread>0?'block':'none'; }
+  if (ubadge) { ubadge.textContent = unread; ubadge.style.display = unread>0?'inline':'none'; }
+}
+
+function readNotif(id) {
+  const n = notifications.find(x=>x.id===id);
+  if (n) { n.unread = false; renderNotifications(); }
+}
+
+function markAllRead() {
+  notifications.forEach(n=>n.unread=false);
+  renderNotifications();
+}
+
+function toggleNotif(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('notif-panel');
+  const settings = document.getElementById('settings-panel');
+  settings.classList.remove('open');
+  const isOpen = panel.classList.toggle('open');
+  document.getElementById('panel-backdrop').classList.toggle('show', isOpen);
+}
+
+function toggleSettings(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('settings-panel');
+  const notif  = document.getElementById('notif-panel');
+  notif.classList.remove('open');
+  const isOpen = panel.classList.toggle('open');
+  document.getElementById('panel-backdrop').classList.toggle('show', isOpen);
+}
+
+function closeAllPanels() {
+  document.getElementById('notif-panel')?.classList.remove('open');
+  document.getElementById('settings-panel')?.classList.remove('open');
+  document.getElementById('panel-backdrop')?.classList.remove('show');
+}
+
+let darkMode = false;
+function toggleTheme() {
+  darkMode = !darkMode;
+  const r = document.documentElement.style;
+  if (darkMode) {
+    r.setProperty('--bg','#0f172a');
+    r.setProperty('--card','#1e293b');
+    r.setProperty('--border','#334155');
+    r.setProperty('--text','#f1f5f9');
+    r.setProperty('--text-muted','#94a3b8');
+    document.getElementById('theme-label').textContent = 'Giao Diện Sáng';
+  } else {
+    r.removeProperty('--bg'); r.removeProperty('--card');
+    r.removeProperty('--border'); r.removeProperty('--text');
+    r.removeProperty('--text-muted');
+    document.getElementById('theme-label').textContent = 'Giao Diện Tối';
+  }
+}
+
 /* ── INIT ── */
 renderClasses();
 renderTeachers();
 renderStudents();
 renderFinance();
+renderNotifications();
 </script>
 </body>
 </html>
