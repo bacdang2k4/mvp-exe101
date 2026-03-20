@@ -524,6 +524,126 @@ svg { display: block; }
 .manual-link:hover { color:rgba(255,255,255,0.5); }
 
 /* ═══════════════════════════════════════
+   ── SCREEN 4: NOTIFICATIONS ──
+═══════════════════════════════════════ */
+#screen-notif {
+  display: none; flex-direction: column;
+  position: absolute; inset: 0; z-index: 1000;
+  background: var(--bg);
+  animation: sheetUp 0.3s cubic-bezier(0.4,0,0.2,1) both;
+  border-radius: 36px;
+}
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.notif-bell-btn { position: relative; }
+.notif-dot {
+  position: absolute; top: 8px; right: 8px;
+  width: 8px; height: 8px; background: var(--red);
+  border-radius: 50%; border: 2px solid var(--surface);
+}
+
+.notif-header {
+  background: var(--surface);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 15px;
+  border-bottom: 1px solid var(--border);
+}
+.notif-header h1 { font-family:'Sora',sans-serif; font-size:19px; font-weight:800; color:var(--ink); }
+.notif-close { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+
+.notif-tabs {
+  background: var(--surface);
+  display: flex; gap: 8px; padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.n-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  color: var(--muted); background: var(--bg); cursor: pointer;
+  transition: all 0.2s;
+}
+.n-tab.active { background: var(--blue); color: white; }
+
+.notif-list { padding: 16px 16px 30px; display: flex; flex-direction: column; gap: 12px; }
+.notif-item {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px; display: flex; gap: 12px;
+  box-shadow: var(--shadow); position: relative;
+}
+.notif-item.unread { border-left: 3px solid var(--blue); background: #fdfdff; }
+.notif-ico {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.notif-ico.blue   { background: var(--blue-light); color: var(--blue); }
+.notif-ico.orange { background: var(--orange-light); color: var(--orange); }
+.notif-ico.amber  { background: var(--amber-light); color: var(--amber); }
+
+.notif-body { flex: 1; }
+.notif-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 3px; display: flex; justify-content: space-between; }
+.notif-time { font-size: 10px; color: var(--muted); font-weight: 600; }
+.notif-desc { font-size: 12px; color: var(--ink2); font-weight: 500; line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   ── SCREEN 4: NOTIFICATIONS ──
+═══════════════════════════════════════ */
+#screen-notif {
+  display: none; flex-direction: column;
+  position: absolute; inset: 0; z-index: 1000;
+  background: var(--bg);
+  animation: sheetUp 0.3s cubic-bezier(0.4,0,0.2,1) both;
+  border-radius: 36px;
+}
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.notif-bell-btn { position: relative; }
+.notif-dot {
+  position: absolute; top: 8px; right: 8px;
+  width: 8px; height: 8px; background: var(--red);
+  border-radius: 50%; border: 2px solid var(--surface);
+}
+
+.notif-header {
+  background: var(--surface);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 15px;
+  border-bottom: 1px solid var(--border);
+}
+.notif-header h1 { font-family:'Sora',sans-serif; font-size:19px; font-weight:800; color:var(--ink); }
+.notif-close { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+
+.notif-tabs {
+  background: var(--surface);
+  display: flex; gap: 8px; padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.n-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  color: var(--muted); background: var(--bg); cursor: pointer;
+  transition: all 0.2s;
+}
+.n-tab.active { background: var(--blue); color: white; }
+
+.notif-list { padding: 16px 16px 30px; display: flex; flex-direction: column; gap: 12px; }
+.notif-item {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px; display: flex; gap: 12px;
+  box-shadow: var(--shadow); position: relative;
+}
+.notif-item.unread { border-left: 3px solid var(--blue); background: #fdfdff; }
+.notif-ico {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.notif-ico.blue   { background: var(--blue-light); color: var(--blue); }
+.notif-ico.orange { background: var(--orange-light); color: var(--orange); }
+.notif-ico.amber  { background: var(--amber-light); color: var(--amber); }
+
+.notif-body { flex: 1; }
+.notif-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 3px; display: flex; justify-content: space-between; }
+.notif-time { font-size: 10px; color: var(--muted); font-weight: 600; }
+.notif-desc { font-size: 12px; color: var(--ink2); font-weight: 500; line-height: 1.5; }
+
+/* ═══════════════════════════════════════
    TRANSITION HELPER
 ═══════════════════════════════════════ */
 .slide-right { animation: slideRight 0.28s cubic-bezier(0.4,0,0.2,1) both; }
@@ -564,8 +684,9 @@ svg { display: block; }
         <p>Thứ Hai, 23 tháng 10, 2023</p>
       </div>
       <div class="top-actions">
-        <button class="icon-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <button class="icon-btn notif-bell-btn" onclick="goToNotif()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <div class="notif-dot"></div>
         </button>
         <div class="user-avatar">A</div>
       </div>
@@ -676,11 +797,7 @@ svg { display: block; }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2563EB"/></svg>
       <span class="nav-lbl" style="color:var(--blue)">LỊCH HỌC</span>
     </button>
-    <button class="nav-btn" onclick="goToHome()">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <span class="nav-lbl">THÔNG BÁO</span>
-    </button>
-    <button class="nav-btn" onclick="goToHome()">
+    <button class="nav-btn">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span class="nav-lbl">CÁ NHÂN</span>
     </button>
@@ -860,10 +977,51 @@ svg { display: block; }
   </div>
 </div>
 
+<!-- ═══════════════════════════════
+     SCREEN 4 – NOTIFICATIONS
+════════════════════════════════ -->
+<div id="screen-notif" class="screen">
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0.5" y="4" width="3" height="8" rx="1" fill="#0F172A"/><rect x="5" y="2.5" width="3" height="9.5" rx="1" fill="#0F172A"/><rect x="9.5" y="0.5" width="3" height="11.5" rx="1" fill="#0F172A"/><rect x="14" y="2" width="2.5" height="10" rx="1" fill="#CBD5E1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C10.5 2 12.7 3.1 14.2 4.8L15.5 3.5C13.6 1.4 10.9 0 8 0C5.1 0 2.4 1.4 0.5 3.5L1.8 4.8C3.3 3.1 5.5 2 8 2Z" fill="#0F172A"/><path d="M8 5C9.7 5 11.2 5.7 12.3 6.8L13.6 5.5C12.1 4.1 10.1 3.2 8 3.2C5.9 3.2 3.9 4.1 2.4 5.5L3.7 6.8C4.8 5.7 6.3 5 8 5Z" fill="#0F172A"/><circle cx="8" cy="10" r="2" fill="#0F172A"/></svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="1" width="22" height="10" rx="3" stroke="#0F172A" stroke-width="1.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.5" fill="#0F172A"/><path d="M24 4v4a2 2 0 000-4z" fill="#0F172A"/></svg>
+    </div>
+  </div>
+
+  <div class="notif-header">
+    <button class="notif-close" onclick="closeNotif()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h1>Thông báo</h1>
+  </div>
+
+  <div class="notif-tabs">
+    <div class="n-tab active" onclick="filterNotifs('all', this)">Tất cả</div>
+    <div class="n-tab" onclick="filterNotifs('schedule', this)">Lịch học</div>
+    <div class="n-tab" onclick="filterNotifs('holiday', this)">Lịch nghỉ</div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="notif-list" id="notif-list">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
 </div><!-- #app -->
 
 <script>
 // ─── Mock Data ───────────────────────────────────────
+const notifications = [
+  { type:'schedule', unread:true,  title:'Tiết học sắp bắt đầu', desc:'Lớp Vật lý 101 của bạn sẽ bắt đầu trong 15 phút nữa tại phòng B-12.', time:'13:45' },
+  { type:'holiday',  unread:true,  title:'Thông báo nghỉ lễ', desc:'Toàn bộ sinh viên được nghỉ học vào ngày Giỗ tổ Hùng Vương (10/3 Âm lịch).', time:'09:00' },
+  { type:'schedule', unread:false, title:'Thay đổi phòng học', desc:'Lớp Viết sáng tạo chiều nay chuyển từ phòng 7 sang hội trường A1.', time:'Hôm qua' },
+  { type:'holiday',  unread:false, title:'Lịch nghỉ hè dự kiến', desc:'Dự kiến sinh viên sẽ bắt đầu kỳ nghỉ hè từ ngày 15/06/2024.', time:'2 ngày trước' },
+  { type:'schedule', unread:false, title:'Nhắc nhở nộp bài tập', desc:'Hạn chót nộp bài luận môn Lịch sử là 23:59 tối nay.', time:'3 ngày trước' },
+];
+
 const courses = {
   physics: {
     title: 'Vật lý 101',
@@ -974,6 +1132,40 @@ function goBack() {
 
 function goToHome() {
   showScreen('schedule', 'slide-right');
+}
+
+/* ── NOTIFICATION FUNCTIONS ─────── */
+function goToNotif() {
+  renderNotifs('all');
+  document.getElementById('screen-notif').style.display = 'flex';
+}
+
+function closeNotif() {
+  document.getElementById('screen-notif').style.display = 'none';
+}
+
+function renderNotifs(filterType) {
+  const list = document.getElementById('notif-list');
+  const filtered = filterType === 'all' ? notifications : notifications.filter(n => n.type === filterType);
+  
+  const icons = { schedule: '📅', holiday: '🏖️' };
+  const colors = { schedule: 'blue', holiday: 'orange' };
+
+  list.innerHTML = filtered.map(n => `
+    <div class="notif-item ${n.unread ? 'unread' : ''}">
+      <div class="notif-ico ${colors[n.type]}">${icons[n.type]}</div>
+      <div class="notif-body">
+        <div class="notif-title">${n.title} <span class="notif-time">${n.time}</span></div>
+        <div class="notif-desc">${n.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterNotifs(type, el) {
+  document.querySelectorAll('.n-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderNotifs(type);
 }
 
 // Date chip interaction
